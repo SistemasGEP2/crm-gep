@@ -1,0 +1,205 @@
+from flask import Flask, render_template, request, redirect, url_for, session, send_file
+from conexion import servicios,queryHistorico,estadosJuridico,nombreProfesional,actualizacionreasignacion,ldapConnect,afiliacion
+from afiliado import afiliacion_bienvenida
+from  documentation import contrat
+import os
+
+app = Flask(__name__)
+app.secret_key = 'supersecretkey_322015#$!asdjfl322015'
+@app.route('/login', methods=['GET','POST'])
+def login():
+    if request.method == 'POST':
+        # Captura las credenciales del formulario
+        username = request.form['username']
+        password = request.form['password']
+         
+        
+        # Validar las credenciales contra Active Directory usando ldapConnect
+        try:
+            estado_conexion = ldapConnect(username, password)
+            print(f"esta es la variable{estado_conexion}")
+
+            # Verificar si la conexión fue exitosa
+            if estado_conexion == 'Conexión exitosa a Active Directory':
+                session['logged_in'] = True
+                session['username'] = username
+                
+                return redirect(url_for('index'))  # Redirige a la página de dashboard si las credenciales son correctas
+            else:
+                print('Credenciales incorrectas. Por favor, inténtalo nuevamente')
+                error = 'Credenciales incorrectas. Por favor, inténtalo nuevamente.'
+                return render_template('prueba.html', error=error)
+
+        except Exception as e:
+            error = f'Error en la autenticación: {str(e)}'
+            return render_template('prueba.html', error=error)
+
+    return render_template('prueba.html')
+
+@app.route('/index')
+def index():
+    
+
+    try:
+
+        profesional = nombreProfesional()
+            
+        data = queryHistorico()
+        boton = '<a href="/logout" type="button" id="btn-seccion" class="#"><strong>Cerrar Sesión</strong></a>' 
+        botondos = '<a href="/psicologia" type="button" id="btn-seccion-false" class="#"><strong>psicologia</strong></a>'
+        botontres = '<a href="/" type="button" id="btn-seccion-false" class="#"><strong>Asesor</strong></a>'    
+
+        if 'username' in session:
+            nombre = session['username']
+            nombre_usuario = nombre.split('.')[0]
+            return render_template('index.html', data=data, botondos = botondos, botontres = botontres
+                                   ,boton=boton,nombre=nombre_usuario,profesional=profesional)
+        else:
+            return redirect(url_for('login'))
+        # Renderizar la plantilla con los datos
+        
+    
+    except Exception as e:
+            print(f'Error: {str(e)}')
+            return "Hubo un error  verifique la informción o consulte con un profesional"
+    
+
+
+
+datos ={}
+
+@app.route('/procesar_busqueda', methods=['POST'])
+def procesar_busqueda():
+    try:
+        if 'username' in session:
+            global datos
+            numero_afiliacion = request.form['numeroDato']
+            print(f'Número de afiliación obtenido: {numero_afiliacion}')
+            datosServicios = servicios(numero_afiliacion)
+            data = queryHistorico()
+            global dato0 
+            global dato1 
+            global dato2
+            global dato3 
+            for row in datosServicios: 
+                dato0 =datos['dato0'] =row[0]
+                dato1 =datos['dato1'] =row[1]
+                dato2 =datos['dato2'] =row[2]
+                dato3 =datos['dato3'] =row[3]
+                update_btn = '<button type="button" id="actualizar-btn"  class="btn btn-success" onclick="actualizarServ();">Actualizar</button>'
+            boton = '<a href="/logout" type="button" id="btn-seccion" class="#"><strong>Cerrar Sesión</strong></a>'    
+            nombre = session['username']
+            nombre_usuario = nombre.split('.')[0]
+
+        else:
+            return redirect(url_for('login'))             
+        profesional = nombreProfesional()     
+        
+
+        return render_template('index.html',data=data,dato0=dato0,dato1=dato1,dato2=dato2,dato3=dato3,update_btn=update_btn,profesional=profesional,nombre=nombre_usuario,boton=boton)
+
+    except Exception as e:
+        return "Hubo un error al procesar la búsqueda: " + str(e)
+
+
+@app.route('/update')
+def diccionarios():
+    try:
+        global datos
+        global dato0
+        global dato1 
+        global dato2
+        global dato3
+       
+        estado = estadosJuridico()
+        nombre = nombreProfesional()
+
+        
+
+        return render_template('update.html',estado=estado,nombre=nombre,dato0=dato0,dato1=dato1,dato2=dato2,dato3 = dato3) 
+    except Exception as e:
+         return "Hubo un error al procesar los diccionarios" + str(e)
+    
+
+@app.route('/updateServicios', methods=['POST'])
+def actualiserv():
+    try:
+        estadoSer = request.form.get('estado')
+        profesional = request.form.get('proveedor')
+        servicio = request.form.get('servicio')
+        profesionalAnt = request.form.get('proveedorAnt')
+        nombre = session['username']
+        
+
+        if estadoSer is None or profesional is None or servicio is None:
+            return "Faltan datos necesarios para la actualización", 400
+        else:
+            datosServicios = actualizacionreasignacion(estadoSer, profesional, servicio,nombre,profesionalAnt)
+            if datosServicios:
+                return render_template('update.html', datosServicios=datosServicios)
+            else:
+                return "Error en la actualización de datos", 500
+
+    except Exception as e:
+        return "Error al procesar la consulta de actualizar datos: " + str(e), 500
+
+
+@app.route('/logout')
+def logout():
+    # esto elimina la sesion que se creo en @app.route(/login)
+    session.pop('logged_in',None)
+    session.pop('username', None)
+    return redirect(url_for('login'))    
+
+
+@app.route('/welcomeaf', methods=['POST', 'GET'])
+def welcomeaf():
+    try:
+        contrato = None
+        consultaraf = None
+        dato1, dato2, dato3, dato4 = None, None, None, None
+
+        if request.method == 'POST':
+            contrato = request.form.get('contrato')
+            if contrato is None or not contrato:
+                print('Error: Vuelva y verifique los datos que está escribiendo')
+            else:
+                
+                consultaraf = afiliacion(contrato)
+                for row in consultaraf:
+                    dato1, dato2, dato3, dato4 = row
+                print(f'Datos: {consultaraf}')
+
+            print(f'Este es el número: {contrato}')
+
+        return render_template('Welcome/Welcome.html',contrato=contrato, consultaraf=consultaraf, dato1=dato1, dato2=dato2, dato3=dato3, dato4=dato4)
+    except Exception as e:
+        return "<p style='color:red;font-size:35px;font-weight: 600; font-family:arial;'> Error: Vuelva y verifique la información. Si el error persiste, contacte con un desarrollador D:</p>" + str(e)
+
+@app.route("/downpdf", methods=['POST', 'GET'])
+def downpdf():
+    try:
+        contrato = request.form.get('contrato')
+        a1,a2,a3,a4 = None,None,None,None
+        pdf = None
+        consultarpdf = None
+
+        consultarpdf = afiliacion_bienvenida(contrato)
+        for i in consultarpdf:
+            a1,a2,a3,a4 = i
+        print(f"pdf :: {consultarpdf}")  
+        pdf_name = f"{a2}.pdf"
+        pdf = contrat(pdf_name,a2,a1, a3,a4)
+
+        if pdf_name and os.path.exists(pdf_name):
+            return send_file(pdf_name, as_attachment=True)
+        else:
+            return "Error: El archivo PDF no se ha generado correctamente."
+
+              
+    except Exception as e:
+        return "Error en la descarga downpdf" + str(e)
+
+
+if __name__ == '__main__':
+    app.run(debug=True,host='0.0.0.0', port=5000)
