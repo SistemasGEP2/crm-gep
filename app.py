@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session, send_file
 from conexion import servicios,queryHistorico,estadosJuridico,nombreProfesional,actualizacionreasignacion,ldapConnect,afiliacion
 from afiliado import afiliacion_bienvenida
-from  documentation import contrat
+from  documentation import contrat, caratula_afiliado
+from afiliado import consulta_caratula
 import os
 
 app = Flask(__name__)
@@ -164,7 +165,6 @@ def welcomeaf():
             if contrato is None or not contrato:
                 print('Error: Vuelva y verifique los datos que está escribiendo')
             else:
-                
                 consultaraf = afiliacion(contrato)
                 for row in consultaraf:
                     dato1, dato2, dato3, dato4 = row
@@ -181,16 +181,20 @@ def downpdf():
     try:
         contrato = request.form.get('contrato')
         a1,a2,a3,a4 = None,None,None,None
+        contrato_caratula,fechaafiliacion_caratula,valorafiliacion_caratula,valorletras_caratula,cuotas_caratula,institucion_caratula,apellidos_caratula,nombres_caratula,estadocivil_caratula,tipoidentificacion_caratula,identificacion_caratula,fechanacimiento_caratula,departamento_caratula,direccionresidencia_caratula,telefono_residencia,celular_caratula,barrio_caratula,municipio_caratula,profesion_caratula,correo_caratula,rh_caratula,apellidosbeneficiario_caratula,nombrebeneficiario_caratula,edadbeneficiario_caratula,fechanacimientobeneficiario_caratula,parentescobeneficiario_caratula,conferencista_caratula = None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
         pdf = None
         consultarpdf = None
-
+        consulta = consulta_caratula(contrato)
         consultarpdf = afiliacion_bienvenida(contrato)
         for i in consultarpdf:
             a1,a2,a3,a4 = i
-        print(f"pdf :: {consultarpdf}")  
+        for i in consulta:
+                contrato_caratula, fechaafiliacion_caratula, valorafiliacion_caratula, valorletras_caratula, cuotas_caratula, institucion_caratula, apellidos_caratula, nombres_caratula, estadocivil_caratula, tipoidentificacion_caratula, identificacion_caratula, fechanacimiento_caratula, departamento_caratula, direccionresidencia_caratula, telefono_residencia, celular_caratula, barrio_caratula, municipio_caratula, profesion_caratula, correo_caratula, rh_caratula, apellidosbeneficiario_caratula, nombrebeneficiario_caratula, edadbeneficiario_caratula, fechanacimientobeneficiario_caratula, parentescobeneficiario_caratula, conferencista_caratula = i[:27]
+        print(f"pdf :: {consultarpdf}")
+        caratula_nombre = f"{contrato_caratula} Caratula.pdf"  
         pdf_name = f"{a2}.pdf"
         pdf = contrat(pdf_name,a2,a1, a3,a4)
-
+        pdf_caratula = caratula_afiliado(contrato_caratula,fechaafiliacion_caratula,valorafiliacion_caratula,valorletras_caratula,cuotas_caratula,institucion_caratula,apellidos_caratula,nombres_caratula,estadocivil_caratula,tipoidentificacion_caratula,identificacion_caratula,fechanacimiento_caratula,departamento_caratula,direccionresidencia_caratula,telefono_residencia,celular_caratula,barrio_caratula,municipio_caratula,profesion_caratula,correo_caratula,rh_caratula,apellidosbeneficiario_caratula,nombrebeneficiario_caratula,edadbeneficiario_caratula,fechanacimientobeneficiario_caratula,parentescobeneficiario_caratula,conferencista_caratula)
         if pdf_name and os.path.exists(pdf_name):
             return send_file(pdf_name, as_attachment=True)
         else:
@@ -198,7 +202,7 @@ def downpdf():
 
               
     except Exception as e:
-        return "Error en la descarga downpdf" + str(e)
+        return "Error en la descarga downpdf " + str(e)
 
 
 if __name__ == '__main__':
