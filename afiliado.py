@@ -18,24 +18,22 @@ def afiliacion_bienvenida(contrato):
                                 """,contrato)
                 results = cursor.fetchall()
 
+                # Imprimir los resultados en la consola
+                
         return results
-        
     except pyodbc.Error as e:
         print(f'Error en la consulta a la base de datos: {str(e)}')
         return None
-
-
-
-
-def consulta_caratula(contrato):
+    
+def consulta_caratula():
     try:
+        contrato = '5A20293'
         with connect() as connection:
             with connection.cursor() as cursor:
-                cursor.execute("""select Afiliaciones.Contrato,Afiliaciones.FechaAfiliacion,Afiliaciones.ValorAfiliacion,Afiliaciones.ValorLetras,Afiliaciones.Cuotas, Instituciones.NombreInstitucion,
+                cursor.execute("""SELECT Afiliaciones.Contrato,Afiliaciones.FechaAfiliacion,Afiliaciones.ValorAfiliacion,Afiliaciones.ValorLetras,Afiliaciones.Cuotas, Instituciones.NombreInstitucion,
                                 Clientes.PrimerApellido + ' ' + Clientes.SegundoApellido AS Apellidos,Clientes.PrimerNombre + ' ' + Clientes.SegundNombre AS Nombres,EstadosCiviles.NombreEstadoCivil,TiposdeIdentificacion.NombreTipoIdentificacion,
                                 Clientes.Identificacion,Clientes.Fechadenacimiento, Departamentos.NombreDepartamento,Clientes.DireccionResidencia,Clientes.TelefonoResidencia,Clientes.Celular,
-                                Clientes.Barrio,Municipios.NombreMunicipio, Departamentos.NombreDepartamento,Clientes.Profesion,Clientes.Email,Clientes.RH,Beneficiarios.PrimerApellido + ' ' + Beneficiarios.SegundoApellido AS Apellidos_Benfeciario,
-                                Beneficiarios.NombreBeneficiario,Beneficiarios.Edad,Beneficiarios.FechaNacimiento,Parentescos.Parentesco,Agentes.NombreAgente as Conferencista
+                                Clientes.Barrio,Municipios.NombreMunicipio, Departamentos.NombreDepartamento,Clientes.Profesion,Clientes.Email,Clientes.RH,Agentes.NombreAgente as Conferencista
                                 from afiliaciones 
                                 inner join Clientes ON Afiliaciones.IdCliente = Clientes.IdCliente
                                 inner join Instituciones ON Afiliaciones.IdInstitucion = Instituciones.IdInstitucion 
@@ -43,21 +41,23 @@ def consulta_caratula(contrato):
                                 inner join TiposdeIdentificacion ON Clientes.IdTipoIdentificacion = TiposdeIdentificacion.IdTipoIdentificacion
                                 inner join Departamentos ON Clientes.IdDepartamentoNac = Departamentos.IdDepartamento
                                 inner join Municipios ON Clientes.IdMunicipio = Municipios.IdMunicipio
-                                inner join Beneficiarios ON Clientes.IdCliente = Beneficiarios.IdCliente
-                                inner join parentescos ON Beneficiarios.IdParentesco = Parentescos.IdParentesco
                                 inner join Agentes ON Afiliaciones.IdAgente = Agentes.IdAgente
                                 where Afiliaciones.Contrato = ?
                                 """,contrato)
                 results = cursor.fetchall()
-                for i in results:
-                    print(i)
+
+                for i in results: 
+                    b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b16,b17,b18,b19,b20,b21,b22,b23= i
+                    print(f"ESTOS SON LOS DATOS DEL DOCUMENTO : " + b1,b2,b3,b4,b5,b6,b7,b8,b9,b10,b11,b12,b13,b14,b15,b16,b17,b18,b19,b20,b21,b22,b23)
+                
+
+                         
+
+                     
 
         return results
-        
     except pyodbc.Error as e:
         print(f'Error en la consulta a la base de datos: {str(e)}')
         return None
-
-
-
-        
+consulta_caratula()
+    

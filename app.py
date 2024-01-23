@@ -1,10 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, session, send_file
 from conexion import servicios,queryHistorico,estadosJuridico,nombreProfesional,actualizacionreasignacion,ldapConnect,afiliacion
-from afiliado import afiliacion_bienvenida
 from  documentation import contrat, caratula_afiliado
-from afiliado import consulta_caratula
+from afiliado import consulta_caratula, afiliacion_bienvenida
 import os
-
+from beneficiario import beneficiarios_consulta
 app = Flask(__name__)
 app.secret_key = 'supersecretkey_322015#$!asdjfl322015'
 @app.route('/login', methods=['GET','POST'])
@@ -166,43 +165,57 @@ def welcomeaf():
                 print('Error: Vuelva y verifique los datos que está escribiendo')
             else:
                 consultaraf = afiliacion(contrato)
+                
                 for row in consultaraf:
                     dato1, dato2, dato3, dato4 = row
+                
+                
                 print(f'Datos: {consultaraf}')
+
 
             print(f'Este es el número: {contrato}')
 
         return render_template('Welcome/Welcome.html',contrato=contrato, consultaraf=consultaraf, dato1=dato1, dato2=dato2, dato3=dato3, dato4=dato4)
     except Exception as e:
         return "<p style='color:red;font-size:35px;font-weight: 600; font-family:arial;'> Error: Vuelva y verifique la información. Si el error persiste, contacte con un desarrollador D:</p>" + str(e)
-
 @app.route("/downpdf", methods=['POST', 'GET'])
 def downpdf():
     try:
         contrato = request.form.get('contrato')
-        a1,a2,a3,a4 = None,None,None,None
-        contrato_caratula,fechaafiliacion_caratula,valorafiliacion_caratula,valorletras_caratula,cuotas_caratula,institucion_caratula,apellidos_caratula,nombres_caratula,estadocivil_caratula,tipoidentificacion_caratula,identificacion_caratula,fechanacimiento_caratula,departamento_caratula,direccionresidencia_caratula,telefono_residencia,celular_caratula,barrio_caratula,municipio_caratula,profesion_caratula,correo_caratula,rh_caratula,apellidosbeneficiario_caratula,nombrebeneficiario_caratula,edadbeneficiario_caratula,fechanacimientobeneficiario_caratula,parentescobeneficiario_caratula,conferencista_caratula = None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
+        print(f'Contratooooooooooooo:{contrato}')
+        a1, a2, a3, a4 = None, None, None, None
         pdf = None
         consultarpdf = None
-        consulta = consulta_caratula(contrato)
+        consulta = []
+        consulta_beneficiario = []
+        c1,c2,c3,c4,c5 = None,None,None,None,None
+        contrato_caratula, fechaafiliacion_caratula, valorafiliacion_caratula, valorletras_caratula, cuotas_caratula, institucion_caratula, apellidos_caratula, nombres_caratula, estadocivil_caratula, tipoidentificacion_caratula, identificacion_caratula, fechanacimiento_caratula, departamento_caratula, direccionresidencia_caratula, telefono_residencia, celular_caratula, barrio_caratula, municipio_caratula, profesion_caratula, correo_caratula, rh_caratula, apellidosbeneficiario_caratula, nombrebeneficiario_caratula, edadbeneficiario_caratula, fechanacimientobeneficiario_caratula, parentescobeneficiario_caratula, conferencista_caratula = None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None,None
         consultarpdf = afiliacion_bienvenida(contrato)
         for i in consultarpdf:
-            a1,a2,a3,a4 = i
-        for i in consulta:
-                contrato_caratula, fechaafiliacion_caratula, valorafiliacion_caratula, valorletras_caratula, cuotas_caratula, institucion_caratula, apellidos_caratula, nombres_caratula, estadocivil_caratula, tipoidentificacion_caratula, identificacion_caratula, fechanacimiento_caratula, departamento_caratula, direccionresidencia_caratula, telefono_residencia, celular_caratula, barrio_caratula, municipio_caratula, profesion_caratula, correo_caratula, rh_caratula, apellidosbeneficiario_caratula, nombrebeneficiario_caratula, edadbeneficiario_caratula, fechanacimientobeneficiario_caratula, parentescobeneficiario_caratula, conferencista_caratula = i[:27]
-        print(f"pdf :: {consultarpdf}")
-        caratula_nombre = f"{contrato_caratula} Caratula.pdf"  
+            a1, a2, a3, a4 = i
+            # Llamada a consulta_caratula dentro del bucle y proporcionando contrato
+            for i in consulta:
+                consulta = consulta_caratula(contrato)
+                contrato_caratula, fechaafiliacion_caratula, valorafiliacion_caratula, valorletras_caratula, cuotas_caratula, institucion_caratula, apellidos_caratula, nombres_caratula, estadocivil_caratula, tipoidentificacion_caratula, identificacion_caratula, fechanacimiento_caratula, departamento_caratula, direccionresidencia_caratula, telefono_residencia, celular_caratula, barrio_caratula, municipio_caratula, profesion_caratula, correo_caratula, rh_caratula, apellidosbeneficiario_caratula, nombrebeneficiario_caratula, edadbeneficiario_caratula, fechanacimientobeneficiario_caratula, parentescobeneficiario_caratula, conferencista_caratula = i
+                for i in consulta_beneficiario:
+                    consulta_beneficiario = beneficiarios_consulta()
+                    c1,c2,c3,c4,c5 = i
+
+        caratula_name = f"{contrato}.pdf"
         pdf_name = f"{a2}.pdf"
-        pdf = contrat(pdf_name,a2,a1, a3,a4)
-        pdf_caratula = caratula_afiliado(contrato_caratula,fechaafiliacion_caratula,valorafiliacion_caratula,valorletras_caratula,cuotas_caratula,institucion_caratula,apellidos_caratula,nombres_caratula,estadocivil_caratula,tipoidentificacion_caratula,identificacion_caratula,fechanacimiento_caratula,departamento_caratula,direccionresidencia_caratula,telefono_residencia,celular_caratula,barrio_caratula,municipio_caratula,profesion_caratula,correo_caratula,rh_caratula,apellidosbeneficiario_caratula,nombrebeneficiario_caratula,edadbeneficiario_caratula,fechanacimientobeneficiario_caratula,parentescobeneficiario_caratula,conferencista_caratula)
-        if pdf_name and os.path.exists(pdf_name):
-            return send_file(pdf_name, as_attachment=True)
+        pdf = contrat(pdf_name, a2, a1, a3, a4)
+        carat = caratula_afiliado(contrato_caratula, fechaafiliacion_caratula, valorafiliacion_caratula, valorletras_caratula, cuotas_caratula, institucion_caratula, apellidos_caratula, nombres_caratula, estadocivil_caratula, tipoidentificacion_caratula, identificacion_caratula, fechanacimiento_caratula, departamento_caratula, direccionresidencia_caratula, telefono_residencia, celular_caratula, barrio_caratula, municipio_caratula, profesion_caratula, correo_caratula, rh_caratula, apellidosbeneficiario_caratula, nombrebeneficiario_caratula, edadbeneficiario_caratula, fechanacimientobeneficiario_caratula, parentescobeneficiario_caratula, conferencista_caratula)
+        beneficiarios = caratula_afiliado(c1,c2,c3,c4,c5)
+
+        if pdf_name and caratula_name and os.path.exists(pdf_name, caratula_name):
+            return send_file(pdf_name, caratula_name, as_attachment=True)
         else:
             return "Error: El archivo PDF no se ha generado correctamente."
 
-              
+
     except Exception as e:
         return "Error en la descarga downpdf " + str(e)
+
 
 
 if __name__ == '__main__':
