@@ -145,7 +145,7 @@ def caratula_afiliado():
              pdf_canvas.drawString(290, y_coordinate, str(row[2]))
              pdf_canvas.drawString(422, y_coordinate, str(row[3]))
              pdf_canvas.drawString(516, y_coordinate, row[4])
-             y_coordinate -= 20  # Incrementa la coordenada Y para la próxima fila
+             y_coordinate -= 20 
 
             
             

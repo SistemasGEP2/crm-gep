@@ -25,9 +25,9 @@ def afiliacion_bienvenida(contrato):
         print(f'Error en la consulta a la base de datos: {str(e)}')
         return None
     
-def consulta_caratula():
+def consulta_caratula(contrato):
     try:
-        contrato = '5A20293'
+        #contrato = '5A20293'
         with connect() as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""SELECT Afiliaciones.Contrato,Afiliaciones.FechaAfiliacion,Afiliaciones.ValorAfiliacion,Afiliaciones.ValorLetras,Afiliaciones.Cuotas, Instituciones.NombreInstitucion,

@@ -2,9 +2,9 @@ import pyodbc
 import prettytable
 from conexion import connect
 
-def beneficiarios_consulta():
+def beneficiarios_consulta(contrato):
     try:
-        contrato = '5A20293'
+        #contrato = '5A20293'
         with connect() as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""select Beneficiarios.NombreBeneficiario,Beneficiarios.PrimerApellido + ' ' + Beneficiarios.SegundoApellido AS Apellidos_Benefeciario,
