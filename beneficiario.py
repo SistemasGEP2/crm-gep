@@ -1,7 +1,6 @@
-from conexion import connect
 import pyodbc
-
-
+import prettytable
+from conexion import connect
 
 def beneficiarios_consulta():
     try:
@@ -16,42 +15,9 @@ def beneficiarios_consulta():
 								where Afiliaciones.Contrato = ?;
                                 """,contrato)
                 results = cursor.fetchall()
-
-                matrix = []
-
-                for row in results:
-                    print(len(row))
-                    for element in row:
-                        print(element, end=' ')
-                
-                    dato1, dato2, dato3, dato4, dato5 = row
-
-                
-                for row in matrix:
-                    for element in row:
-                     print(element, end=' ')
-                
-                matrix_dato1, matrix_dato2, matrix_dato3, matrix_dato4, matrix_dato5 = row
-                
-
-                
-                datos_variables = {}
-
-                
-                for index, row in enumerate(results, start=1):
-                    
-                    nombre_variable = f'dato_{index}'
-
-                    
-                    datos_variables[nombre_variable] = row
-
-                    
-                    print(f'{nombre_variable}: {datos_variables}')
-
-                
-
                 return results
     except pyodbc.Error as e:
         print(f'Error en la consulta a la base de datos: {str(e)}')
         return None
+
 beneficiarios_consulta()

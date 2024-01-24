@@ -5,6 +5,7 @@ from reportlab.lib.colors import white, black
 from reportlab.pdfbase.ttfonts import TTFont
 import datetime
 import locale
+from reportlab.platypus import Table, TableStyle
 from reportlab.lib import colors
 from afiliado import afiliacion_bienvenida, consulta_caratula
 from io import BytesIO
@@ -87,16 +88,17 @@ def caratula_afiliado():
         # Dibujar la imagen en la página
         pdf_canvas.drawImage(caratula_path, 0, 0, width=letter[0], height=letter[1])
         if i <= min(len(carat), len(consulta_bene)) and carat and consulta_bene:
-            row_beneficiario = consulta_bene
-            # Desempaquetar los valores de carat[i-1]
+            #row_beneficiario = consulta_bene[0]
+            
+            
+            
             b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = carat[i-1]
-        beneficiario_data = consulta_bene[i-1]
         pdf_canvas.setFont("Helvetica", 11)
-        pdf_canvas.setFillColor(colors.black)
+        pdf_canvas.setFillColor(colors.black) 
         if i == 1:
             
             texto_personalizado_contrato = b1
-            pdf_canvas.drawString(486, 561, texto_personalizado_contrato)
+            pdf_canvas.drawString(525, 561, texto_personalizado_contrato)
             texto_personalizado_nombres = b8
             pdf_canvas.drawString(99,480, texto_personalizado_nombres)
             texto_personalizado_apellidos = b7
@@ -135,14 +137,21 @@ def caratula_afiliado():
             pdf_canvas.drawString(108,313,texto_personalizado_fechaafilia)
             texto_personalizado_valorletras = b4
             pdf_canvas.drawString(400,313, texto_personalizado_valorletras)
-            x_position = 250
-            y_position = 100
-            line_height = 20
-            for idx, value in enumerate(row_beneficiario):
-                formatted_value = str(value).replace("(", "").replace(")", "").replace(",","                  ").replace("'", "").replace("Decimal"," ")
-                pdf_canvas.drawCentredString(x_position, y_position - (idx * line_height), formatted_value) 
+            beneficiarios_data = beneficiarios_consulta()
+            y_coordinate = 160
+            for row in beneficiarios_data:
+             pdf_canvas.drawString(25, y_coordinate, row[0])
+             pdf_canvas.drawString(132, y_coordinate, row[1])
+             pdf_canvas.drawString(290, y_coordinate, str(row[2]))
+             pdf_canvas.drawString(422, y_coordinate, str(row[3]))
+             pdf_canvas.drawString(516, y_coordinate, row[4])
+             y_coordinate -= 20  # Incrementa la coordenada Y para la próxima fila
+
+            
+            
+                
         elif i == 3:
-            texto_personalizado = f"Texto personalizado para hoja {i}: {b21}"
+                texto_personalizado = f"Texto personalizado para hoja {i}: {b21}"
     # Guardar el PDF con todas las páginas
     pdf_canvas.save()
     pdf_buffer.seek(0)
