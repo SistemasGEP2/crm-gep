@@ -9,7 +9,6 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 import glob
 
-
 app = Flask(__name__)
 app.secret_key = 'supersecretkey_322015#$!asdjfl322015'
 @app.route('/login', methods=['GET','POST'])
@@ -181,6 +180,7 @@ def welcomeaf():
         return render_template('Welcome/Welcome.html',contrato=contrato, consultaraf=consultaraf, dato1=dato1, dato2=dato2, dato3=dato3, dato4=dato4)
     except Exception as e:
         return "<p style='color:red;font-size:35px;font-weight: 600; font-family:arial;'> Error: Vuelva y verifique la información. Si el error persiste, contacte con un desarrollador D:</p>" + str(e)
+
 
 @app.route("/downpdf", methods=['POST', 'GET'])
 def downpdf():
