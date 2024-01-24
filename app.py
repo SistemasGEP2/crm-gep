@@ -1,8 +1,14 @@
+from flask import send_from_directory
 from flask import Flask, render_template, request, redirect, url_for, session, send_file
 from conexion import servicios,queryHistorico,estadosJuridico,nombreProfesional,actualizacionreasignacion,ldapConnect,afiliacion
 from afiliado import afiliacion_bienvenida
 from  documentation import contrat
 import os
+from datetime import datetime, time
+from apscheduler.schedulers.background import BackgroundScheduler
+import atexit
+import glob
+
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey_322015#$!asdjfl322015'
@@ -180,26 +186,66 @@ def welcomeaf():
 def downpdf():
     try:
         contrato = request.form.get('contrato')
-        a1,a2,a3,a4 = None,None,None,None
+        a1, a2, a3, a4 = None, None, None, None
         pdf = None
         consultarpdf = None
 
         consultarpdf = afiliacion_bienvenida(contrato)
         for i in consultarpdf:
-            a1,a2,a3,a4 = i
+            a1, a2, a3, a4 = i
         print(f"pdf :: {consultarpdf}")  
         pdf_name = f"{a2}.pdf"
-        pdf = contrat(pdf_name,a2,a1, a3,a4)
+        pdf = contrat(pdf_name, a2, a1, a3, a4)
 
         if pdf_name and os.path.exists(pdf_name):
-            return send_file(pdf_name, as_attachment=True)
+            folder_path = os.path.dirname(pdf_name)
+            return send_from_directory(folder_path, pdf_name, as_attachment=True)
         else:
             return "Error: El archivo PDF no se ha generado correctamente."
-
-              
     except Exception as e:
         return "Error en la descarga downpdf" + str(e)
 
+
+    
+
+
+
+def delete_pdf():
+    try:
+        # Especifica las horas permitidas para la eliminación (12:01 AM y 12:01 PM)
+        allowed_hours = [time(12, 10), time(14,50)]
+
+        # Obtén la hora actual
+        current_time = datetime.now().time()
+        print(f"Hora actual: {current_time}")
+        print(f"Horas permitidas: {allowed_hours}")
+
+        # Verifica si la hora actual está en las horas permitidas
+        if any(current_time.hour == allowed_time.hour and current_time.minute == allowed_time.minute for allowed_time in allowed_hours):
+            directorio_actual = os.getcwd() #con esta linea de codigo es donde estamos en el directorio actual
+            archivos_txt = glob.glob(os.path.join(directorio_actual,'*.pdf')) #por nmedio de glob es que nos ayuda a encontrar la extencion .txt
+            for archivo in archivos_txt:
+                try:
+                    f = open("log.txt","a")
+                    print(f.write("\n" + f" >> Archivo eliminado {archivo}"))
+                    os.remove(archivo) #recorro todos las rutas que hay con la extencion y las elimino 
+
+                except Exception as eror:
+                    return "No se pudo eliminar" + str(eror)
+
+    except Exception as e:
+        print(f"Error al eliminar archivos PDF: {str(e)}")
+
+# Configurar un planificador para ejecutar la función cada día a las 12:01 AM y 12:01 PM
+scheduler = BackgroundScheduler()
+scheduler.add_job(delete_pdf, 'cron', hour='12,14', minute=50)
+scheduler.start()
+
+# Detener el planificador al cerrar la aplicación Flask
+atexit.register(lambda: scheduler.shutdown())
+
+# Ejecutar la función directamente al inicio para probar
+delete_pdf()
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0', port=5000)
