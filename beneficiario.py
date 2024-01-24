@@ -4,7 +4,7 @@ from conexion import connect
 
 def beneficiarios_consulta(contrato):
     try:
-        #contrato = '5A20293'
+       
         with connect() as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""select Beneficiarios.NombreBeneficiario,Beneficiarios.PrimerApellido + ' ' + Beneficiarios.SegundoApellido AS Apellidos_Benefeciario,
@@ -20,4 +20,3 @@ def beneficiarios_consulta(contrato):
         print(f'Error en la consulta a la base de datos: {str(e)}')
         return None
 
-beneficiarios_consulta()
