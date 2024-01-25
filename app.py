@@ -1,9 +1,13 @@
 from flask import send_from_directory
-from flask import Flask, render_template, request, redirect, url_for, session, send_file
+from flask import Flask, render_template, request, redirect, url_for, session, send_file,Response
 from conexion import servicios,queryHistorico,estadosJuridico,nombreProfesional,actualizacionreasignacion,ldapConnect,afiliacion
 from  documentation import contrat, caratula_afiliado
 from afiliado import consulta_caratula, afiliacion_bienvenida
 import os
+from io import BytesIO
+from zipfile import ZipFile
+
+
 
 from datetime import datetime, time
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -155,7 +159,7 @@ def logout():
     # esto elimina la sesion que se creo en @app.route(/login)
     session.pop('logged_in',None)
     session.pop('username', None)
-    return redirect(url_for('login'))    
+    return redirect(url_for('login'))   
 
 
 @app.route('/welcomeaf', methods=['POST', 'GET'])
@@ -187,41 +191,51 @@ def welcomeaf():
 
 
 
+
 @app.route("/downpdf", methods=['POST', 'GET'])
 def downpdf():
     try:
         contrato = request.form.get('contrato')
-        a1, a2, a3, a4 = None, None, None, None
-        pdf = None
-        consultarpdf = None
-        consultarpdf2= caratula_afiliado(contrato)
+        pdfs = []
+
+        
+        consultarpdf2 = afiliacion_bienvenida(contrato)
+        consultarpdf3 = consulta_caratula(contrato)
+        if consultarpdf2 is not None:
+            for i in consultarpdf2:
+                a1, a2, a3, a4 = i
+                pdf_name = f"{a2}_caratula.pdf"
+                pdf = contrat(pdf_name, a2, a1, a3, a4)
+                pdfs.append(pdf_name)
+                pass
+        if consultarpdf3 is not None:
+            for i in consultarpdf3:
+                
+                b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
+                pdf_name = f"{b2}_bienvenida.pdf"
+                pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23,contrato)
+                pdfs.append(pdf_name)
+                
         
 
-        consultarpdf = afiliacion_bienvenida(contrato)
-        for i in consultarpdf:
-            a1, a2, a3, a4 = i
-        print(f"pdf :: {consultarpdf}")  
-        pdf_name = f"{a2}.pdf"
-        pdf = contrat(pdf_name, a2, a1, a3, a4)
+        if not pdfs:
+            return "Error: No se generaron archivos PDF."
 
-        if pdf_name and os.path.exists(pdf_name):
-            folder_path = os.path.dirname(pdf_name)
-            return send_from_directory(folder_path, pdf_name, as_attachment=True)
-        else:
-            return "Error: El archivo PDF no se ha generado correctamente."
+        zip_buffer = BytesIO()
+        with ZipFile(zip_buffer, 'a') as zip_file:
+            for pdf in pdfs:
+                zip_file.write(pdf)
 
- 
-
-
-
+        zip_buffer.seek(0)
+        return Response(
+            zip_buffer,
+            mimetype='application/zip',
+            headers={'Content-Disposition': 'attachment;filename=pdfs.zip'}
+        )
 
     except Exception as e:
-        return "Error en la descarga downpdf " + str(e)
-
-
-
-    
-
+        print(f"Error {e}")
+        return "Error: El archivo PDF no se ha generado correctamente." + str(e)
 
 
 def delete_pdf():
