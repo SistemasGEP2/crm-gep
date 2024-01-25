@@ -27,7 +27,7 @@ def afiliacion_bienvenida(contrato):
     
 def consulta_caratula(contrato):
     try:
-        #contrato = '5A20293'
+
         with connect() as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""SELECT Afiliaciones.Contrato,Afiliaciones.FechaAfiliacion,Afiliaciones.ValorAfiliacion,Afiliaciones.ValorLetras,Afiliaciones.Cuotas, Instituciones.NombreInstitucion,
@@ -59,5 +59,5 @@ def consulta_caratula(contrato):
     except pyodbc.Error as e:
         print(f'Error en la consulta a la base de datos: {str(e)}')
         return None
-consulta_caratula()
+
     

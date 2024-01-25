@@ -62,7 +62,7 @@ def contrat(nombre_documento, nombre_afiliado, numero_contrato, departamento, ci
     c.save()
 
 
-def caratula_afiliado():
+def caratula_afiliado(contrato):
     pdf_file = "Caratula_Afiliacion.pdf"
     pdf_buffer = BytesIO()
     pdf_canvas = canvas.Canvas(pdf_buffer, pagesize=letter)
@@ -73,8 +73,8 @@ def caratula_afiliado():
         'static/img/Caratula_3.jpg',
     ]
 
-    carat = consulta_caratula()
-    consulta_bene = beneficiarios_consulta()
+    carat = consulta_caratula(contrato)
+    consulta_bene = beneficiarios_consulta(contrato)
 
     for i, caratula_path in enumerate(caratula_paths, start=1):
         
@@ -137,7 +137,7 @@ def caratula_afiliado():
             pdf_canvas.drawString(108,313,texto_personalizado_fechaafilia)
             texto_personalizado_valorletras = b4
             pdf_canvas.drawString(400,313, texto_personalizado_valorletras)
-            beneficiarios_data = beneficiarios_consulta()
+            beneficiarios_data = consulta_bene
             y_coordinate = 160
             for row in beneficiarios_data:
              pdf_canvas.drawString(25, y_coordinate, row[0])
@@ -159,7 +159,7 @@ def caratula_afiliado():
     with open(pdf_file, 'wb') as f:
         f.write(pdf_buffer.read())
 
-caratula_afiliado()
+
 
 
 
