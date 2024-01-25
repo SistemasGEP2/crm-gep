@@ -62,20 +62,16 @@ def contrat(nombre_documento, nombre_afiliado, numero_contrato, departamento, ci
     c.save()
 
 
-def caratula_afiliado(contrato):
-    pdf_file = "Caratula_Afiliacion.pdf"
+def caratula_afiliado(pdf_file,b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23,contrato):
+    pdf_file = pdf_file
     pdf_buffer = BytesIO()
     pdf_canvas = canvas.Canvas(pdf_buffer, pagesize=letter)
-
     caratula_paths = [
         'static/img/Caratula_1.jpg',
         'static/img/Caratula_2.jpg',
         'static/img/Caratula_3.jpg',
     ]
-
-    carat = consulta_caratula(contrato)
     consulta_bene = beneficiarios_consulta(contrato)
-
     for i, caratula_path in enumerate(caratula_paths, start=1):
         
         if i > 1:
@@ -87,13 +83,8 @@ def caratula_afiliado(contrato):
         row = []
         # Dibujar la imagen en la página
         pdf_canvas.drawImage(caratula_path, 0, 0, width=letter[0], height=letter[1])
-        if i <= min(len(carat), len(consulta_bene)) and carat and consulta_bene:
-            #row_beneficiario = consulta_bene[0]
-            
-            
-            
-            b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = carat[i-1]
-        pdf_canvas.setFont("Helvetica", 11)
+      
+        pdf_canvas.setFont("Helvetica", 8.5)
         pdf_canvas.setFillColor(colors.black) 
         if i == 1:
             
