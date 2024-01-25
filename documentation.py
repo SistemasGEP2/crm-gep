@@ -16,18 +16,19 @@ def contrat(nombre_documento, nombre_afiliado, numero_contrato, departamento, ci
 
     locale.setlocale(locale.LC_TIME, 'es_ES.utf8')
     current_date_and_time = datetime.datetime.now()
-    date = current_date_and_time.strftime('%w de %B de %Y')
+    date = current_date_and_time.strftime('%d de %B de %Y')
     print(date)
     c = canvas.Canvas(nombre_documento,pagesize=(612, 792))
 
     nombre_afiliado = nombre_afiliado
     # Comentar la línea de la imagen para probar sin ella
     imagen = ImageReader('./static/img/fondo.png')
+    imagen2 = ImageReader('./static/img/firma.png')
     c.setFont("Helvetica-Bold", 12)
 
     # Comentar la línea de la imagen para probar sin ella
     c.drawImage(imagen, 0, 0, width=612, height=792)
-    c.drawString(100, 750, "Hola esto es un pdf de prueba :D")
+    # c.drawString(100, 750, "Hola esto es un pdf de prueba :D")
     x, y = 432, 598
     ancho, alto = 30, 92
     c.setFillColorRGB(1, 1, 1)
@@ -57,7 +58,8 @@ def contrat(nombre_documento, nombre_afiliado, numero_contrato, departamento, ci
     c.setFont("Helvetica", 12)
     c.drawString(95, 195, "Atentamente,")
     c.setFont("Helvetica-Bold", 12)
-    c.drawString(95, 80, "AREA DE SISTEMAS")
+    c.drawString(95, 80, "AREA CORRESPONDENCIA")
+    c.drawImage(imagen2, 92, 98, width=120, height=65)
 
     c.save()
 
