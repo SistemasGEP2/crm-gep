@@ -8,6 +8,7 @@ from datetime import datetime, time
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 import glob
+import zipfile
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey_322015#$!asdjfl322015'
@@ -186,6 +187,7 @@ def welcomeaf():
 def downpdf():
     try:
         contrato = request.form.get('contrato')
+        
         a1, a2, a3, a4 = None, None, None, None
         pdf = None
         consultarpdf = None
