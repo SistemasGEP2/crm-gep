@@ -205,14 +205,23 @@ def downpdf():
         if consultarpdf2 is not None:
             for i in consultarpdf2:
                 a1, a2, a3, a4 = i
+<<<<<<< HEAD
                 pdf_name = f"Carta Bienvenida_{a2}.pdf"
+=======
+                pdf_name = f"{contrato}_contrato.pdf"
+>>>>>>> 951fbe609c2871c28e03d3558760e025d98500dc
                 pdf = contrat(pdf_name, a2, a1, a3, a4)
                 pdfs.append(pdf_name)
         if consultarpdf3 is not None:
             for i in consultarpdf3:
                 b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
+<<<<<<< HEAD
                 pdf_name = f"Caratula_{b1}.pdf"
                 pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contrato)
+=======
+                pdf_name = f"{contrato}_Caratula.pdf"
+                pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23,contrato)
+>>>>>>> 951fbe609c2871c28e03d3558760e025d98500dc
                 pdfs.append(pdf_name)
                 pdfs.append("static\\pdf\\Tarjeta_Titular.pdf")
                 pdfs.append("static\\pdf\\BrochureGEP.pdf")
