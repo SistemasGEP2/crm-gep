@@ -71,7 +71,8 @@ def caratula_afiliado(pdf_file, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b1
     # Cargar imágenes una vez fuera del bucle
     caratula_paths = [
         'static/img/Caratula_1.jpg',
-        
+        'static/img/Caratula_2.jpg',
+        'static/img/Caratula_3.jpg'       
     ]
     caratulas = [ImageReader(path) for path in caratula_paths]
 
