@@ -1,9 +1,13 @@
 from flask import send_from_directory
-from flask import Flask, render_template, request, redirect, url_for, session, send_file
+from flask import Flask, render_template, request, redirect, url_for, session, send_file,Response
 from conexion import servicios,queryHistorico,estadosJuridico,nombreProfesional,actualizacionreasignacion,ldapConnect,afiliacion
 from  documentation import contrat, caratula_afiliado
 from afiliado import consulta_caratula, afiliacion_bienvenida
 import os
+from io import BytesIO
+from zipfile import ZipFile
+
+
 
 from datetime import datetime, time
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -160,7 +164,7 @@ def logout():
     # esto elimina la sesion que se creo en @app.route(/login)
     session.pop('logged_in',None)
     session.pop('username', None)
-    return redirect(url_for('login'))    
+    return redirect(url_for('login'))   
 
 
 @app.route('/welcomeaf', methods=['POST', 'GET'])
@@ -169,26 +173,36 @@ def welcomeaf():
         contrato = None
         consultaraf = None
         dato1, dato2, dato3, dato4 = None, None, None, None
+        consultarpdf3 = None
+        btndown = ''
 
         if request.method == 'POST':
             contrato = request.form.get('contrato')
             if contrato is None or not contrato:
                 print('Error: Vuelva y verifique los datos que está escribiendo')
             else:
+
                 consultaraf = afiliacion(contrato)
+                consultarpdf3 = consulta_caratula(contrato)
                 
                 for row in consultaraf:
                     dato1, dato2, dato3, dato4 = row
+                        # if consultarpdf3 is not None:
+                for i in consultarpdf3:
+                 b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
+                 pdf_name = f"Caratula_{b1}.pdf"
+                 pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contrato)
+                print(f'Datos: {consultaraf}{pdf}')
+                btndown = '<button type="submit" class="btn btn-success donlawn">Descargar</button>'
                 
-                
-                print(f'Datos: {consultaraf}')
 
 
             print(f'Este es el número: {contrato}')
 
-        return render_template('Welcome/Welcome.html',contrato=contrato, consultaraf=consultaraf, dato1=dato1, dato2=dato2, dato3=dato3, dato4=dato4)
+        return render_template('Welcome/Welcome.html',btndown= btndown,contrato=contrato, consultaraf=consultaraf, dato1=dato1, dato2=dato2, dato3=dato3, dato4=dato4)
     except Exception as e:
         return "<p style='color:red;font-size:35px;font-weight: 600; font-family:arial;'> Error: Vuelva y verifique la información. Si el error persiste, contacte con un desarrollador D:</p>" + str(e)
+
 
 
 
@@ -198,50 +212,48 @@ def downpdf():
         contrato = request.form.get('contrato')
 
 
-        
-
-
-
-        print(f'Contratooooooooooooo:{contrato}')
-
-
-        a1, a2, a3, a4 = None, None, None, None
-        pdf = None
-        consultarpdf = None
-        consultarpdf2= caratula_afiliado(contrato)
-        
-
-        consultarpdf = afiliacion_bienvenida(contrato)
-        for i in consultarpdf:
-            a1, a2, a3, a4 = i
-        print(f"pdf :: {consultarpdf}")  
-        pdf_name = f"{a2}.pdf"
-        pdf = contrat(pdf_name, a2, a1, a3, a4)
-
-        if pdf_name and os.path.exists(pdf_name):
-            folder_path = os.path.dirname(pdf_name)
-            return send_from_directory(folder_path, pdf_name, as_attachment=True)
-        else:
-            return "Error: El archivo PDF no se ha generado correctamente."
-
+        pdfs = []
  
 
+        consultarpdf2 = afiliacion_bienvenida(contrato)
+        if consultarpdf2 is not None:
+            for i in consultarpdf2:
+                a1, a2, a3, a4 = i
+                pdf_name = f"Carta Bienvenida_{a2}.pdf"
+
+                pdf_name = f"Contrato_{contrato}.pdf"
+                pdf = contrat(pdf_name, a2, a1, a3, a4)
+                pdfs.append(pdf_name)
+                pdfs.append("static\\pdf\\Tarjeta_Titular.pdf")
+                pdfs.append("static\\pdf\\BrochureGEP.pdf")
+                pdfs.append(f"Caratula_{contrato}.pdf")
+                
+          
+        if not pdfs:
+            return "Error: No se generaron archivos PDF."
 
 
+        zip_buffer = BytesIO()
+        with ZipFile(zip_buffer, 'a') as zip_file:
+            for pdf in pdfs:
+                # Agrega solo el nombre del archivo al archivo zip
+                zip_file.write(pdf, os.path.basename(pdf))
+
+        zip_buffer.seek(0)
+        return Response(
+            zip_buffer,
+            mimetype='application/zip',
+            headers={'Content-Disposition': f'attachment;filename={contrato}.zip'}
+        )
 
     except Exception as e:
-        return "Error en la descarga downpdf " + str(e)
-
-
-
-    
-
+        return str(e)
 
 
 def delete_pdf():
     try:
         # Especifica las horas permitidas para la eliminación (12:01 AM y 12:01 PM)
-        allowed_hours = [time(12, 10), time(14,50)]
+        allowed_hours = [time(7, 26), time(14,50),time(17,12)]
 
         # Obtén la hora actual
         current_time = datetime.now().time()
@@ -266,7 +278,7 @@ def delete_pdf():
 
 # Configurar un planificador para ejecutar la función cada día a las 12:01 AM y 12:01 PM
 scheduler = BackgroundScheduler()
-scheduler.add_job(delete_pdf, 'cron', hour='12,14', minute=50)
+scheduler.add_job(delete_pdf, 'cron', hour='7,14,17', minute=26)
 scheduler.start()
 
 # Detener el planificador al cerrar la aplicación Flask
