@@ -197,31 +197,20 @@ def downpdf():
     try:
         contrato = request.form.get('contrato')
         pdfs = []
-        
-        
-
         consultarpdf2 = afiliacion_bienvenida(contrato)
         consultarpdf3 = consulta_caratula(contrato)
         if consultarpdf2 is not None:
             for i in consultarpdf2:
                 a1, a2, a3, a4 = i
-<<<<<<< HEAD
                 pdf_name = f"Carta Bienvenida_{a2}.pdf"
-=======
-                pdf_name = f"{contrato}_contrato.pdf"
->>>>>>> 951fbe609c2871c28e03d3558760e025d98500dc
+                pdf_name = f"Contrato_{contrato}.pdf"
                 pdf = contrat(pdf_name, a2, a1, a3, a4)
                 pdfs.append(pdf_name)
         if consultarpdf3 is not None:
             for i in consultarpdf3:
                 b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
-<<<<<<< HEAD
                 pdf_name = f"Caratula_{b1}.pdf"
                 pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contrato)
-=======
-                pdf_name = f"{contrato}_Caratula.pdf"
-                pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23,contrato)
->>>>>>> 951fbe609c2871c28e03d3558760e025d98500dc
                 pdfs.append(pdf_name)
                 pdfs.append("static\\pdf\\Tarjeta_Titular.pdf")
                 pdfs.append("static\\pdf\\BrochureGEP.pdf")
@@ -248,7 +237,7 @@ def downpdf():
 def delete_pdf():
     try:
         # Especifica las horas permitidas para la eliminación (12:01 AM y 12:01 PM)
-        allowed_hours = [time(11, 10), time(14,50),time(17,12)]
+        allowed_hours = [time(7, 26), time(14,50),time(17,12)]
 
         # Obtén la hora actual
         current_time = datetime.now().time()
@@ -273,7 +262,7 @@ def delete_pdf():
 
 # Configurar un planificador para ejecutar la función cada día a las 12:01 AM y 12:01 PM
 scheduler = BackgroundScheduler()
-scheduler.add_job(delete_pdf, 'cron', hour='11,14,17', minute=12)
+scheduler.add_job(delete_pdf, 'cron', hour='7,14,17', minute=26)
 scheduler.start()
 
 # Detener el planificador al cerrar la aplicación Flask
