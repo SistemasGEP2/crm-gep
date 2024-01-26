@@ -197,50 +197,58 @@ def downpdf():
     try:
         contrato = request.form.get('contrato')
         pdfs = []
-
         
+        
+
         consultarpdf2 = afiliacion_bienvenida(contrato)
         consultarpdf3 = consulta_caratula(contrato)
         if consultarpdf2 is not None:
             for i in consultarpdf2:
                 a1, a2, a3, a4 = i
+<<<<<<< HEAD
+                pdf_name = f"Carta Bienvenida_{a2}.pdf"
+=======
                 pdf_name = f"{contrato}_contrato.pdf"
+>>>>>>> 951fbe609c2871c28e03d3558760e025d98500dc
                 pdf = contrat(pdf_name, a2, a1, a3, a4)
                 pdfs.append(pdf_name)
-                pass
         if consultarpdf3 is not None:
             for i in consultarpdf3:
                 b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
+<<<<<<< HEAD
+                pdf_name = f"Caratula_{b1}.pdf"
+                pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contrato)
+=======
                 pdf_name = f"{contrato}_Caratula.pdf"
                 pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23,contrato)
+>>>>>>> 951fbe609c2871c28e03d3558760e025d98500dc
                 pdfs.append(pdf_name)
-                
-        
-
+                pdfs.append("static\\pdf\\Tarjeta_Titular.pdf")
+                pdfs.append("static\\pdf\\BrochureGEP.pdf")
         if not pdfs:
             return "Error: No se generaron archivos PDF."
 
         zip_buffer = BytesIO()
         with ZipFile(zip_buffer, 'a') as zip_file:
             for pdf in pdfs:
-                zip_file.write(pdf)
+                # Agrega solo el nombre del archivo al archivo zip
+                zip_file.write(pdf, os.path.basename(pdf))
 
         zip_buffer.seek(0)
         return Response(
             zip_buffer,
             mimetype='application/zip',
-            headers={'Content-Disposition': 'attachment;filename=pdfs.zip'}
+            headers={'Content-Disposition': f'attachment;filename={contrato}.zip'}
         )
 
     except Exception as e:
-        print(f"Error {e}")
-        return "Error: El archivo PDF no se ha generado correctamente." + str(e)
+        return str(e)
 
 
 def delete_pdf():
     try:
         # Especifica las horas permitidas para la eliminación (12:01 AM y 12:01 PM)
-        allowed_hours = [time(12, 10), time(14,50)]
+        allowed_hours = [time(11, 10), time(14,50),time(17,12)]
 
         # Obtén la hora actual
         current_time = datetime.now().time()
@@ -265,7 +273,7 @@ def delete_pdf():
 
 # Configurar un planificador para ejecutar la función cada día a las 12:01 AM y 12:01 PM
 scheduler = BackgroundScheduler()
-scheduler.add_job(delete_pdf, 'cron', hour='12,14', minute=50)
+scheduler.add_job(delete_pdf, 'cron', hour='11,14,17', minute=12)
 scheduler.start()
 
 # Detener el planificador al cerrar la aplicación Flask

@@ -1,5 +1,4 @@
 import pyodbc
-import prettytable
 from conexion import connect
 
 def beneficiarios_consulta(contrato):
