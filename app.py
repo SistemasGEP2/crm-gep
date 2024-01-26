@@ -168,24 +168,33 @@ def welcomeaf():
         contrato = None
         consultaraf = None
         dato1, dato2, dato3, dato4 = None, None, None, None
+        consultarpdf3 = None
+        btndown = ''
 
         if request.method == 'POST':
             contrato = request.form.get('contrato')
             if contrato is None or not contrato:
                 print('Error: Vuelva y verifique los datos que está escribiendo')
             else:
+
                 consultaraf = afiliacion(contrato)
+                consultarpdf3 = consulta_caratula(contrato)
                 
                 for row in consultaraf:
                     dato1, dato2, dato3, dato4 = row
+                        # if consultarpdf3 is not None:
+                for i in consultarpdf3:
+                 b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
+                 pdf_name = f"Caratula_{b1}.pdf"
+                 pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contrato)
+                print(f'Datos: {consultaraf}{pdf}')
+                btndown = '<button type="submit" class="btn btn-success donlawn">Descargar</button>'
                 
-                
-                print(f'Datos: {consultaraf}')
 
 
             print(f'Este es el número: {contrato}')
 
-        return render_template('Welcome/Welcome.html',contrato=contrato, consultaraf=consultaraf, dato1=dato1, dato2=dato2, dato3=dato3, dato4=dato4)
+        return render_template('Welcome/Welcome.html',btndown= btndown,contrato=contrato, consultaraf=consultaraf, dato1=dato1, dato2=dato2, dato3=dato3, dato4=dato4)
     except Exception as e:
         return "<p style='color:red;font-size:35px;font-weight: 600; font-family:arial;'> Error: Vuelva y verifique la información. Si el error persiste, contacte con un desarrollador D:</p>" + str(e)
 
@@ -196,13 +205,17 @@ def welcomeaf():
 def downpdf():
     try:
         contrato = request.form.get('contrato')
+<<<<<<< HEAD
         pdfs = []
+=======
+        pdfs = [] 
+>>>>>>> 86fad82d1f34f92d9ecb5dc3cd3035dcd1c1d3e4
         consultarpdf2 = afiliacion_bienvenida(contrato)
-        consultarpdf3 = consulta_caratula(contrato)
         if consultarpdf2 is not None:
             for i in consultarpdf2:
                 a1, a2, a3, a4 = i
                 pdf_name = f"Carta Bienvenida_{a2}.pdf"
+<<<<<<< HEAD
                 pdf_name = f"Contrato_{contrato}.pdf"
                 pdf = contrat(pdf_name, a2, a1, a3, a4)
                 pdfs.append(pdf_name)
@@ -212,8 +225,15 @@ def downpdf():
                 pdf_name = f"Caratula_{b1}.pdf"
                 pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contrato)
                 pdfs.append(pdf_name)
+=======
+                pdf = contrat(pdf_name, a2, a1, a3, a4)
+                pdfs.append(pdf_name)
+>>>>>>> 86fad82d1f34f92d9ecb5dc3cd3035dcd1c1d3e4
                 pdfs.append("static\\pdf\\Tarjeta_Titular.pdf")
                 pdfs.append("static\\pdf\\BrochureGEP.pdf")
+                pdfs.append(f"Caratula_{contrato}.pdf")
+                
+          
         if not pdfs:
             return "Error: No se generaron archivos PDF."
 

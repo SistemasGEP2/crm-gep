@@ -64,72 +64,52 @@ def contrat(nombre_documento, nombre_afiliado, numero_contrato, departamento, ci
     c.save()
 
 
-def caratula_afiliado(pdf_file,b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23,contrato):
-    pdf_file = pdf_file
+def caratula_afiliado(pdf_file, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contrato):
     pdf_buffer = BytesIO()
     pdf_canvas = canvas.Canvas(pdf_buffer, pagesize=letter)
+    locale.setlocale(locale.LC_TIME, 'es_ES.utf8')
+    # Cargar imágenes una vez fuera del bucle
     caratula_paths = [
         'static/img/Caratula_1.jpg',
         'static/img/Caratula_2.jpg',
-        'static/img/Caratula_3.jpg',
+        'static/img/Caratula_3.jpg'       
     ]
-    consulta_bene = beneficiarios_consulta(contrato)
-    for i, caratula_path in enumerate(caratula_paths, start=1):
-        
+    caratulas = [ImageReader(path) for path in caratula_paths]
+
+    consulta_bene = beneficiarios_consulta(contrato)  
+
+    for i, caratula in enumerate(caratulas, start=1):
         if i > 1:
             pdf_canvas.showPage()
+        pdf_canvas.drawImage(caratula, 0, 0, width=letter[0], height=letter[1])
 
-        # Cargar la imagen y obtener sus dimensiones
-        caratula = ImageReader(caratula_path)
-        caratula_width, caratula_height = caratula.getSize()
-        row = []
-        # Dibujar la imagen en la página
-        pdf_canvas.drawImage(caratula_path, 0, 0, width=letter[0], height=letter[1])
-      
-        pdf_canvas.setFont("Helvetica", 8.5)
-        pdf_canvas.setFillColor(colors.black) 
+       
+        pdf_canvas.setFont("Helvetica",8.5)
+        pdf_canvas.setFillColor(colors.black)
         if i == 1:
-            
-            texto_personalizado_contrato = b1
-            pdf_canvas.drawString(537, 575, texto_personalizado_contrato)
-            texto_personalizado_nombres = b8
-            pdf_canvas.drawString(98,505, texto_personalizado_nombres)
-            texto_personalizado_apellidos = b7
-            pdf_canvas.drawString(214,505, texto_personalizado_apellidos)
-            texto_personalizado_estadocivil = b9
-            pdf_canvas.drawString(351,505,texto_personalizado_estadocivil)
-            texto_personalizado_identificacion = b11
-            pdf_canvas.drawString(454,505,texto_personalizado_identificacion) 
-            texto_personalizado_municipio = b18
-            pdf_canvas.drawString(20,466,texto_personalizado_municipio)
-            texto_personalizado_departamento = b13
-            pdf_canvas.drawString(215,465, texto_personalizado_departamento)
-            texto_personalizado_barrio = b17
-            pdf_canvas.drawString(351,465,texto_personalizado_barrio)
-            texto_personalizado_celular = b16
-            pdf_canvas.drawString(454,465,texto_personalizado_celular)
-            texto_personalizado_email = b21
-            pdf_canvas.drawString(20,422,texto_personalizado_email)
-            texto_personalizado_rh = b22
-            pdf_canvas.drawString(215,422,texto_personalizado_rh)
-            texto_personalizado_profesion = b20
-            pdf_canvas.drawString(350,422,texto_personalizado_profesion)
-            texto_personalizado_fechanaci = b12
-            pdf_canvas.drawString(456,422,texto_personalizado_fechanaci)
-            texto_personalizado_direccionresi = b14
-            pdf_canvas.drawString(20,385,texto_personalizado_direccionresi)
-            texto_personalizado_institucion = b6
-            pdf_canvas.drawString(350,385,texto_personalizado_institucion)
+            pdf_canvas.drawString(537, 575, b1)
+            pdf_canvas.drawString(98,505, b8)
+            pdf_canvas.drawString(214,505, b7)
+            pdf_canvas.drawString(351,505,b9)
+            pdf_canvas.drawString(454,505,b11) 
+            pdf_canvas.drawString(20,466,b18)
+            pdf_canvas.drawString(215,465, b13)
+            pdf_canvas.drawString(351,465,b17)
+            pdf_canvas.drawString(454,465,b16)
+            pdf_canvas.drawString(20,422,b21)
+            pdf_canvas.drawString(215,422,b22)
+            pdf_canvas.drawString(350,422,b20)
+            pdf_canvas.drawString(456,422,b12)
+            pdf_canvas.drawString(20,385,b14)
+            pdf_canvas.drawString(350,385,b6)
             texto_personalizado_valor = b3
             valor_convertido = str(b3)
             pdf_canvas.drawString(282,343,valor_convertido)
             texto_personalizado_cuotas = b5
             cuota_convertido = str(b5)
             pdf_canvas.drawString(216,343,cuota_convertido)
-            texto_personalizado_fechaafilia = b2
-            pdf_canvas.drawString(111,343,texto_personalizado_fechaafilia)
-            texto_personalizado_valorletras = b4
-            pdf_canvas.drawString(400,343, texto_personalizado_valorletras)
+            pdf_canvas.drawString(111,343,b2)
+            pdf_canvas.drawString(400,343, b4)
             beneficiarios_data = consulta_bene
             y_coordinate = 200
             for row in beneficiarios_data:
