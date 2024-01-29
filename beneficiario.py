@@ -7,7 +7,7 @@ def beneficiarios_consulta(contrato):
         with connect() as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""select Beneficiarios.NombreBeneficiario,Beneficiarios.PrimerApellido + ' ' + Beneficiarios.SegundoApellido AS Apellidos_Benefeciario,
-                                Beneficiarios.FechaNacimiento,Beneficiarios.Edad,Parentescos.Parentesco
+                                Beneficiarios.Edad,Parentescos.Parentesco
 								from Beneficiarios
 								inner join Afiliaciones ON Afiliaciones.IdAfiliacion = Beneficiarios.IdAfiliacion
                                 inner join parentescos ON Beneficiarios.IdParentesco = Parentescos.IdParentesco
