@@ -50,24 +50,35 @@
                     <th scope="col">Apellido</th>
                     <th scope="col">Documento</th>
                     <th scope="col">Contrato</th>
+                    <th scope="col">Contrato.pdf</th>
+                    <th scope="col">Clausula.pdf</th>
+                    <th scope="col">Tarjeta.pdf</th>
+                    <th scope="col">brochure.pdf</th>
                   </tr>
                 </thead>
                 <tbody>
+                  {%for i in consultaraf%}
                   <tr>
-                    <td >{{dato1}}</td>
-                    <td>{{dato2}}</td>
-                    <td>{{dato3}}</td>
-                    <td>{{dato4}}</td>
+                    <td >{{i[0]}}</td>
+                    <td>{{i[1]}}</td>
+                    <td>{{i[2]}}</td>
+                    <td>{{i[3]}}</td>
+                    <form action="/downpdf" method="post">
+                      <td><input type="checkbox" name="contratopdf"></td>
+                      <td><input type="checkbox" name="clausulapdf"></td>
+                      <td><input type="checkbox" name="tarjetapdf"></td>
+                      <td><input type="checkbox" name="brochurepdf"></td> 
+                      <td><input type="text" name="contratopordebajo"  value="{{i[3]}}" style="background-color: transparent;border: none;display: none;"></td>                
+                    
+                      <input type="hidden" name="contrato" value="{{ contrato }}">
+                      <td>{{btndown | safe}}</td>
+                    </form>
                   </tr>
+                  {% endfor %}
                   <tr>
                 </tbody>
               </table>
                 <!-- En Welcome.html -->
-
-              <form action="/downpdf" method="post">
-                <input type="hidden" name="contrato" value="{{ contrato }}">
-                {{btndown | safe}}
-              </form>
 
               
             <h1 class="txt-history">Historial de Generación</h1>

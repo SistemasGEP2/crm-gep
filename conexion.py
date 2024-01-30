@@ -176,7 +176,7 @@ def afiliacion(dato1):
         connection = pyodbc.connect(connection_string)
         cursor = connection.cursor()
 
-        cursor.execute(f"Select Clientes.PrimerNombre,Clientes.PrimerApellido,Clientes.Identificacion,Afiliaciones.Contrato  from Clientes inner join Afiliaciones On Clientes.IdCliente = Afiliaciones.IdCliente where Clientes.Identificacion ='{dato1}' or Afiliaciones.Contrato ='{dato1}' ")
+        cursor.execute(f"Select Clientes.PrimerNombre,Clientes.PrimerApellido,Clientes.Identificacion,Afiliaciones.Contrato  from Clientes inner join Afiliaciones On Clientes.IdCliente = Afiliaciones.IdCliente where Clientes.Identificacion ='{dato1}' or Afiliaciones.Contrato ='{dato1}' or Clientes.PrimerNombre like '%{dato1}%'  ")
 
         results = cursor.fetchall()
 

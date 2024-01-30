@@ -190,9 +190,9 @@ def welcomeaf():
                         # if consultarpdf3 is not None:
                 for i in consultarpdf3:
                  b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
-                 pdf_name = f"Caratula_{b1}.pdf"
+                 pdf_name = f"Contrato_{b1}.pdf"
                  pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contrato)
-                print(f'Datos: {consultaraf}{pdf}')
+                print(f'Datos: {consultaraf}')
                 btndown = '<button type="submit" class="btn btn-success donlawn">Descargar</button>'
                 
 
@@ -210,6 +210,13 @@ def welcomeaf():
 def downpdf():
     try:
         contrato = request.form.get('contrato')
+        contratopdf = request.form.get('contratopdf') # on and None
+        clausulapdf = request.form.get('clausulapdf')
+        tarjetapdf = request.form.get('tarjetapdf')
+        brochurepdf = request.form.get('brochurepdf')
+        contratopordebajo = request.form.get('contratopordebajo')
+        print(f"::::::::Contrato_{contratopordebajo}.pdf")
+        
 
 
         pdfs = []
@@ -218,15 +225,23 @@ def downpdf():
         consultarpdf2 = afiliacion_bienvenida(contrato)
         if consultarpdf2 is not None:
             for i in consultarpdf2:
-                a1, a2, a3, a4 = i
-                pdf_name = f"Carta Bienvenida_{a2}.pdf"
+                a1, a2, a3, a4 = i 
+                print(i)               
+                pdf_name = f"Contrato_{contratopordebajo}.pdf"
+                #pdf = contrat(pdf_name, a2, a1, a3, a4)
+                #pdfs.append(pdf_name) esta es la carta de bienvenida por si la piden luego
+        if contratopdf == 'on':
+            pdfs.append(f"Contrato_{contratopordebajo}.pdf")
+        if clausulapdf == 'on':
+            pdfs.append("static\\pdf\\Clausulas.pdf")
+        if tarjetapdf == 'on':
+            pdfs.append("static\\pdf\\Tarjeta_Titular.pdf")
+        if brochurepdf == 'on':
+            pdfs.append("static\\pdf\\BrochureGEP.pdf")
 
-                pdf_name = f"Contrato_{contrato}.pdf"
-                pdf = contrat(pdf_name, a2, a1, a3, a4)
-                pdfs.append(pdf_name)
-                pdfs.append("static\\pdf\\Tarjeta_Titular.pdf")
-                pdfs.append("static\\pdf\\BrochureGEP.pdf")
-                pdfs.append(f"Caratula_{contrato}.pdf")
+        else:
+            print('listo :D')
+                
                 
           
         if not pdfs:

@@ -14,8 +14,8 @@ def afiliacion_bienvenida(contrato):
                                 INNER JOIN 
                                     Municipios ON Clientes.IdMunicipio = Municipios.IdMunicipio
                                 WHERE 
-                                    Afiliaciones.Contrato = ?;
-                                """,contrato)
+                                    Afiliaciones.Contrato = ? or Clientes.Identificacion = ? or Clientes.PrimerNombre like ?;
+                                """,contrato,contrato,contrato)
                 results = cursor.fetchall()
 
                 # Imprimir los resultados en la consola
@@ -42,8 +42,8 @@ def consulta_caratula(contrato):
                                 inner join Departamentos ON Clientes.IdDepartamentoNac = Departamentos.IdDepartamento
                                 inner join Municipios ON Clientes.IdMunicipio = Municipios.IdMunicipio
                                 inner join Agentes ON Afiliaciones.IdAgente = Agentes.IdAgente
-                                where Afiliaciones.Contrato = ?
-                                """,contrato)
+                                where Afiliaciones.Contrato = ? or Clientes.Identificacion = ? or Clientes.PrimerNombre like ?
+                                """,contrato,contrato,contrato)
                 results = cursor.fetchall()
 
           
