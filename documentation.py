@@ -10,10 +10,9 @@ from reportlab.lib import colors
 from afiliado import afiliacion_bienvenida, consulta_caratula
 from io import BytesIO
 from beneficiario import beneficiarios_consulta
+from reportlab.pdfbase.pdfdoc import PDFString
 
 def contrat(nombre_documento, nombre_afiliado, numero_contrato, departamento, ciudad):
- 
-
     locale.setlocale(locale.LC_TIME, 'es_ES.utf8')
     current_date_and_time = datetime.datetime.now()
     date = current_date_and_time.strftime('%d de %B de %Y')
@@ -74,44 +73,45 @@ def caratula_afiliado(pdf_file, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b1
     consulta_bene = beneficiarios_consulta(contrato)  
     img = ImageReader('static/img/Caratula_1.jpg')
     pdf_canvas.drawImage(img, 0, 0, width=letter[0], height=letter[1])
-    pdf_canvas.setFont("Helvetica-Bold",12)
+    pdf_canvas.setFont("Helvetica-Bold",10.5)
     pdf_canvas.setFillColor(colors.black)
-    pdf_canvas.drawString(512,569, b1)
-    pdf_canvas.setFont("Helvetica-Bold",8)
-    pdf_canvas.drawString(99,503, b8)
-    pdf_canvas.drawString(215,503, b7)
-    pdf_canvas.drawString(458,503,b9)
-    pdf_canvas.drawString(354,503,b11) 
-    pdf_canvas.drawString(22,468,b18)
-    pdf_canvas.drawString(215,468, b13)
-    pdf_canvas.drawString(354,468,b17)
-    pdf_canvas.drawString(457,468,b16)
-    pdf_canvas.drawString(22,432,b21.upper())
-    pdf_canvas.drawString(355,432,b22.upper())
-    pdf_canvas.drawString(215,432,b20)
-    pdf_canvas.drawString(456,432,b12)
-    pdf_canvas.drawString(22,395,b14)
-    pdf_canvas.drawString(353,395,b6.upper())
+    pdf_canvas.drawString(543.5,576, b1)
+    pdf_canvas.setFont("Helvetica-Bold",7.5)
+    pdf_canvas.drawString(97,525, b8)
+    pdf_canvas.drawString(214,525, b7)
+    pdf_canvas.drawString(458,525,b9)
+    pdf_canvas.drawString(354,525,b11) 
+    pdf_canvas.drawString(20,496,b18)
+    pdf_canvas.drawString(213,496, b13)
+    pdf_canvas.drawString(354,496,b17)
+    pdf_canvas.drawString(458,496,b16)
+    pdf_canvas.drawString(20,466,b21)
+    pdf_canvas.drawString(355,466,b22.upper())
+    pdf_canvas.drawString(215,466,b20)
+    pdf_canvas.drawString(456,466,b12)
+    pdf_canvas.drawString(20,436,b14)
+    pdf_canvas.drawString(353,436,b6.upper())
     texto_personalizado_valor = b3
     valor_convertido = str(b3)
-    pdf_canvas.drawString(262,342.5,valor_convertido)
+    pdf_canvas.drawString(262,382,valor_convertido)
     cuota_convertido = str(b5)
-    pdf_canvas.drawString(362,342.5,cuota_convertido)
-    pdf_canvas.drawString(175,342.5,b2)
-    pdf_canvas.drawString(450,342.5,b4)
+    pdf_canvas.drawString(362,382,cuota_convertido)
+    pdf_canvas.drawString(175,382,b2)
+    pdf_canvas.drawString(440,382,b4)
     beneficiarios_data = consulta_bene
-    y_coordinate_datos = 211.5
-    y_coordinate = 221.9
-
+    y_coordinate_datos = 231
+    y_coordinate = 243  
+    url_boton = "https://www.grupoempresarialproteccion.com"
+    pdf_canvas.linkURL(url_boton,(576,355,535,372), thickness = 1,  borderColor=colors.blue, textColor=colors.black)
     for row in beneficiarios_data:
         # Convertir el código hexadecimal a RGB
-        rgb_color = hex_to_rgb("F28A31")
+        rgb_color = hex_to_rgb("F39200")
         pdf_canvas.setFont("Helvetica-Bold",7)
         # Dibujar línea vertical con color RGB
         pdf_canvas.setStrokeColorRGB(*[x/255.0 for x in rgb_color])  # Convertir a rango de 0 a 1
         pdf_canvas.setLineWidth(0.5)
-        pdf_canvas.line(16, y_coordinate - 17, 596, y_coordinate - 17)  # Línea horizontal superior
-        pdf_canvas.line(16, y_coordinate, 16, y_coordinate - 17)         # Línea vertical izquierda
+        pdf_canvas.line(16.5, y_coordinate - 17, 596, y_coordinate - 17)  # Línea horizontal superior
+        pdf_canvas.line(16.5, y_coordinate, 16.5, y_coordinate - 17)         # Línea vertical izquierda
         pdf_canvas.line(596, y_coordinate, 596, y_coordinate - 17)     # Línea vertical derecha
 
         pdf_canvas.drawString(52, y_coordinate_datos, row[0]) 
@@ -120,7 +120,6 @@ def caratula_afiliado(pdf_file, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b1
         pdf_canvas.drawString(523, y_coordinate_datos, str(row[3]))
         y_coordinate_datos -= 17
         y_coordinate -= 17 
-     
     # Guardar el PDF con todas las páginas
     pdf_canvas.save()
     pdf_buffer.seek(0)
