@@ -179,21 +179,25 @@ def welcomeaf():
         if request.method == 'POST':
             contrato = request.form.get('contrato')
             fechacont = request.form.get('fechacont')
-
-            if contrato is None or not contrato.strip():
+            print(f"ESTA ES LA FECHA QUE SE ESTA ESCRIBIENDO:: {fechacont}")
+            
+            
+            if contrato is None or not contrato :
                 contrato = 0
+                consultaraf = afiliacion(contrato,fechacont)
+                for row in consultaraf:
+                    dato1, dato2, dato3, dato4 = row
 
-            if contrato != 0:
-                consultaraf = afiliacion(contrato, fechacont)
-                if consultaraf:
-                    for row in consultaraf:
-                        dato1, dato2, dato3, dato4 = row
-                    btndown = '<button type="submit" class="btn btn-success donlawn">Descargar</button>'
-                else:
-                    print('No se encontraron resultados.')
+                btndown = '<button type="submit" class="btn btn-success donlawn">Descargar</button>'
+            elif contrato:
+                consultaraf = afiliacion(contrato,fechacont)
+                for row in consultaraf:
+                    dato1, dato2, dato3, dato4 = row
+
+                btndown = '<button type="submit" class="btn btn-success donlawn">Descargar</button>'
+
             else:
                 print('Error: Vuelva y verifique los datos que está escribiendo')
-
 
             
 
