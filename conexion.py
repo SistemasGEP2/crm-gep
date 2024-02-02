@@ -161,7 +161,7 @@ def ldapConnect(username, password):
     except Exception as e:
         return f'Error en la conexión Active Directory: {str(e)}'
     
-def afiliacion(dato1):
+def afiliacion(dato1,fechacont):
     try:
         # Especificaciones del servidor al que me voy a conectar
         server = '192.168.1.175'
@@ -175,8 +175,12 @@ def afiliacion(dato1):
         # Establecer la conexión
         connection = pyodbc.connect(connection_string)
         cursor = connection.cursor()
-
-        cursor.execute(f"Select Clientes.PrimerNombre,Clientes.PrimerApellido,Clientes.Identificacion,Afiliaciones.Contrato  from Clientes inner join Afiliaciones On Clientes.IdCliente = Afiliaciones.IdCliente where Clientes.Identificacion ='{dato1}' or Afiliaciones.Contrato ='{dato1}' or Clientes.PrimerNombre like '%{dato1}%'  ")
+        
+        if fechacont == None or not fechacont:
+            complemento = ""
+        else:
+            complemento = f"or Afiliaciones.FechaAfiliacion = '{fechacont}'"
+        cursor.execute(f"Select Clientes.PrimerNombre,Clientes.PrimerApellido,Clientes.Identificacion,Afiliaciones.Contrato  from Clientes inner join Afiliaciones On Clientes.IdCliente = Afiliaciones.IdCliente where Clientes.Identificacion ='{dato1}' or Afiliaciones.Contrato ='{dato1}' or Clientes.PrimerNombre like '%{dato1}%'  or Clientes.PrimerApellido = '{dato1}' {complemento}  ")
 
         results = cursor.fetchall()
 

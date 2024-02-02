@@ -171,33 +171,31 @@ def logout():
 def welcomeaf():
     try:
         contrato = None
-        consultaraf = None
+        consultaraf = ''
         dato1, dato2, dato3, dato4 = None, None, None, None
-        consultarpdf3 = None
+
         btndown = ''
 
         if request.method == 'POST':
             contrato = request.form.get('contrato')
-            if contrato is None or not contrato:
-                print('Error: Vuelva y verifique los datos que está escribiendo')
+            fechacont = request.form.get('fechacont')
+
+            if contrato is None or not contrato.strip():
+                contrato = 0
+
+            if contrato != 0:
+                consultaraf = afiliacion(contrato, fechacont)
+                if consultaraf:
+                    for row in consultaraf:
+                        dato1, dato2, dato3, dato4 = row
+                    btndown = '<button type="submit" class="btn btn-success donlawn">Descargar</button>'
+                else:
+                    print('No se encontraron resultados.')
             else:
-
-                consultaraf = afiliacion(contrato)
-                consultarpdf3 = consulta_caratula(contrato)
-                
-                for row in consultaraf:
-                    dato1, dato2, dato3, dato4 = row
-                        # if consultarpdf3 is not None:
-                for i in consultarpdf3:
-                 b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
-                 pdf_name = f"Contrato_{b1}.pdf"
-                 pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contrato)
-                print(f'Datos: {consultaraf}')
-                btndown = '<button type="submit" class="btn btn-success donlawn">Descargar</button>'
-                
+                print('Error: Vuelva y verifique los datos que está escribiendo')
 
 
-            print(f'Este es el número: {contrato}')
+            
 
         return render_template('Welcome/Welcome.html',btndown= btndown,contrato=contrato, consultaraf=consultaraf, dato1=dato1, dato2=dato2, dato3=dato3, dato4=dato4)
     except Exception as e:
@@ -209,21 +207,29 @@ def welcomeaf():
 @app.route("/downpdf", methods=['POST', 'GET'])
 def downpdf():
     try:
-        contrato = request.form.get('contrato')
+
         contratopdf = request.form.get('contratopdf') # on and None
         clausulapdf = request.form.get('clausulapdf')
         tarjetapdf = request.form.get('tarjetapdf')
         brochurepdf = request.form.get('brochurepdf')
+        
         contratopordebajo = request.form.get('contratopordebajo')
-        print(f"::::::::Contrato_{contratopordebajo}.pdf")
+
+
         
 
 
         pdfs = []
  
 
-        consultarpdf2 = afiliacion_bienvenida(contrato)
+        consultarpdf2 = afiliacion_bienvenida(contratopordebajo)
+        consultarpdf3 = consulta_caratula(contratopordebajo)
+
         if consultarpdf2 is not None:
+            for i in consultarpdf3:
+                b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
+                pdf_name = f"Contrato_{b1}.pdf"
+                pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
             for i in consultarpdf2:
                 a1, a2, a3, a4 = i 
                 print(i)               
@@ -258,7 +264,7 @@ def downpdf():
         return Response(
             zip_buffer,
             mimetype='application/zip',
-            headers={'Content-Disposition': f'attachment;filename={contrato}.zip'}
+            headers={'Content-Disposition': f'attachment;filename={contratopordebajo}.zip'}
         )
 
     except Exception as e:

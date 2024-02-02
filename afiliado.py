@@ -27,7 +27,7 @@ def afiliacion_bienvenida(contrato):
     
 def consulta_caratula(contrato):
     try:
-
+        
         with connect() as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""SELECT Afiliaciones.Contrato,Afiliaciones.FechaAfiliacion,Afiliaciones.ValorAfiliacion,Afiliaciones.ValorLetras,Afiliaciones.Cuotas, Instituciones.NombreInstitucion,
@@ -42,11 +42,11 @@ def consulta_caratula(contrato):
                                 inner join Departamentos ON Clientes.IdDepartamentoNac = Departamentos.IdDepartamento
                                 inner join Municipios ON Clientes.IdMunicipio = Municipios.IdMunicipio
                                 inner join Agentes ON Afiliaciones.IdAgente = Agentes.IdAgente
-                                where Afiliaciones.Contrato = ? or Clientes.Identificacion = ? or Clientes.PrimerNombre like ?
-                                """,contrato,contrato,contrato)
-                results = cursor.fetchall()
+                                where Afiliaciones.Contrato = ? 
+                                """,contrato)
+                results = cursor.fetchall()  
 
-          
+
                          
 
                      
@@ -55,5 +55,6 @@ def consulta_caratula(contrato):
     except pyodbc.Error as e:
         print(f'Error en la consulta a la base de datos: {str(e)}')
         return None
+
 
     

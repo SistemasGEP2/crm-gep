@@ -12,7 +12,7 @@ def beneficiarios_consulta(contrato):
 								inner join Afiliaciones ON Afiliaciones.IdAfiliacion = Beneficiarios.IdAfiliacion
                                 inner join parentescos ON Beneficiarios.IdParentesco = Parentescos.IdParentesco
                                 inner join Clientes ON Clientes.IdCliente = Beneficiarios.IdCliente
-								where Afiliaciones.Contrato = ? or Clientes.Identificacion = ? or Clientes.PrimerNombre like ?;
+								where Afiliaciones.Contrato = ? or Clientes.Identificacion = ? or Clientes.PrimerNombre like '%' + ? + '%';
                                 """,contrato,contrato,contrato)
                 results = cursor.fetchall()
                 return results
