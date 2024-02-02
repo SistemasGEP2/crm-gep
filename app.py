@@ -212,6 +212,7 @@ def welcomeaf():
 def downpdf():
     try:
 
+
         contratopdf = request.form.get('contratopdf') # on and None
         clausulapdf = request.form.get('clausulapdf')
         tarjetapdf = request.form.get('tarjetapdf')
@@ -251,7 +252,20 @@ def downpdf():
 
         else:
             print('listo :D')
-                
+
+        contrato = request.form.get('contrato')
+        pdfs = [] 
+        consultarpdf2 = afiliacion_bienvenida(contrato)
+        if consultarpdf2 is not None:
+            for i in consultarpdf2:
+                a1, a2, a3, a4 = i
+                pdf_name = f"Carta Bienvenida_{a2}.pdf"
+                pdf = contrat(pdf_name, a2, a1, a3, a4)
+                pdfs.append(pdf_name)
+                pdfs.append("static\\pdf\\Tarjeta_Titular.pdf")
+                pdfs.append("static\\pdf\\BrochureGEP.pdf")
+                pdfs.append(f"Caratula_{contrato}.pdf")
+
                 
           
         if not pdfs:
@@ -278,7 +292,7 @@ def downpdf():
 def delete_pdf():
     try:
         # Especifica las horas permitidas para la eliminación (12:01 AM y 12:01 PM)
-        allowed_hours = [time(7, 26), time(14,50),time(17,12)]
+        allowed_hours = [time(11, 10), time(14,50),time(17,12)]
 
         # Obtén la hora actual
         current_time = datetime.now().time()
@@ -303,7 +317,7 @@ def delete_pdf():
 
 # Configurar un planificador para ejecutar la función cada día a las 12:01 AM y 12:01 PM
 scheduler = BackgroundScheduler()
-scheduler.add_job(delete_pdf, 'cron', hour='7,14,17', minute=26)
+scheduler.add_job(delete_pdf, 'cron', hour='11,14,17', minute=12)
 scheduler.start()
 
 # Detener el planificador al cerrar la aplicación Flask
