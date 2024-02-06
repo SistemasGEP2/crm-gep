@@ -6,13 +6,6 @@ from afiliado import consulta_caratula, afiliacion_bienvenida
 import os
 from io import BytesIO
 from zipfile import ZipFile
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
-from email.mime.text import MIMEText
-from email import encoders
-import smtplib
-import email.mime.base
-
 
 
 
@@ -274,7 +267,7 @@ def downpdf():
         return Response(
             zip_buffer,
             mimetype='application/zip',
-            headers={'Content-Disposition': f'attachment;filename={contratopordebajo}.zip'}  
+            headers={'Content-Disposition': f'attachment;filename={contratopordebajo}.zip'}
         )
 
     except Exception as e:
