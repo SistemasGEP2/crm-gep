@@ -123,3 +123,32 @@ body{
     font-weight: 600;
     margin-left: 10% ;
   }
+  .fecha-input{
+
+    visibility: hidden;
+  
+  }
+
+  .fecha-input-hidden{
+    display: none;
+    border-top: #ffb4b4;
+    border-left: none;
+    border-right: none;
+    border-color: rgb(255, 136, 0) ;
+    outline: none;
+  }
+
+
+  .btn-fecha{
+    position: relative;
+    font-weight: 700;
+    cursor: pointer;
+    top: 4.5vh;
+    left: 100%;
+    z-index: 1;
+  }
+
+  .btn-fecha:hover{
+    text-decoration: underline;
+    color: rgb(67, 127, 255);
+  }

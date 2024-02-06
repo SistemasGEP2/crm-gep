@@ -13,7 +13,12 @@ from datetime import datetime, time
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 import glob
+
+import zipfile
+
+
 from beneficiario import beneficiarios_consulta
+
 app = Flask(__name__)
 app.secret_key = 'supersecretkey_322015#$!asdjfl322015'
 @app.route('/login', methods=['GET','POST'])
@@ -166,33 +171,35 @@ def logout():
 def welcomeaf():
     try:
         contrato = None
-        consultaraf = None
+        consultaraf = ''
         dato1, dato2, dato3, dato4 = None, None, None, None
-        consultarpdf3 = None
+
         btndown = ''
 
         if request.method == 'POST':
             contrato = request.form.get('contrato')
-            if contrato is None or not contrato:
-                print('Error: Vuelva y verifique los datos que está escribiendo')
-            else:
-
-                consultaraf = afiliacion(contrato)
-                consultarpdf3 = consulta_caratula(contrato)
-                
+            fechacont = request.form.get('fechacont')
+            print(f"ESTA ES LA FECHA QUE SE ESTA ESCRIBIENDO:: {fechacont}")
+            
+            
+            if contrato is None or not contrato :
+                contrato = 0
+                consultaraf = afiliacion(contrato,fechacont)
                 for row in consultaraf:
                     dato1, dato2, dato3, dato4 = row
-                        # if consultarpdf3 is not None:
-                for i in consultarpdf3:
-                 b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
-                 pdf_name = f"Caratula_{b1}.pdf"
-                 pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contrato)
-                print(f'Datos: {consultaraf}{pdf}')
+
                 btndown = '<button type="submit" class="btn btn-success donlawn">Descargar</button>'
-                
+            elif contrato:
+                consultaraf = afiliacion(contrato,fechacont)
+                for row in consultaraf:
+                    dato1, dato2, dato3, dato4 = row
 
+                btndown = '<button type="submit" class="btn btn-success donlawn">Descargar</button>'
 
-            print(f'Este es el número: {contrato}')
+            else:
+                print('Error: Vuelva y verifique los datos que está escribiendo')
+
+            
 
         return render_template('Welcome/Welcome.html',btndown= btndown,contrato=contrato, consultaraf=consultaraf, dato1=dato1, dato2=dato2, dato3=dato3, dato4=dato4)
     except Exception as e:
@@ -204,22 +211,51 @@ def welcomeaf():
 @app.route("/downpdf", methods=['POST', 'GET'])
 def downpdf():
     try:
-        contrato = request.form.get('contrato')
-        pdfs = [] 
-        consultarpdf2 = afiliacion_bienvenida(contrato)
+
+
+        contratopdf = request.form.get('contratopdf') # on and None
+        clausulapdf = request.form.get('clausulapdf')
+        tarjetapdf = request.form.get('tarjetapdf')
+        brochurepdf = request.form.get('brochurepdf')
+        
+        contratopordebajo = request.form.get('contratopordebajo')
+
+
+        
+
+
+        pdfs = []
+ 
+
+        consultarpdf2 = afiliacion_bienvenida(contratopordebajo)
+        consultarpdf3 = consulta_caratula(contratopordebajo)
+
         if consultarpdf2 is not None:
+            for i in consultarpdf3:
+                b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
+                pdf_name = f"Contrato_{b1}.pdf"
+                pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
             for i in consultarpdf2:
-                a1, a2, a3, a4 = i
-                pdf_name = f"Carta Bienvenida_{a2}.pdf"
-                pdf = contrat(pdf_name, a2, a1, a3, a4)
-                pdfs.append(pdf_name)
-                pdfs.append("static\\pdf\\Tarjeta_Titular.pdf")
-                pdfs.append("static\\pdf\\BrochureGEP.pdf")
-                pdfs.append(f"Caratula_{contrato}.pdf")
-                
+                a1, a2, a3, a4 = i 
+                print(i)               
+                pdf_name = f"Contrato_{contratopordebajo}.pdf"
+                #pdf = contrat(pdf_name, a2, a1, a3, a4)
+                #pdfs.append(pdf_name) esta es la carta de bienvenida por si la piden luego
+        if contratopdf == 'on':
+            pdfs.append(f"Contrato_{contratopordebajo}.pdf")
+        if clausulapdf == 'on':
+            pdfs.append("static\\pdf\\Clausulas.pdf")
+        if tarjetapdf == 'on':
+            pdfs.append("static\\pdf\\Tarjeta_Titular.pdf")
+        if brochurepdf == 'on':
+            pdfs.append("static\\pdf\\BrochureGEP.pdf")
+
+        else:
+            print('listo :D')
           
         if not pdfs:
             return "Error: No se generaron archivos PDF."
+
 
         zip_buffer = BytesIO()
         with ZipFile(zip_buffer, 'a') as zip_file:
@@ -231,7 +267,7 @@ def downpdf():
         return Response(
             zip_buffer,
             mimetype='application/zip',
-            headers={'Content-Disposition': f'attachment;filename={contrato}.zip'}
+            headers={'Content-Disposition': f'attachment;filename={contratopordebajo}.zip'}
         )
 
     except Exception as e:
