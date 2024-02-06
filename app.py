@@ -6,6 +6,13 @@ from afiliado import consulta_caratula, afiliacion_bienvenida
 import os
 from io import BytesIO
 from zipfile import ZipFile
+from email.mime.multipart import MIMEMultipart
+from email.mime.base import MIMEBase
+from email.mime.text import MIMEText
+from email import encoders
+import smtplib
+import email.mime.base
+
 
 
 
@@ -252,21 +259,6 @@ def downpdf():
 
         else:
             print('listo :D')
-
-        contrato = request.form.get('contrato')
-        pdfs = [] 
-        consultarpdf2 = afiliacion_bienvenida(contrato)
-        if consultarpdf2 is not None:
-            for i in consultarpdf2:
-                a1, a2, a3, a4 = i
-                pdf_name = f"Carta Bienvenida_{a2}.pdf"
-                pdf = contrat(pdf_name, a2, a1, a3, a4)
-                pdfs.append(pdf_name)
-                pdfs.append("static\\pdf\\Tarjeta_Titular.pdf")
-                pdfs.append("static\\pdf\\BrochureGEP.pdf")
-                pdfs.append(f"Caratula_{contrato}.pdf")
-
-                
           
         if not pdfs:
             return "Error: No se generaron archivos PDF."
@@ -282,7 +274,7 @@ def downpdf():
         return Response(
             zip_buffer,
             mimetype='application/zip',
-            headers={'Content-Disposition': f'attachment;filename={contratopordebajo}.zip'}
+            headers={'Content-Disposition': f'attachment;filename={contratopordebajo}.zip'}  
         )
 
     except Exception as e:
