@@ -3,23 +3,20 @@ from flask import Flask, render_template, request, redirect, url_for, session, s
 from conexion import servicios,queryHistorico,estadosJuridico,nombreProfesional,actualizacionreasignacion,ldapConnect,afiliacion
 from  documentation import contrat, caratula_afiliado
 from afiliado import consulta_caratula, afiliacion_bienvenida
+from beneficiario import beneficiarios_consulta
 import os
 from io import BytesIO
 from zipfile import ZipFile
-
-
-
+from flask import Flask, request, Response
 from datetime import datetime, time
 from apscheduler.schedulers.background import BackgroundScheduler
 import atexit
 import glob
-
-import zipfile
-
-
-from beneficiario import beneficiarios_consulta
-
+import smtplib
+import ssl
+from email.message import EmailMessage
 app = Flask(__name__)
+
 app.secret_key = 'supersecretkey_322015#$!asdjfl322015'
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -173,7 +170,7 @@ def welcomeaf():
         contrato = None
         consultaraf = ''
         dato1, dato2, dato3, dato4 = None, None, None, None
-
+        btnsend = None
         btndown = ''
 
         if request.method == 'POST':
@@ -188,91 +185,112 @@ def welcomeaf():
                 for row in consultaraf:
                     dato1, dato2, dato3, dato4 = row
 
-                btndown = '<button type="submit" class="btn btn-success donlawn">Descargar</button>'
+                btndown = '<button type="submit" class="btn btn-success donlawn" value="descargar" name ="action">Descargar</button>'
+                btnsend = '<button type="submit" class="btn-sendmail" value="sendmail" name ="action">Enviar Correo</button>'
             elif contrato:
                 consultaraf = afiliacion(contrato,fechacont)
                 for row in consultaraf:
                     dato1, dato2, dato3, dato4 = row
 
-                btndown = '<button type="submit" class="btn btn-success donlawn">Descargar</button>'
+                btndown = '<button type="submit" class="btn btn-success donlawn" value="descargar" name ="action">Descargar</button>'
+                btnsend = '<button type="submit" class="btn-sendmail" value="sendmail" name ="action">Enviar Correo</button>'
 
             else:
                 print('Error: Vuelva y verifique los datos que está escribiendo')
 
             
 
-        return render_template('Welcome/Welcome.html',btndown= btndown,contrato=contrato, consultaraf=consultaraf, dato1=dato1, dato2=dato2, dato3=dato3, dato4=dato4)
+        return render_template('Welcome/Welcome.html',btndown= btndown,btnsend = btnsend, contrato=contrato, consultaraf=consultaraf, dato1=dato1, dato2=dato2, dato3=dato3, dato4=dato4)
     except Exception as e:
         return "<p style='color:red;font-size:35px;font-weight: 600; font-family:arial;'> Error: Vuelva y verifique la información. Si el error persiste, contacte con un desarrollador D:</p>" + str(e)
-
-
 
 
 @app.route("/downpdf", methods=['POST', 'GET'])
 def downpdf():
     try:
-
-
-        contratopdf = request.form.get('contratopdf') # on and None
+        accion = request.form.get('action')
+        contratopdf = request.form.get('contratopdf')
         clausulapdf = request.form.get('clausulapdf')
         tarjetapdf = request.form.get('tarjetapdf')
         brochurepdf = request.form.get('brochurepdf')
-        
         contratopordebajo = request.form.get('contratopordebajo')
+        if accion == 'sendmail':
+            pdfs = []
+            email_sender = "juan.cortes@gep.com.co"
+            password = 'wwkk gfvd eysm lwfg'
+            email_reciver = "junafelipecortes0@gmail.com"
+            subject = "Pruebaaaa"
+            body = "Holaaaaa"
+            em = EmailMessage()
+            em["From"] = email_sender
+            em["To"] = email_reciver
+            em["Subject"] = subject
+            em.set_content(body)
+            consultarpdf2 = afiliacion_bienvenida(contratopordebajo)
+            consultarpdf3 = consulta_caratula(contratopordebajo)
+            if consultarpdf2 is None:
+                for i in consultarpdf3:
+                    if i is not None:
+                        b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
+                        pdf_name = f"Contrato_{b1}.pdf"
+                        # Generar contrato utilizando la función caratula_afiliado() y agregarlo a la lista de pdfs
+                        contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
+                        pdfs.append(contrato_pdf)
+            # Agregar el contrato generado a los archivos adjuntos del correo electrónico
+            for pdf in pdfs:
+                em.add_attachment(pdf, maintype='application', subtype='octet-stream', filename=f"{contratopordebajo}.pdf")
+            # Genera y adjunta los archivos PDF necesarios
+            for pdf_checkbox, pdf_path in [
+                (contratopdf, f"Contrato_{contratopordebajo}.pdf"),
+                (clausulapdf, "static/pdf/Clausulas.pdf"),
+                (tarjetapdf, "static/pdf/Tarjeta_Titular.pdf"),
+                (brochurepdf, "static/pdf/BrochureGEP.pdf")
+            ]:
+                if pdf_checkbox == 'on' and os.path.exists(pdf_path):
+                    with open(pdf_path, 'rb') as file:
+                        em.add_attachment(file.read(), maintype='application', subtype='octet-stream', filename=os.path.basename(pdf_path))
+            
+            # Envia el correo electrónico
+            context = ssl.create_default_context()
+            with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as smtp:
+                smtp.login(email_sender, password)
+                smtp.sendmail(email_sender, email_reciver, em.as_bytes())
+            return "Correo Enviado"
 
-
-        
-
-
-        pdfs = []
- 
-
-        consultarpdf2 = afiliacion_bienvenida(contratopordebajo)
-        consultarpdf3 = consulta_caratula(contratopordebajo)
-
-        if consultarpdf2 is not None:
-            for i in consultarpdf3:
-                b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
-                pdf_name = f"Contrato_{b1}.pdf"
-                pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
-            for i in consultarpdf2:
-                a1, a2, a3, a4 = i 
-                print(i)               
-                pdf_name = f"Contrato_{contratopordebajo}.pdf"
-                #pdf = contrat(pdf_name, a2, a1, a3, a4)
-                #pdfs.append(pdf_name) esta es la carta de bienvenida por si la piden luego
-        if contratopdf == 'on':
-            pdfs.append(f"Contrato_{contratopordebajo}.pdf")
-        if clausulapdf == 'on':
-            pdfs.append("static\\pdf\\Clausulas.pdf")
-        if tarjetapdf == 'on':
-            pdfs.append("static\\pdf\\Tarjeta_Titular.pdf")
-        if brochurepdf == 'on':
-            pdfs.append("static\\pdf\\BrochureGEP.pdf")
+        elif accion == 'descargar':
+            pdfs = []
+            zip_buffer = BytesIO()
+            consultarpdf2 = afiliacion_bienvenida(contratopordebajo)
+            consultarpdf3 = consulta_caratula(contratopordebajo)
+            if consultarpdf2 is not None:
+                for i in consultarpdf3:
+                     b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
+                     pdf_name = f"Contrato_{b1}.pdf"
+                     # Generar contrato utilizando la función caratula_afiliado() y agregarlo a la lista de pdfs
+                     contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
+                     pdfs.append(contrato_pdf)
+            with ZipFile(zip_buffer, 'a') as zip_file:
+                for pdf_checkbox, pdf_path in [
+                    (contratopdf, f"Contrato_{contratopordebajo}.pdf"),
+                    (clausulapdf, "static/pdf/Clausulas.pdf"),
+                    (tarjetapdf, "static/pdf/Tarjeta_Titular.pdf"),
+                    (brochurepdf, "static/pdf/BrochureGEP.pdf")
+                ]:
+                    if pdf_checkbox == 'on' and os.path.exists(pdf_path):
+                        zip_file.write(pdf_path, os.path.basename(pdf_path))
+            
+            zip_buffer.seek(0)
+            return Response(
+                zip_buffer,
+                mimetype='application/zip',
+                headers={'Content-Disposition': f'attachment;filename={contratopordebajo}.zip'}
+            )
 
         else:
-            print('listo :D')
-          
-        if not pdfs:
-            return "Error: No se generaron archivos PDF."
-
-
-        zip_buffer = BytesIO()
-        with ZipFile(zip_buffer, 'a') as zip_file:
-            for pdf in pdfs:
-                # Agrega solo el nombre del archivo al archivo zip
-                zip_file.write(pdf, os.path.basename(pdf))
-
-        zip_buffer.seek(0)
-        return Response(
-            zip_buffer,
-            mimetype='application/zip',
-            headers={'Content-Disposition': f'attachment;filename={contratopordebajo}.zip'}
-        )
+            return "Acción no válida."
 
     except Exception as e:
         return str(e)
-
 
 def delete_pdf():
     try:
