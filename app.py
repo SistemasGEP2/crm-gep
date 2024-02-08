@@ -7,16 +7,17 @@ from beneficiario import beneficiarios_consulta
 import os
 from io import BytesIO
 from zipfile import ZipFile
-from flask import Flask, request, Response
 from datetime import datetime, time
 from apscheduler.schedulers.background import BackgroundScheduler
+from flask import jsonify
+import threading
 import atexit
 import glob
 import smtplib
 import ssl
 from email.message import EmailMessage
+import concurrent.futures
 app = Flask(__name__)
-
 app.secret_key = 'supersecretkey_322015#$!asdjfl322015'
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -204,6 +205,11 @@ def welcomeaf():
     except Exception as e:
         return "<p style='color:red;font-size:35px;font-weight: 600; font-family:arial;'> Error: Vuelva y verifique la información. Si el error persiste, contacte con un desarrollador D:</p>" + str(e)
 
+def enviar_correo(email_sender, password, email_reciver, em):
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as smtp:
+        smtp.login(email_sender, password)
+        smtp.sendmail(email_sender, email_reciver, em.as_bytes())
 
 @app.route("/downpdf", methods=['POST', 'GET'])
 def downpdf():
@@ -216,46 +222,42 @@ def downpdf():
         contratopordebajo = request.form.get('contratopordebajo')
         if accion == 'sendmail':
             pdfs = []
-            email_sender = "juan.cortes@gep.com.co"
-            password = 'wwkk gfvd eysm lwfg'
-            email_reciver = "junafelipecortes0@gmail.com"
-            subject = "Pruebaaaa"
-            body = "Holaaaaa"
-            em = EmailMessage()
-            em["From"] = email_sender
-            em["To"] = email_reciver
-            em["Subject"] = subject
-            em.set_content(body)
+            zip_buffer = BytesIO()
+            email_sender = "juan.cortes@gep.com.co" #Correo desde donde envia
+            password = 'wwkk gfvd eysm lwfg' #Contraseña de aplicacion del correo
+            email_reciver = "junafelipecortes0@gmail.com" #Correo destinatario
+            subject = "Pruebaaaa" #Asunto del correo
+            body = "Holaaaaa" #Cuerpo del correo
+            em = EmailMessage() #Funcion de envio de correo 
+            em["From"] = email_sender  #Se define desde que correo
+            em["To"] = email_reciver #Se define a que correo se envia
+            em["Subject"] = subject #Se define el asunto
+            em.set_content(body) #Se define el cuerpo del correo
             consultarpdf2 = afiliacion_bienvenida(contratopordebajo)
             consultarpdf3 = consulta_caratula(contratopordebajo)
-            if consultarpdf2 is None:
+            if consultarpdf2 is not None:
                 for i in consultarpdf3:
-                    if i is not None:
-                        b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
-                        pdf_name = f"Contrato_{b1}.pdf"
-                        # Generar contrato utilizando la función caratula_afiliado() y agregarlo a la lista de pdfs
-                        contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
-                        pdfs.append(contrato_pdf)
-            # Agregar el contrato generado a los archivos adjuntos del correo electrónico
-            for pdf in pdfs:
-                em.add_attachment(pdf, maintype='application', subtype='octet-stream', filename=f"{contratopordebajo}.pdf")
-            # Genera y adjunta los archivos PDF necesarios
-            for pdf_checkbox, pdf_path in [
-                (contratopdf, f"Contrato_{contratopordebajo}.pdf"),
-                (clausulapdf, "static/pdf/Clausulas.pdf"),
-                (tarjetapdf, "static/pdf/Tarjeta_Titular.pdf"),
-                (brochurepdf, "static/pdf/BrochureGEP.pdf")
-            ]:
-                if pdf_checkbox == 'on' and os.path.exists(pdf_path):
-                    with open(pdf_path, 'rb') as file:
-                        em.add_attachment(file.read(), maintype='application', subtype='octet-stream', filename=os.path.basename(pdf_path))
-            
-            # Envia el correo electrónico
-            context = ssl.create_default_context()
-            with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as smtp:
-                smtp.login(email_sender, password)
-                smtp.sendmail(email_sender, email_reciver, em.as_bytes())
-            return "Correo Enviado"
+                     b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
+                     pdf_name = f"Contrato_{b1}.pdf"
+                     contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
+                     pdfs.append(contrato_pdf)
+
+            #Check para escoger archivos a enviar 
+            with ZipFile(zip_buffer, 'a') as zip_file:
+                for pdf_checkbox, pdf_path in [
+                    (contratopdf, f"Contrato_{contratopordebajo}.pdf"),
+                    (clausulapdf, "static/pdf/Clausulas.pdf"),
+                    (tarjetapdf, "static/pdf/Tarjeta_Titular.pdf"),
+                    (brochurepdf, "static/pdf/BrochureGEP.pdf")
+                ]:
+                    if pdf_checkbox == 'on' and os.path.exists(pdf_path):
+                        with open(pdf_path, 'rb') as file:
+                            em.add_attachment(file.read(), maintype='application', subtype='octet-stream', filename=os.path.basename(pdf_path))
+            #Trabjar en segundo plano el envio del correo
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(enviar_correo,email_sender, password, email_reciver, em) #Paso parametros de la funcion enviar_correo par el envio del correo
+
+            return render_template('Welcome/Welcome.html')
 
         elif accion == 'descargar':
             pdfs = []
@@ -286,11 +288,11 @@ def downpdf():
                 headers={'Content-Disposition': f'attachment;filename={contratopordebajo}.zip'}
             )
 
-        else:
-            return "Acción no válida."
+        
+        return render_template('Welcome/Welcome.html')
 
     except Exception as e:
-        return str(e)
+        return print(str(e))
 
 def delete_pdf():
     try:
