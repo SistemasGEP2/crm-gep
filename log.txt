@@ -50,3 +50,5 @@
  >> Archivo eliminado C:\Users\juan.cortes\Documents\GitHub\crm-gep\Caratula_CO14040.pdf
  >> Archivo eliminado C:\Users\juan.cortes\Documents\GitHub\crm-gep\Caratula_CO14040.pdf
 >>>>>>> 52fbc3c4de3807c316ab6935d7926b69c3120431
+
+ >> Archivo eliminado C:\Users\juan.cortes\Documents\GitHub\crm-gep\Contrato_CO14040.pdf

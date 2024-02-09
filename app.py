@@ -9,7 +9,7 @@ from io import BytesIO
 from zipfile import ZipFile
 from datetime import datetime, time
 from apscheduler.schedulers.background import BackgroundScheduler
-from flask import jsonify
+from flask import jsonify, render_template
 import threading
 import atexit
 import glob
@@ -187,14 +187,14 @@ def welcomeaf():
                     dato1, dato2, dato3, dato4 = row
 
                 btndown = '<button type="submit" class="btn btn-success donlawn" value="descargar" name ="action">Descargar</button>'
-                btnsend = '<button type="submit" class="btn-sendmail" value="sendmail" name ="action">Enviar Correo</button>'
+                btnsend = '<button type="submit" class="btn-sendmail" value="sendmail" name ="action"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16"><path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/></svg></button>'
             elif contrato:
                 consultaraf = afiliacion(contrato,fechacont)
                 for row in consultaraf:
                     dato1, dato2, dato3, dato4 = row
 
                 btndown = '<button type="submit" class="btn btn-success donlawn" value="descargar" name ="action">Descargar</button>'
-                btnsend = '<button type="submit" class="btn-sendmail" value="sendmail" name ="action">Enviar Correo</button>'
+                btnsend = '<button type="submit" class="btn-sendmail" value="sendmail" name ="action"><svg xmlns="http://www.w3.org/2000/svg" width="25" height="30" fill="currentColor" color="white"class="bi bi-envelope" viewBox="0 0 16 16"><path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/></svg></button>'
 
             else:
                 print('Error: Vuelva y verifique los datos que está escribiendo')
@@ -214,35 +214,42 @@ def enviar_correo(email_sender, password, email_reciver, em):
 @app.route("/downpdf", methods=['POST', 'GET'])
 def downpdf():
     try:
+    
         accion = request.form.get('action')
         contratopdf = request.form.get('contratopdf')
         clausulapdf = request.form.get('clausulapdf')
         tarjetapdf = request.form.get('tarjetapdf')
         brochurepdf = request.form.get('brochurepdf')
         contratopordebajo = request.form.get('contratopordebajo')
+        
         if accion == 'sendmail':
             pdfs = []
             zip_buffer = BytesIO()
-            email_sender = "juan.cortes@gep.com.co" #Correo desde donde envia
-            password = 'wwkk gfvd eysm lwfg' #Contraseña de aplicacion del correo
-            email_reciver = "junafelipecortes0@gmail.com" #Correo destinatario
-            subject = "Pruebaaaa" #Asunto del correo
-            body = "Holaaaaa" #Cuerpo del correo
-            em = EmailMessage() #Funcion de envio de correo 
-            em["From"] = email_sender  #Se define desde que correo
-            em["To"] = email_reciver #Se define a que correo se envia
-            em["Subject"] = subject #Se define el asunto
-            em.set_content(body) #Se define el cuerpo del correo
+            email_sender = "juan.cortes@gep.com.co" # Correo desde donde envía
+            password = 'wwkk gfvd eysm lwfg' # Contraseña de la aplicación del correo
+            email_reciver = "junafelipecortes0@gmail.com" # Correo destinatario
+            subject = "Pruebaaaa" # Asunto del correo
+            body = "Holaaaaa" # Cuerpo del correo
+            with open('templates/Welcome/prueba.html','r',encoding='utf-8') as file:
+                template_content = file.read()
+
+            em = EmailMessage() # Función de envío de correo 
+            em["From"] = email_sender  # Se define desde qué correo
+            em["To"] = email_reciver # Se define a qué correo se envía
+            em["Subject"] = subject # Se define el asunto
+            
+            em.set_content(template_content, subtype ='html')
+            
             consultarpdf2 = afiliacion_bienvenida(contratopordebajo)
             consultarpdf3 = consulta_caratula(contratopordebajo)
             if consultarpdf2 is not None:
                 for i in consultarpdf3:
-                     b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
-                     pdf_name = f"Contrato_{b1}.pdf"
-                     contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
-                     pdfs.append(contrato_pdf)
+                    b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
+                    pdf_name = f"Contrato_{b1}.pdf"
+                    contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
+                    pdfs.append(contrato_pdf)
 
-            #Check para escoger archivos a enviar 
+            # Check para escoger archivos a enviar 
             with ZipFile(zip_buffer, 'a') as zip_file:
                 for pdf_checkbox, pdf_path in [
                     (contratopdf, f"Contrato_{contratopordebajo}.pdf"),
@@ -253,11 +260,13 @@ def downpdf():
                     if pdf_checkbox == 'on' and os.path.exists(pdf_path):
                         with open(pdf_path, 'rb') as file:
                             em.add_attachment(file.read(), maintype='application', subtype='octet-stream', filename=os.path.basename(pdf_path))
-            #Trabjar en segundo plano el envio del correo
+            
+            # Trabajar en segundo plano el envío del correo
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                future = executor.submit(enviar_correo,email_sender, password, email_reciver, em) #Paso parametros de la funcion enviar_correo par el envio del correo
+                future = executor.submit(enviar_correo, email_sender, password, email_reciver, em) # Paso parámetros de la función enviar_correo para el envío del correo
 
             return render_template('Welcome/Welcome.html')
+    
 
         elif accion == 'descargar':
             pdfs = []
