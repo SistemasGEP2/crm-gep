@@ -266,10 +266,13 @@ def downpdf():
 
         else:
             print('listo :D')
+<<<<<<< HEAD
 
         
 
                 
+=======
+>>>>>>> 3c18d108706e13480b8efabb6301b021ea9c9c9f
           
         if not pdfs:
             return "Error: No se generaron archivos PDF."
