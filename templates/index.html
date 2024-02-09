@@ -10,7 +10,7 @@
 <header>
     <div class="header" id="id_header">
       <div class="logoGep">
-        <img class="logoGep" src="../static/img/Logo-blancoGEP.png"  alt="grupo empresarial proteccion">
+        <img class="logoGep" src="../static/img/LogoGEP-negro.jpg"  alt="grupo empresarial proteccion">
         <h1 id="nombreUsuario">Bienvenido:‎{{nombre}}</h1>
       </div>
 
@@ -27,6 +27,12 @@
 </header>
 
 <body>
+
+  <div class="cuadrado"></div>
+  <div class="cuadrado2"></div>
+  <div class="cuadrado3"></div>
+  <div class="cuadrado4"></div>
+
 
 
   <s</s>
@@ -77,17 +83,20 @@
         </thead>
         <tbody>
           {% for row in profesional %}
-            <tr>
-              <td>{{ row[0] }}</td>
-              <td>{{ row[1] }}</td>
-              
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+          <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+            
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="img-grafica"><img src="../static/img/grafica.jpg" alt=""></div>
+      <button type="button" onclick="verhistoryindex()" id="btn-history" class="btn btn-outline-primary btn-history">Ver Historial</button>
       
-      <div class="table-history">
+      <div class="table-history-false" id="table-history-false">
+        <h1 class="title-history">Historial de Reasignaciones</h1>
         <table class="table table-dark table-striped custom-table">
       <thead class="thead-reasigna">
         <tr>

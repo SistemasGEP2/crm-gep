@@ -10,11 +10,12 @@
 <body>
     <header class="header">
         <div class="cont-header"></div>
+        <div id="separador" class="separador"></div>
         <div class="img-header"><img src="../../static/img/LogoGEP-negro.jpg" alt=""></div>
         <div class="navbar">
             <ul>
                 <li><a href="http://127.0.0.1:5000/index">Inicio</a></li>
-                <li><a href="">Herramientas</a>
+                <li><a href="">Opcionsi</a>
                     <ul>
                         <li><a href="">Opcion 1</a></li>
                         <li><a href="">Opcion 2</a></li>
@@ -22,7 +23,7 @@
                         <li><a href="">Opcion 4</a></li>
                     </ul>
                 </li>
-                <li><a href="">Sesión</a> 
+                <li><a href="">Herramientas</a> 
                     <ul>
                         <li><a href="">Opcion 1</a></li>
                         <li><a href="">Opcion 2</a></li>
@@ -30,11 +31,12 @@
                         <li><a href="">Cerrar Sesion</a></li>
                     </ul>
                 </li>
-                <li><a href="" class="close" >Salir</a></li>
-            </ul>
-        </div>
-    </header>
-
+                <li><a href="logout" class="close" >Salir</a></li>
+              </ul>
+            </div>
+          </header>
+          
+    <div class="grafica"><img src="../../static/img/grafica.jpg" alt=""></div>
     <div class="cont-form">
       <h1 class="txt-cont">Paquete de <br> Bienvenida GEP</h1>
       <form action="/welcomeaf" method="post">
@@ -49,6 +51,7 @@
                     <input class="btn btn-warning" type="submit" id="button-addon2" value="Buscar">
                   </div>
             </form>
+            {{alerta | safe}}
             <table class="table">
                 <thead>
                   <tr>
@@ -82,37 +85,48 @@
                   </tr>
                   {% endfor %}
                   <tr>
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+                <button type="button" onclick="abrirhistorial()" class="btn btn-outline-primary">Ver Historial</button>
                 <!-- En Welcome.html -->
-
-              
-            <h1 class="txt-history">Historial de Generación</h1>
-            <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Contrato</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Apellido</th>
-                    <th scope="col">Documento</th>
-                    <th scope="col">Fecha</th>
-                    <th scope="col">Usuario</th>
-                    <th scope="col">Beneficiarios</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th>5a21213</th>
-                    <td>Juan</td>
-                    <td>Hernandez</td>
-                    <td>1007103579</td>
-                    <td>2023-01-11</td>
-                    <td>Juan.hernandez</td>
-                    <td>3</td>
-                  </tr>
-                  <tr>
-                </tbody>
-              </table>
+                
+                <svg viewBox="0 0 100 100" class="svg">
+                  <path d="M 10,90 Q 50,10 90,90" stroke="#FFCB9B" stroke-width="5" fill="none" />
+                  <!-- <path d="M 50,0 Q 0,90 10,90" stroke="#EAEAEA" stroke-width="5" fill="none" /> -->
+                </svg>
+                <svg viewBox="0 0 100 100" class="svg2">
+                  
+                  <path d="M 10,0 Q 50,20 30,90" stroke="#FFD7B1" stroke-width="5" fill="none" />
+                </svg>
+            <div class="history-down" id="history-down">
+              <h1 class="txt-history" >Historial de Generación</h1>
+              <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Contrato</th>
+                      <th scope="col">Nombre</th>
+                      <th scope="col">Apellido</th>
+                      <th scope="col">Documento</th>
+                      <th scope="col">Fecha</th>
+                      <th scope="col">Usuario</th>
+                      <th scope="col">Beneficiarios</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th>5a21213</th>
+                      <td>Juan</td>
+                      <td>Hernandez</td>
+                      <td>1007103579</td>
+                      <td>2023-01-11</td>
+                      <td>Juan.hernandez</td>
+                      <td>3</td>
+                    </tr>
+                    <tr>
+                  </tbody>
+                </table>
+            </div> 
+            
         </div>
 
         <script src="../../static/js/style.js"></script>

@@ -173,7 +173,7 @@ def welcomeaf():
         contrato = None
         consultaraf = ''
         dato1, dato2, dato3, dato4 = None, None, None, None
-
+        alerta=''
         btndown = ''
 
         if request.method == 'POST':
@@ -182,26 +182,40 @@ def welcomeaf():
             print(f"ESTA ES LA FECHA QUE SE ESTA ESCRIBIENDO:: {fechacont}")
             
             
-            if contrato is None or not contrato :
+            if contrato is None or not contrato:
                 contrato = 0
                 consultaraf = afiliacion(contrato,fechacont)
                 for row in consultaraf:
                     dato1, dato2, dato3, dato4 = row
 
                 btndown = '<button type="submit" class="btn btn-success donlawn">Descargar</button>'
+                alerta = '<p class="alert-false" id="alert-false" >Por favor introduzca un dato valido (╥_╥)</p>'
             elif contrato:
-                consultaraf = afiliacion(contrato,fechacont)
-                for row in consultaraf:
-                    dato1, dato2, dato3, dato4 = row
+                if contrato.isspace():
+                    alerta = '<p class="alert-false" id="alert-false" >Por favor introduzca un dato sin espacios (╥_╥)</p>'
+                else:
+                    consultaraf = afiliacion(contrato,fechacont)
+                    for row in consultaraf:
+                        dato1, dato2, dato3, dato4 = row
 
-                btndown = '<button type="submit" class="btn btn-success donlawn">Descargar</button>'
+                    btndown = '<button type="submit" class="btn btn-success donlawn">Descargar</button>'
+                    alerta = '<p class="alert-good" id="alert-good" >Resultados de tu Busquedaヽ(^o^)ノ</p>'
+            
+
 
             else:
                 print('Error: Vuelva y verifique los datos que está escribiendo')
 
             
-
-        return render_template('Welcome/Welcome.html',btndown= btndown,contrato=contrato, consultaraf=consultaraf, dato1=dato1, dato2=dato2, dato3=dato3, dato4=dato4)
+            if fechacont:
+                alerta = '<p class="alert-good" id="alert-good" >Resultados de tu Busqueda con el filtroヽ(^o^)ノ</p>'
+            
+        if 'username' in session:
+            nombre = session['username']
+            nombre_usuario = nombre.split('.')[0]    
+            return render_template('Welcome/Welcome.html',nombre_usuario = nombre_usuario,alerta=alerta,btndown= btndown,contrato=contrato, consultaraf=consultaraf, dato1=dato1, dato2=dato2, dato3=dato3, dato4=dato4)
+        else:
+            return redirect(url_for('login'))
     except Exception as e:
         return "<p style='color:red;font-size:35px;font-weight: 600; font-family:arial;'> Error: Vuelva y verifique la información. Si el error persiste, contacte con un desarrollador D:</p>" + str(e)
 
@@ -253,18 +267,7 @@ def downpdf():
         else:
             print('listo :D')
 
-        contrato = request.form.get('contrato')
-        pdfs = [] 
-        consultarpdf2 = afiliacion_bienvenida(contrato)
-        if consultarpdf2 is not None:
-            for i in consultarpdf2:
-                a1, a2, a3, a4 = i
-                pdf_name = f"Carta Bienvenida_{a2}.pdf"
-                pdf = contrat(pdf_name, a2, a1, a3, a4)
-                pdfs.append(pdf_name)
-                pdfs.append("static\\pdf\\Tarjeta_Titular.pdf")
-                pdfs.append("static\\pdf\\BrochureGEP.pdf")
-                pdfs.append(f"Caratula_{contrato}.pdf")
+        
 
                 
           
