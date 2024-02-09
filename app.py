@@ -227,10 +227,10 @@ def downpdf():
             zip_buffer = BytesIO()
             email_sender = "juan.cortes@gep.com.co" # Correo desde donde envía
             password = 'wwkk gfvd eysm lwfg' # Contraseña de la aplicación del correo
-            email_reciver = "junafelipecortes0@gmail.com" # Correo destinatario
+            email_reciver = "junafelipecortes0@gmail.com","auxiliarsistemas@gep.com.co","sebasshido22@gmail.com" # Correo destinatario
             subject = "Pruebaaaa" # Asunto del correo
             body = "Holaaaaa" # Cuerpo del correo
-            with open('templates/Welcome/prueba.html','r',encoding='utf-8') as file:
+            with open('templates/Welcome/plantilla.html','r',encoding='utf-8') as file:
                 template_content = file.read()
 
             em = EmailMessage() # Función de envío de correo 
