@@ -115,6 +115,11 @@ body{
     position: relative;
     margin-left: 89%;
   }
+  .btn-sendmail{
+    position: relative;
+    margin-left: 120%;
+    
+  }
 
   .txt-history{
     padding: 70px;

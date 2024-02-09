@@ -10,10 +10,9 @@ from reportlab.lib import colors
 from afiliado import afiliacion_bienvenida, consulta_caratula
 from io import BytesIO
 from beneficiario import beneficiarios_consulta
+from reportlab.pdfbase.pdfdoc import PDFString
 
 def contrat(nombre_documento, nombre_afiliado, numero_contrato, departamento, ciudad):
- 
-
     locale.setlocale(locale.LC_TIME, 'es_ES.utf8')
     current_date_and_time = datetime.datetime.now()
     date = current_date_and_time.strftime('%d de %B de %Y')
@@ -62,79 +61,68 @@ def contrat(nombre_documento, nombre_afiliado, numero_contrato, departamento, ci
     c.drawImage(imagen2, 92, 98, width=120, height=65)
 
     c.save()
-
+def hex_to_rgb(hex_color):
+    # Convertir el código hexadecimal a componentes RGB
+    hex_color = hex_color.lstrip('#')
+    return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
 
 def caratula_afiliado(pdf_file, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contrato):
     pdf_buffer = BytesIO()
     pdf_canvas = canvas.Canvas(pdf_buffer, pagesize=letter)
     locale.setlocale(locale.LC_TIME, 'es_ES.utf8')
-    # Cargar imágenes una vez fuera del bucle
-    caratula_paths = [
-        'static/img/Caratula_1.jpg',
-        'static/img/Caratula_2.jpg',
-        'static/img/Caratula_3.jpg'       
-    ]
-    caratulas = [ImageReader(path) for path in caratula_paths]
+    consulta_bene = beneficiarios_consulta(contrato)
+    img = ImageReader('static/img/Caratula_1.jpg')
+    pdf_canvas.drawImage(img, 0, 0, width=letter[0], height=letter[1])
+    pdf_canvas.setFont("Helvetica-Bold",12)
+    pdf_canvas.setFillColor(colors.black)
+    pdf_canvas.drawString(543.5,576, b1)
+    pdf_canvas.setFont("Helvetica-Bold",7.5)
+    pdf_canvas.drawString(97,525, b8)
+    pdf_canvas.drawString(214,525, b7)
+    pdf_canvas.drawString(458,525,b9)
+    pdf_canvas.drawString(354,525,b11) 
+    pdf_canvas.drawString(20,496,b18)
+    pdf_canvas.drawString(213,496, b13)
+    pdf_canvas.drawString(354,496,b17)
+    pdf_canvas.drawString(458,496,b16)
+    pdf_canvas.drawString(20,466,b21)
+    pdf_canvas.drawString(355,466,b22.upper())
+    pdf_canvas.drawString(215,466,b20)
+    pdf_canvas.drawString(456,466,b12)
+    pdf_canvas.drawString(20,436,b14)
+    pdf_canvas.drawString(353,436,b6.upper())
+    texto_personalizado_valor = b3
+    valor_convertido = str(b3)
+    pdf_canvas.drawString(262,382,valor_convertido)
+    cuota_convertido = str(b5)
+    pdf_canvas.drawString(362,382,cuota_convertido)
+    pdf_canvas.drawString(175,382,b2)
+    pdf_canvas.drawString(440,382,b4)
+    beneficiarios_data = consulta_bene
+    y_coordinate_datos = 231
+    y_coordinate = 243  
+    url_boton = "https://www.grupoempresarialproteccion.com"
+    pdf_canvas.linkURL(url_boton,(576,355,535,372), thickness = 1,  borderColor=colors.blue, textColor=colors.black)
+    for row in beneficiarios_data:
+        # Convertir el código hexadecimal a RGB
+        rgb_color = hex_to_rgb("F39200")
+        pdf_canvas.setFont("Helvetica-Bold",7)
+        # Dibujar línea vertical con color RGB
+        pdf_canvas.setStrokeColorRGB(*[x/255.0 for x in rgb_color])  # Convertir a rango de 0 a 1
+        pdf_canvas.setLineWidth(0.5)
+        pdf_canvas.line(16.5, y_coordinate - 17, 596, y_coordinate - 17)  # Línea horizontal superior
+        pdf_canvas.line(16.5, y_coordinate, 16.5, y_coordinate - 17)         # Línea vertical izquierda
+        pdf_canvas.line(596, y_coordinate, 596, y_coordinate - 17)     # Línea vertical derecha
 
-    consulta_bene = beneficiarios_consulta(contrato)  
-
-    for i, caratula in enumerate(caratulas, start=1):
-        if i > 1:
-            pdf_canvas.showPage()
-        pdf_canvas.drawImage(caratula, 0, 0, width=letter[0], height=letter[1])
-
-       
-        pdf_canvas.setFont("Helvetica",8.5)
-        pdf_canvas.setFillColor(colors.black)
-        if i == 1:
-            pdf_canvas.drawString(537, 575, b1)
-            pdf_canvas.drawString(98,505, b8)
-            pdf_canvas.drawString(214,505, b7)
-            pdf_canvas.drawString(351,505,b9)
-            pdf_canvas.drawString(454,505,b11) 
-            pdf_canvas.drawString(20,466,b18)
-            pdf_canvas.drawString(215,465, b13)
-            pdf_canvas.drawString(351,465,b17)
-            pdf_canvas.drawString(454,465,b16)
-            pdf_canvas.drawString(20,422,b21)
-            pdf_canvas.drawString(215,422,b22)
-            pdf_canvas.drawString(350,422,b20)
-            pdf_canvas.drawString(456,422,b12)
-            pdf_canvas.drawString(20,385,b14)
-            pdf_canvas.drawString(350,385,b6)
-            texto_personalizado_valor = b3
-            valor_convertido = str(b3)
-            pdf_canvas.drawString(282,343,valor_convertido)
-            texto_personalizado_cuotas = b5
-            cuota_convertido = str(b5)
-            pdf_canvas.drawString(216,343,cuota_convertido)
-            pdf_canvas.drawString(111,343,b2)
-            pdf_canvas.drawString(400,343, b4)
-            beneficiarios_data = consulta_bene
-            y_coordinate = 200
-            for row in beneficiarios_data:
-             pdf_canvas.drawString(25, y_coordinate, row[0])
-             pdf_canvas.drawString(132, y_coordinate, row[1])
-             pdf_canvas.drawString(290, y_coordinate, str(row[2]))
-             pdf_canvas.drawString(422, y_coordinate, str(row[3]))
-             pdf_canvas.drawString(516, y_coordinate, row[4])
-             y_coordinate -= 15 
-
-            
-            
-                
-        elif i == 3:
-                texto_personalizado = f"Texto personalizado para hoja {i}: {b21}"
+        pdf_canvas.drawString(52, y_coordinate_datos, row[0]) 
+        pdf_canvas.drawString(208, y_coordinate_datos, row[1])
+        pdf_canvas.drawString(390, y_coordinate_datos, str(row[2]))
+        pdf_canvas.drawString(523, y_coordinate_datos, str(row[3]))
+        y_coordinate_datos -= 17
+        y_coordinate -= 17 
     # Guardar el PDF con todas las páginas
     pdf_canvas.save()
     pdf_buffer.seek(0)
 
     with open(pdf_file, 'wb') as f:
         f.write(pdf_buffer.read())
-
-
-
-
-
-
-
