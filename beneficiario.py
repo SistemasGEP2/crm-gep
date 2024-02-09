@@ -1,5 +1,4 @@
 import pyodbc
-import prettytable
 from conexion import connect
 
 def beneficiarios_consulta(contrato):
@@ -8,12 +7,13 @@ def beneficiarios_consulta(contrato):
         with connect() as connection:
             with connection.cursor() as cursor:
                 cursor.execute("""select Beneficiarios.NombreBeneficiario,Beneficiarios.PrimerApellido + ' ' + Beneficiarios.SegundoApellido AS Apellidos_Benefeciario,
-                                Beneficiarios.FechaNacimiento,Beneficiarios.Edad,Parentescos.Parentesco
+                                Beneficiarios.Edad,Parentescos.Parentesco
 								from Beneficiarios
 								inner join Afiliaciones ON Afiliaciones.IdAfiliacion = Beneficiarios.IdAfiliacion
                                 inner join parentescos ON Beneficiarios.IdParentesco = Parentescos.IdParentesco
-								where Afiliaciones.Contrato = ?;
-                                """,contrato)
+                                inner join Clientes ON Clientes.IdCliente = Beneficiarios.IdCliente
+								where Afiliaciones.Contrato = ? or Clientes.Identificacion = ? or Clientes.PrimerNombre like '%' + ? + '%';
+                                """,contrato,contrato,contrato)
                 results = cursor.fetchall()
                 return results
     except pyodbc.Error as e:

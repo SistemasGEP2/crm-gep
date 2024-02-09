@@ -47,6 +47,50 @@ function cerrarView() {
 }
 
 
+function abrirporfecha() {
+    var fecha = document.getElementById('fecha-input');
+
+    if (fecha.classList.contains('fecha-input-hidden')) {
+        fecha.classList.remove('fecha-input-hidden');
+        fecha.classList.add('fecha-input');
+    } else {
+        fecha.classList.remove('fecha-input');
+        fecha.classList.add('fecha-input-hidden');
+    }
+}
+
+function abrirhistorial(){
+    var btn = document.getElementById('history-down');
+
+    btn.classList.toggle('view-history')
+}
+
+function verhistoryindex(){
+    var tbl = document.getElementById('table-history-false')
+     
+    if(tbl.classList.contains('table-history-false')){
+        tbl.classList.remove('table-history-false')
+        tbl.classList.add('table-history')
+
+    }else{
+        tbl.classList.remove('table-history')
+        tbl.classList.add('table-history-false')
+    }
+}
+
+var alertElement1 = document.getElementById('alert-good');
+var alertElement2 = document.getElementById('alert-false');
+
+
+setTimeout(function() {
+  alertElement1.style.opacity = '0';
+  alertElement1.style.display = 'none';
+}, 5000);
+setTimeout(function() {
+    alertElement2.style.opacity = '0';
+    alertElement2.style.display = 'none';
+  }, 5000);
+  
 
 
 
