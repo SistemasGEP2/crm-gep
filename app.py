@@ -237,7 +237,7 @@ def welcomeaf():
         if 'username' in session:
             nombre = session['username']
             nombre_usuario = nombre.split('.')[0]    
-            return render_template('Welcome/Welcome.html',nombre_usuario = nombre_usuario,alerta=alerta,btndown= btndown,contrato=contrato, consultaraf=consultaraf, dato1=dato1, dato2=dato2, dato3=dato3, dato4=dato4)
+            return render_template('Welcome/Welcome.html',btnsend=btnsend,nombre_usuario = nombre_usuario,alerta=alerta,btndown= btndown,contrato=contrato, consultaraf=consultaraf, dato1=dato1, dato2=dato2, dato3=dato3, dato4=dato4)
         else:
             return redirect(url_for('login'))
 
@@ -272,62 +272,12 @@ def downpdf():
         
 
 
-        pdfs = []
+        
  
 
         consultarpdf2 = afiliacion_bienvenida(contratopordebajo)
-        consultarpdf3 = consulta_caratula(contratopordebajo)
-
-        if consultarpdf2 is not None:
-            for i in consultarpdf3:
-                b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
-                pdf_name = f"Contrato_{b1}.pdf"
-                pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
-            for i in consultarpdf2:
-                a1, a2, a3, a4 = i 
-                print(i)               
-                pdf_name = f"Contrato_{contratopordebajo}.pdf"
-                #pdf = contrat(pdf_name, a2, a1, a3, a4)
-                #pdfs.append(pdf_name) esta es la carta de bienvenida por si la piden luego
-        if contratopdf == 'on':
-            pdfs.append(f"Contrato_{contratopordebajo}.pdf")
-        if clausulapdf == 'on':
-            pdfs.append("static\\pdf\\Clausulas.pdf")
-        if tarjetapdf == 'on':
-            pdfs.append("static\\pdf\\Tarjeta_Titular.pdf")
-        if brochurepdf == 'on':
-            pdfs.append("static\\pdf\\BrochureGEP.pdf")
-
-        else:
-            print('listo :D')
-
-
-        
-
-          
-        if not pdfs:
-            return "Error: No se generaron archivos PDF."
-
-
-        zip_buffer = BytesIO()
-        with ZipFile(zip_buffer, 'a') as zip_file:
-            for pdf in pdfs:
-                # Agrega solo el nombre del archivo al archivo zip
-                zip_file.write(pdf, os.path.basename(pdf))
-
-        zip_buffer.seek(0)
-        return Response(
-            zip_buffer,
-            mimetype='application/zip',
-            headers={'Content-Disposition': f'attachment;filename={contratopordebajo}.zip'}
-        )
-
-    
+        consultarpdf3 = consulta_caratula(contratopordebajo)    
         accion = request.form.get('action')
-        contratopdf = request.form.get('contratopdf')
-        clausulapdf = request.form.get('clausulapdf')
-        tarjetapdf = request.form.get('tarjetapdf')
-        brochurepdf = request.form.get('brochurepdf')
         contratopordebajo = request.form.get('contratopordebajo')
         
         if accion == 'sendmail':
@@ -337,7 +287,6 @@ def downpdf():
             password = 'wwkk gfvd eysm lwfg' # Contraseña de la aplicación del correo
             email_reciver = "junafelipecortes0@gmail.com","auxiliarsistemas@gep.com.co","sebasshido22@gmail.com" # Correo destinatario
             subject = "Pruebaaaa" # Asunto del correo
-            body = "Holaaaaa" # Cuerpo del correo
             with open('templates/Welcome/plantilla.html','r',encoding='utf-8') as file:
                 template_content = file.read()
 
