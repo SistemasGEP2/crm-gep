@@ -47,6 +47,19 @@ function cerrarView() {
 }
 
 
+function abrirporfecha() {
+    var fecha = document.getElementById('fecha-input');
+
+    if (fecha.classList.contains('fecha-input-hidden')) {
+        fecha.classList.remove('fecha-input-hidden');
+        fecha.classList.add('fecha-input');
+    } else {
+        fecha.classList.remove('fecha-input');
+        fecha.classList.add('fecha-input-hidden');
+    }
+}
+
+
 
 
 

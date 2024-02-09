@@ -1,0 +1,91 @@
+/* IMPORTANT THIS STYLES MUST BE ON FINAL EMAIL */
+/*
+  END OF IMPORTANT
+*/
+a {
+    font-family: 'arial', 'helvetica neue', 'helvetica', 'sans-serif';
+    font-size: 14px;
+  }
+  .es-button-border {
+    background: #2cb543;
+  }
+  @media only screen and (max-width: 600px) {
+    h1 {
+      line-height: 120% !important;
+    }
+    h2 {
+      line-height: 120% !important;
+    }
+    h3 {
+      line-height: 120% !important;
+    }
+    p,
+      ul li,
+      ol li,
+      a {
+      font-size: 16px !important;
+    }
+    .es-m-txt-c {
+      text-align: center !important;
+    }
+    .es-m-txt-r {
+      text-align: right !important;
+    }
+    .es-m-txt-l {
+      text-align: left !important;
+    }
+    a.es-button {
+      border-left-width: 0px !important;
+      border-right-width: 0px !important;
+    }
+    .es-text-7181 .es-text-mobile-size-16,
+  .es-text-7181 .es-text-mobile-size-16 * {
+      font-size: 16px !important;
+      line-height: 150% !important;
+    }
+    .es-text-1105,
+  .es-text-1105 p,
+  .es-text-1105 a,
+  .es-text-1105 h1,
+  .es-text-1105 h2,
+  .es-text-1105 h3,
+  .es-text-1105 h4,
+  .es-text-1105 h5,
+  .es-text-1105 h6,
+  .es-text-1105 ul,
+  .es-text-1105 ol,
+  .es-text-1105 li,
+  .es-text-1105 span,
+  .es-text-1105 sup,
+  .es-text-1105 sub,
+  .es-text-1105 u,
+  .es-text-1105 b,
+  .es-text-1105 strong,
+  .es-text-1105 em,
+  .es-text-1105 i {
+      font-size: 26px !important;
+    }
+    .es-text-7181 .es-text-mobile-size-18,
+  .es-text-7181 .es-text-mobile-size-18 * {
+      font-size: 18px !important;
+      line-height: 150% !important;
+    }
+    .es-text-8307 .es-text-mobile-size-16,
+  .es-text-8307 .es-text-mobile-size-16 * {
+      font-size: 16px !important;
+      line-height: 150% !important;
+    }
+    .es-text-9813 .es-text-mobile-size-16,
+  .es-text-9813 .es-text-mobile-size-16 * {
+      font-size: 16px !important;
+      line-height: 150% !important;
+    }
+  }
+  table tr {
+    border-collapse: collapse;
+  }
+  p,
+  ul li,
+  ol li {
+    font-size: 14px;
+  }
