@@ -180,7 +180,7 @@ def afiliacion(dato1,fechacont):
             complemento = ""
         else:
             complemento = f"or Afiliaciones.FechaAfiliacion = '{fechacont}'"
-        cursor.execute(f"Select Clientes.PrimerNombre,Clientes.PrimerApellido,Clientes.Identificacion,Afiliaciones.Contrato  from Clientes inner join Afiliaciones On Clientes.IdCliente = Afiliaciones.IdCliente where Clientes.Identificacion ='{dato1}' or Afiliaciones.Contrato ='{dato1}' or Clientes.PrimerNombre like '%{dato1}%'  or Clientes.PrimerApellido = '{dato1}' {complemento}  ")
+        cursor.execute(f"Select Clientes.PrimerNombre,Clientes.PrimerApellido,Clientes.Identificacion,Afiliaciones.Contrato,Clientes.Email from Clientes inner join Afiliaciones On Clientes.IdCliente = Afiliaciones.IdCliente where Clientes.Identificacion ='{dato1}' or Afiliaciones.Contrato ='{dato1}' or Clientes.PrimerNombre like '%{dato1}%'  or Clientes.PrimerApellido = '{dato1}' {complemento}  ")
 
         results = cursor.fetchall()
 

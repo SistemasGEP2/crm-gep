@@ -213,5 +213,47 @@ body {
     bottom: 60%;
     transform: translate(-50%, 50%);
   }
-  
- 
+
+  .table-smaller {
+    font-size: 12px; 
+}
+
+.table-smaller th,
+.table-smaller td {
+    padding: 0rem; 
+}
+
+.table-smaller th {
+    text-align: center;
+} 
+
+.table-smaller td {
+    text-align: left; 
+}
+.btn-sendmail {
+  border:none;
+  background-color: transparent;
+}
+.btn-descargar{
+  border:none;
+  background-color: transparent;
+}
+.btn-img:hover{
+  width: 21px;
+}
+
+
+@media (max-width: 1400px){
+  .cont-form{
+    margin-left:15%;
+  }
+  .grafica{
+    display: none;
+  }
+
+  .img-header{
+    width: 120px;
+    margin-right: 120vh;
+  }
+}
+
