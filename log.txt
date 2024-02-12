@@ -60,3 +60,6 @@
  >> Archivo eliminado C:\Users\juan.hernandez\Documents\GitHub\crm-gep\Contrato_5A20293.pdf
  >> Archivo eliminado C:\Users\juan.hernandez\Documents\GitHub\crm-gep\Contrato_5A21213.pdf
 >>>>>>> master
+
+ >> Archivo eliminado C:\Users\juan.hernandez\Documents\GitHub\crm-gep\Contrato_25196.pdf
+ >> Archivo eliminado C:\Users\juan.hernandez\Documents\GitHub\crm-gep\Contrato_25196.pdf

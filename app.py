@@ -13,14 +13,8 @@ from flask import jsonify, render_template
 import threading
 import atexit
 import glob
-
-
 import zipfile
-
-
 from beneficiario import beneficiarios_consulta
-
-
 import smtplib
 import ssl
 from email.message import EmailMessage
@@ -179,14 +173,9 @@ def welcomeaf():
     try:
         contrato = None
         consultaraf = ''
-        dato1, dato2, dato3, dato4 = None, None, None, None
-
-
+        dato1, dato2, dato3, dato4,dato5 = None, None, None, None,None
         alerta=''
-
         btnsend = None
-
-
         btndown = ''
 
         if request.method == 'POST':
@@ -197,8 +186,8 @@ def welcomeaf():
                 contrato = 0
                 consultaraf = afiliacion(contrato,fechacont)
                 for row in consultaraf:
-                    dato1, dato2, dato3, dato4 = row
-                btndown = '<button type="submit" class="btn btn-success donlawn">Descargar</button>'
+                    dato1, dato2, dato3, dato4,dato5 = row
+                btndown = '<button type="submit" class="btn-descargar" value="descargar" name ="action"><img src="../../static/img/descargar.png" alt="descargar archivo" title="Descargar"class="btn-img" width="20px"></button>'
                 alerta = '<p class="alert-false" id="alert-false" >Por favor introduzca un dato valido (╥_╥)</p>'
             elif contrato:
                 if contrato.isspace():
@@ -206,24 +195,13 @@ def welcomeaf():
                 else:
                     consultaraf = afiliacion(contrato,fechacont)
                     for row in consultaraf:
-                        dato1, dato2, dato3, dato4 = row
+                        dato1, dato2, dato3, dato4,dato5 = row
 
-                    btndown = '<button type="submit" class="btn btn-success donlawn">Descargar</button>'
+                    btndown = '<button type="submit" class="btn-descargar" value="descargar" name ="action"><img src="../../static/img/descargar.png" alt="descargar archivo" title="Descargar"class="btn-img" width="20px"></button>'
                     alerta = '<p class="alert-good" id="alert-good" >Resultados de tu Busquedaヽ(^o^)ノ</p>'
             
-                btndown = '<button type="submit" class="btn btn-success donlawn" value="descargar" name ="action">Descargar</button>'
-                btnsend = '<button type="submit" class="btn-sendmail" value="sendmail" name ="action"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16"><path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741M1 11.105l4.708-2.897L1 5.383z"/></svg></button>'
-
-            elif contrato:
-                if contrato.isspace():
-                    alerta = '<p class="alert-false" id="alert-false" >Por favor introduzca un dato sin espacios (╥_╥)</p>'
-                else:
-                    consultaraf = afiliacion(contrato,fechacont)
-                    for row in consultaraf:
-                        dato1, dato2, dato3, dato4 = row
-
-                    btndown = '<button type="submit" class="btn btn-success donlawn">Descargar</button>'
-                    alerta = '<p class="alert-good" id="alert-good" >Resultados de tu Busquedaヽ(^o^)ノ</p>'
+                btndown = '<button type="submit" class="btn-descargar" value="descargar" name ="action"><img src="../../static/img/descargar.png" alt="descargar archivo" title="Descargar"class="btn-img" width="20px"></button>'
+                btnsend = '<button type="submit" class="btn-sendmail" value="sendmail"  name ="action"><img src="../../static/img/gmail.png" alt="Enviar por correo gmail" title="Enviar"class="btn-img" width="20px"></button>'
             else:
                 print('Error: Vuelva y verifique los datos que está escribiendo')
             if fechacont:
@@ -233,7 +211,7 @@ def welcomeaf():
             nombre = session['username']
             nombre_usuario = nombre.split('.')[0]    
 
-            return render_template('Welcome/Welcome.html',btnsend=btnsend,nombre_usuario = nombre_usuario,alerta=alerta,btndown= btndown,contrato=contrato, consultaraf=consultaraf, dato1=dato1, dato2=dato2, dato3=dato3, dato4=dato4)
+            return render_template('Welcome/Welcome.html',btnsend=btnsend,nombre_usuario = nombre_usuario,alerta=alerta,btndown= btndown,contrato=contrato, consultaraf=consultaraf, dato1=dato1, dato2=dato2, dato3=dato3, dato4=dato4,dato5=dato5)
         else:
             return redirect(url_for('login'))
     except Exception as e:
@@ -259,6 +237,7 @@ def downpdf():
         consultarpdf3 = consulta_caratula(contratopordebajo)    
         accion = request.form.get('action')
         contratopordebajo = request.form.get('contratopordebajo')
+        email = request.form.get('email')
         
         if accion == 'sendmail':
             pdfs = []
@@ -266,6 +245,7 @@ def downpdf():
             email_sender = "juan.cortes@gep.com.co" # Correo desde donde envía
             password = 'wwkk gfvd eysm lwfg' # Contraseña de la aplicación del correo
             email_reciver = "junafelipecortes0@gmail.com","auxiliarsistemas@gep.com.co","sebasshido22@gmail.com" # Correo destinatario
+            print(email)
             subject = "Pruebaaaa" # Asunto del correo
             with open('templates/Welcome/plantilla.html','r',encoding='utf-8') as file:
                 template_content = file.read()
