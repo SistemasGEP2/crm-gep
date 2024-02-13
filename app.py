@@ -294,9 +294,8 @@ def downpdf():
             # Trabajar en segundo plano el envío del correo
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 future = executor.submit(enviar_correo, email_sender, password, email_reciver, em)  # Paso parámetros de la función enviar_correo para el envío del correo
-            if not pdfs:
-                return render_template('Welcome/Welcome.html')
-
+                
+            return welcomeaf()
         elif accion == 'descargar':
             pdfs = []
             zip_buffer = BytesIO()
