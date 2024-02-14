@@ -20,6 +20,7 @@ import ssl
 from email.message import EmailMessage
 import concurrent.futures
 
+
 app = Flask(__name__)
 app.secret_key = 'supersecretkey_322015#$!asdjfl322015'
 @app.route('/login', methods=['GET','POST'])
@@ -246,9 +247,9 @@ def downpdf():
             zip_buffer = BytesIO()
             email_sender = "juan.cortes@gep.com.co"  # Correo desde donde envía
             password = 'wwkk gfvd eysm lwfg'  # Contraseña de la aplicación del correo
-            email_reciver = "junafelipecortes0@gmail.com", "auxiliarsistemas@gep.com.co", "sebasshido22@gmail.com"  # Correo destinatario
+            email_reciver = "junafelipecortes0@gmail.com", "auxiliarsistemas@gep.com.co", "sebasshido22@gmail.com"
             print(email)
-            subject = "Pruebaaaa"  # Asunto del correo
+            subject = f"Prueba con el contrato {contratopordebajo}"  # Asunto del correo
             with open('templates/Welcome/plantilla.html', 'r', encoding='utf-8') as file:
                 template_content = file.read()
 
@@ -280,9 +281,9 @@ def downpdf():
 
             # Trabajar en segundo plano el envío del correo
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                future = executor.submit(enviar_correo, email_sender, password, email_reciver, em)  # Paso parámetros de la función enviar_correo para el envío del correo
-                
+                future = executor.submit(enviar_correo, email_sender, password, email_reciver, em)  # Paso parámetros de la función enviar_correo para el envío del correo    
             return welcomeaf()
+        
         elif accion == 'descargar':
             pdfs = []
             zip_buffer = BytesIO()
