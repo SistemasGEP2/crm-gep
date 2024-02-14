@@ -19,6 +19,7 @@ import smtplib
 import ssl
 from email.message import EmailMessage
 import concurrent.futures
+from PyPDF2 import PdfReader,PdfWriter
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey_322015#$!asdjfl322015'
