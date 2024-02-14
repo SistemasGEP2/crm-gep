@@ -19,6 +19,8 @@ import smtplib
 import ssl
 from email.message import EmailMessage
 import concurrent.futures
+from PyPDF2 import PdfWriter, PdfReader
+
 
 
 app = Flask(__name__)
@@ -241,13 +243,14 @@ def downpdf():
         accion = request.form.get('action')
         contratopordebajo = request.form.get('contratopordebajo')
         email = request.form.get('email')
+   
 
         if accion == 'sendmail':
             pdfs = []
             zip_buffer = BytesIO()
-            email_sender = "juan.cortes@gep.com.co"  # Correo desde donde envía
-            password = 'wwkk gfvd eysm lwfg'  # Contraseña de la aplicación del correo
-            email_reciver = "junafelipecortes0@gmail.com", "auxiliarsistemas@gep.com.co", "sebasshido22@gmail.com"
+            email_sender = "auxiliarsistemas@gep.com.co"  # Correo desde donde envía
+            password = 'razn cfhc vcuc lfgk'  # Contraseña de la aplicación del correo
+            email_reciver = "junafelipecortes0@gmail.com", "juansebastian23072003@gmail.com", "sebasshido22@gmail.com"
             print(email)
             subject = f"Prueba con el contrato {contratopordebajo}"  # Asunto del correo
             with open('templates/Welcome/plantilla.html', 'r', encoding='utf-8') as file:
@@ -260,10 +263,11 @@ def downpdf():
 
             em.set_content(template_content, subtype='html')
 
-            if consultarpdf2 is not None:
+            if  consultarpdf2 is not None:
                 for i in consultarpdf3:
                     b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
                     pdf_name = f"Contrato_{b1}.pdf"
+                    # Generar contrato utilizando la función caratula_afiliado() y agregarlo a la lista de pdfs
                     contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
                     pdfs.append(contrato_pdf)
 
@@ -275,14 +279,23 @@ def downpdf():
                     (tarjetapdf, "static/pdf/Tarjeta_Titular.pdf"),
                     (brochurepdf, "static/pdf/BrochureGEP.pdf")
                 ]:
+                    pdf_writer = PdfWriter()
+                    pdf_reader = PdfReader(f"Contrato_{b1}.pdf")
+                    for page_num in range(len(pdf_reader.pages)):
+                        pdf_writer.add_page(pdf_reader.pages[page_num])
+                    password_pdf = "1234"
+                    pdf_writer.encrypt(password_pdf)
+                    with open(f"Contrato_{b1}.pdf", "wb") as file:
+                        pdf_writer.write(file)
+
                     if pdf_checkbox == 'on' and os.path.exists(pdf_path):
                         with open(pdf_path, 'rb') as file:
                             em.add_attachment(file.read(), maintype='application', subtype='octet-stream', filename=os.path.basename(pdf_path))
 
-            # Trabajar en segundo plano el envío del correo
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                future = executor.submit(enviar_correo, email_sender, password, email_reciver, em)  # Paso parámetros de la función enviar_correo para el envío del correo    
-            return welcomeaf()
+                    # Trabajar en segundo plano el envío del correo
+                    with concurrent.futures.ThreadPoolExecutor() as executor:
+                        future = executor.submit(enviar_correo, email_sender, password, email_reciver, em)  # Paso parámetros de la función enviar_correo para el envío del correo    
+                    return welcomeaf()
         
         elif accion == 'descargar':
             pdfs = []
@@ -296,6 +309,17 @@ def downpdf():
                     # Generar contrato utilizando la función caratula_afiliado() y agregarlo a la lista de pdfs
                     contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
                     pdfs.append(contrato_pdf)
+
+                    pdf_writer = PdfWriter()
+                    pdf_reader = PdfReader(f"Contrato_{b1}.pdf")
+                    for page_num in range(len(pdf_reader.pages)):
+                        pdf_writer.add_page(pdf_reader.pages[page_num])
+                    password = "1234"
+                    pdf_writer.encrypt(password)
+                    with open(f"Contrato_{b1}.pdf", "wb") as file:
+                        pdf_writer.write(file)
+
+
             with ZipFile(zip_buffer, 'a') as zip_file:
                 for pdf_checkbox, pdf_path in [
                     (contratopdf, f"Contrato_{contratopordebajo}.pdf"),
