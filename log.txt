@@ -69,3 +69,7 @@
 =======
  >> Archivo eliminado C:\Users\juan.hernandez\Documents\GitHub\crm-gep\Contrato_5A20293.pdf
 >>>>>>> 461de8ec8546c42243f85e0a9998b2530f5f58da
+
+ >> Archivo eliminado C:\Users\juan.hernandez\Documents\GitHub\crm-gep\Contrato_5A20293.pdf
+ >> Archivo eliminado C:\Users\juan.hernandez\Documents\GitHub\crm-gep\Contrato_CO14040.pdf
+ >> Archivo eliminado C:\Users\juan.hernandez\Documents\GitHub\crm-gep\Contrato_COR10074.pdf
