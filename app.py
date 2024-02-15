@@ -6,7 +6,7 @@ from afiliado import consulta_caratula, afiliacion_bienvenida
 from beneficiario import beneficiarios_consulta
 import os
 from io import BytesIO
-from zipfile import ZipFile
+from zipfile import ZipFile, ZIP_DEFLATED
 from datetime import datetime, time
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import jsonify, render_template
@@ -229,7 +229,6 @@ def enviar_correo(email_sender, password, email_reciver, em):
         print(str(e))
         return False
 
-
 @app.route("/downpdf", methods=['POST', 'GET'])
 def downpdf():
     try:
@@ -241,44 +240,30 @@ def downpdf():
         consultarpdf2 = afiliacion_bienvenida(contratopordebajo)
         consultarpdf3 = consulta_caratula(contratopordebajo)
         accion = request.form.get('action')
-        contratopordebajo = request.form.get('contratopordebajo')
-        email = request.form.get('email')
-   
-
+        
         if accion == 'sendmail':
             pdfs = []
             zip_buffer = BytesIO()
-            email_sender = "auxiliarsistemas@gep.com.co"  # Correo desde donde envía
-            password = 'razn cfhc vcuc lfgk'  # Contraseña de la aplicación del correo
-            email_reciver = "junafelipecortes0@gmail.com", "juansebastian23072003@gmail.com", "sebasshido22@gmail.com"
-            print(email)
-            subject = f"Prueba con el contrato {contratopordebajo}"  # Asunto del correo
+            email_sender = "auxiliarsistemas@gep.com.co"
+            password = 'razn cfhc vcuc lfgk'
+            email_reciver = ("junafelipecortes0@gmail.com", "juansebastian23072003@gmail.com", "sebasshido22@gmail.com")
+            subject = f"Prueba con el contrato {contratopordebajo}"
+
             with open('templates/Welcome/plantilla.html', 'r', encoding='utf-8') as file:
                 template_content = file.read()
 
-            em = EmailMessage()  # Función de envío de correo
-            em["From"] = email_sender  # Se define desde qué correo
-            em["To"] = email_reciver  # Se define a qué correo se envía
-            em["Subject"] = subject  # Se define el asunto
-
+            em = EmailMessage()
+            em["From"] = email_sender
+            em["To"] = email_reciver
+            em["Subject"] = subject
             em.set_content(template_content, subtype='html')
 
-            if  consultarpdf2 is not None:
+            if consultarpdf2 is not None:
                 for i in consultarpdf3:
                     b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
                     pdf_name = f"Contrato_{b1}.pdf"
-                    # Generar contrato utilizando la función caratula_afiliado() y agregarlo a la lista de pdfs
                     contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
                     pdfs.append(contrato_pdf)
-
-            # Check para escoger archivos a enviar
-            with ZipFile(zip_buffer, 'a') as zip_file:
-                for pdf_checkbox, pdf_path in [
-                    (contratopdf, f"Contrato_{contratopordebajo}.pdf"),
-                    (clausulapdf, "static/pdf/Clausulas.pdf"),
-                    (tarjetapdf, "static/pdf/Tarjeta_Titular.pdf"),
-                    (brochurepdf, "static/pdf/BrochureGEP.pdf")
-                ]:
                     pdf_writer = PdfWriter()
                     pdf_reader = PdfReader(f"Contrato_{b1}.pdf")
                     for page_num in range(len(pdf_reader.pages)):
@@ -287,16 +272,26 @@ def downpdf():
                     pdf_writer.encrypt(password_pdf)
                     with open(f"Contrato_{b1}.pdf", "wb") as file:
                         pdf_writer.write(file)
+                    
 
-                    if pdf_checkbox == 'on' and os.path.exists(pdf_path):
-                        with open(pdf_path, 'rb') as file:
-                            em.add_attachment(file.read(), maintype='application', subtype='octet-stream', filename=os.path.basename(pdf_path))
+                with ZipFile(zip_buffer, 'a') as zip_file:
+                    for pdf_checkbox, pdf_path in [
+                        (contratopdf, f"Contrato_{b1}.pdf"),
+                        (clausulapdf, "static/pdf/Clausulas.pdf"),
+                        (tarjetapdf, "static/pdf/Tarjeta_Titular.pdf"),
+                        (brochurepdf, "static/pdf/BrochureGEP.pdf")
+                    ]:
+            
+                        if pdf_checkbox == 'on' and os.path.exists(pdf_path):
+                            with open(pdf_path, 'rb') as file:
+                                em.add_attachment(file.read(), maintype='application', subtype='octet-stream', filename=os.path.basename(pdf_path))
 
-                    # Trabajar en segundo plano el envío del correo
-                    with concurrent.futures.ThreadPoolExecutor() as executor:
-                        future = executor.submit(enviar_correo, email_sender, password, email_reciver, em)  # Paso parámetros de la función enviar_correo para el envío del correo    
-                    return welcomeaf()
-        
+            # Trabajar en segundo plano el envío del correo
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(enviar_correo, email_sender, password, email_reciver, em)
+                
+            return welcomeaf()
+
         elif accion == 'descargar':
             pdfs = []
             zip_buffer = BytesIO()
@@ -314,21 +309,21 @@ def downpdf():
                     pdf_reader = PdfReader(f"Contrato_{b1}.pdf")
                     for page_num in range(len(pdf_reader.pages)):
                         pdf_writer.add_page(pdf_reader.pages[page_num])
-                    password = "1234"
-                    pdf_writer.encrypt(password)
+                    password_pdf = "1234"
+                    pdf_writer.encrypt(password_pdf)
                     with open(f"Contrato_{b1}.pdf", "wb") as file:
                         pdf_writer.write(file)
 
 
-            with ZipFile(zip_buffer, 'a') as zip_file:
-                for pdf_checkbox, pdf_path in [
-                    (contratopdf, f"Contrato_{contratopordebajo}.pdf"),
-                    (clausulapdf, "static/pdf/Clausulas.pdf"),
-                    (tarjetapdf, "static/pdf/Tarjeta_Titular.pdf"),
-                    (brochurepdf, "static/pdf/BrochureGEP.pdf")
-                ]:
-                    if pdf_checkbox == 'on' and os.path.exists(pdf_path):
-                        zip_file.write(pdf_path, os.path.basename(pdf_path))
+                with ZipFile(zip_buffer, 'a') as zip_file:
+                    for pdf_checkbox, pdf_path in [
+                        (contratopdf, f"Contrato_{contratopordebajo}.pdf"),
+                        (clausulapdf, "static/pdf/Clausulas.pdf"),
+                        (tarjetapdf, "static/pdf/Tarjeta_Titular.pdf"),
+                        (brochurepdf, "static/pdf/BrochureGEP.pdf")
+                    ]:
+                        if pdf_checkbox == 'on' and os.path.exists(pdf_path):
+                            zip_file.write(pdf_path, os.path.basename(pdf_path))
 
             zip_buffer.seek(0)
             return Response(
