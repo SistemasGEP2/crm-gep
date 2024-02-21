@@ -142,6 +142,7 @@ def diccionarios():
 
 @app.route('/updateServicios', methods=['POST'])
 def actualiserv():
+
     try:
         estadoSer = request.form.get('estado')
         profesional = request.form.get('proveedor')
@@ -170,6 +171,17 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))   
 
+def enviar_correo(email_sender, password, email_reciver, em):
+    try:
+        context = ssl.create_default_context()
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as smtp:
+            smtp.login(email_sender, password)
+            smtp.sendmail(email_sender, email_reciver, em.as_bytes())
+            return True
+    except Exception as e:
+        print(str(e))
+        
+    
 
 @app.route('/welcomeaf', methods=['POST', 'GET'])
 def welcomeaf():
@@ -180,6 +192,8 @@ def welcomeaf():
         alerta = ''
         btnsend = None
         btndown = ''
+        alertatruecorreo = ''
+        alertafalsecorreo = ''
 
         if request.method == 'POST':
             contrato = request.form.get('contrato')
@@ -207,6 +221,7 @@ def welcomeaf():
                 print('Error: Vuelva y verifique los datos que está escribiendo')
             if fechacont:
                 alerta = '<p class="alert-good" id="alert-good" >Resultados de tu Busqueda con el filtroヽ(^o^)ノ</p>'
+            
         if 'username' in session:
             nombre = session['username']
             nombre_usuario = nombre.split('.')[0]
@@ -218,18 +233,8 @@ def welcomeaf():
         return "<p style='color:red;font-size:35px;font-weight: 600; font-family:arial;'> Error: Vuelva y verifique la información. Si el error persiste, contacte con un desarrollador D:</p>" + str(e)
 
 
-def enviar_correo(email_sender, password, email_reciver, em):
-    try:
-        context = ssl.create_default_context()
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as smtp:
-            smtp.login(email_sender, password)
-            smtp.sendmail(email_sender, email_reciver, em.as_bytes())
-            return True
-    except Exception as e:
-        print(str(e))
-        return False
 
-@app.route("/downpdf", methods=['POST', 'GET'])
+@app.route("/downpdf", methods=['POST', 'GET'])  
 def downpdf():
     try:
         contratopdf = request.form.get('contratopdf')  # on and None
@@ -240,6 +245,7 @@ def downpdf():
         consultarpdf2 = afiliacion_bienvenida(contratopordebajo)
         consultarpdf3 = consulta_caratula(contratopordebajo)
         accion = request.form.get('action')
+        
         
         if accion == 'sendmail':
             pdfs = []
@@ -290,7 +296,7 @@ def downpdf():
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 future = executor.submit(enviar_correo, email_sender, password, email_reciver, em)
                 
-            return welcomeaf()
+
 
         elif accion == 'descargar':
             pdfs = []
@@ -304,7 +310,6 @@ def downpdf():
                     # Generar contrato utilizando la función caratula_afiliado() y agregarlo a la lista de pdfs
                     contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
                     pdfs.append(contrato_pdf)
-
                     pdf_writer = PdfWriter()
                     pdf_reader = PdfReader(f"Contrato_{b1}.pdf")
                     for page_num in range(len(pdf_reader.pages)):
