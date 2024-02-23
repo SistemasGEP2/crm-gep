@@ -171,16 +171,6 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))   
 
-def enviar_correo(email_sender, password, email_reciver, em):
-    try:
-        context = ssl.create_default_context()
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as smtp:
-            smtp.login(email_sender, password)
-            smtp.sendmail(email_sender, email_reciver, em.as_bytes())
-            return True
-    except Exception as e:
-        print(str(e))
-        
     
 
 @app.route('/welcomeaf', methods=['POST', 'GET'])
@@ -232,12 +222,22 @@ def welcomeaf():
     except Exception as e:
         return "<p style='color:red;font-size:35px;font-weight: 600; font-family:arial;'> Error: Vuelva y verifique la información. Si el error persiste, contacte con un desarrollador D:</p>" + str(e)
 
+def enviar_correo(email_sender, password, email_reciver, em):
+    try:
+        context = ssl.create_default_context()
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as smtp:
+            smtp.login(email_sender, password)
+            smtp.sendmail(email_sender, email_reciver, em.as_bytes())
+            return True
+    except Exception as e:
+        print(str(e))
+        
 
 
 @app.route("/downpdf", methods=['POST', 'GET'])  
 def downpdf():
     try:
-        contratopdf = request.form.get('contratopdf')  # on and None
+        contratopdf = request.form.get('contratopdf')  # on y None
         clausulapdf = request.form.get('clausulapdf')
         tarjetapdf = request.form.get('tarjetapdf')
         brochurepdf = request.form.get('brochurepdf')
@@ -279,24 +279,23 @@ def downpdf():
                     with open(f"Contrato_{b1}.pdf", "wb") as file:
                         pdf_writer.write(file)
                     
-
-                with ZipFile(zip_buffer, 'a') as zip_file:
-                    for pdf_checkbox, pdf_path in [
-                        (contratopdf, f"Contrato_{b1}.pdf"),
-                        (clausulapdf, "static/pdf/Clausulas.pdf"),
-                        (tarjetapdf, "static/pdf/Tarjeta_Titular.pdf"),
-                        (brochurepdf, "static/pdf/BrochureGEP.pdf")
-                    ]:
-            
-                        if pdf_checkbox == 'on' and os.path.exists(pdf_path):
-                            with open(pdf_path, 'rb') as file:
-                                em.add_attachment(file.read(), maintype='application', subtype='octet-stream', filename=os.path.basename(pdf_path))
+                    with ZipFile(zip_buffer, 'a') as zip_file:
+                        for pdf_checkbox, pdf_path in [
+                            (contratopdf, f"Contrato_{b1}.pdf"),
+                            (clausulapdf, "static/pdf/Clausulas.pdf"),
+                            (tarjetapdf, "static/pdf/Tarjeta_Titular.pdf"),
+                            (brochurepdf, "static/pdf/BrochureGEP.pdf")
+                        ]:
+                    
+                            if pdf_checkbox == 'on' and os.path.exists(pdf_path):
+                                with open(pdf_path, 'rb') as file:
+                                        em.add_attachment(file.read(), maintype='application', subtype='octet-stream', filename=os.path.basename(pdf_path))
 
             # Trabajar en segundo plano el envío del correo
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                future = executor.submit(enviar_correo, email_sender, password, email_reciver, em)
+                with concurrent.futures.ThreadPoolExecutor() as executor:
+                    future = executor.submit(enviar_correo, email_sender, password, email_reciver, em)
                 
-
+                return welcomeaf()
 
         elif accion == 'descargar':
             pdfs = []
@@ -337,7 +336,7 @@ def downpdf():
                 headers={'Content-Disposition': f'attachment;filename={contratopordebajo}.zip'}
             )
 
-        return downpdf()
+        return welcomeaf()
 
     except Exception as e:
         return print(str(e))
