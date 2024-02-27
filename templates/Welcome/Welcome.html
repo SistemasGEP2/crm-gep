@@ -71,7 +71,7 @@
                 <tbody>
                   {%for i in consultaraf%}
                   <tr>
-                    <td >{{i[0]}}</td>
+                    <td>{{i[0]}}</td>
                     <td>{{i[1]}}</td>
                     <td>{{i[2]}}</td>
                     <td>{{i[3]}}</td>
@@ -80,7 +80,29 @@
                       <td><input type="checkbox" name="contratopdf"></td>
                       <td><input type="checkbox" name="clausulapdf"></td>
                       <td><input type="checkbox" name="tarjetapdf"></td>
-                      <td><input type="checkbox" name="brochurepdf"></td> 
+                      <td><input type="checkbox" name="brochurepdf"></td>
+                      <td>
+                        <button type="button" onclick="activarchecks(this)" style="background-color: transparent; border: none;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2-all" viewBox="0 0 16 16">
+                                <path d="M12.354 4.354a.5.5 0 0 0-.708-.708L5 10.293 1.854 7.146a.5.5 0 1 0-.708.708l3.5 3.5a.5.5 0 0 0 .708 0zm-4.208 7-.896-.897.707-.707.543.543 6.646-6.647a.5.5 0 0 1 .708.708l-7 7a.5.5 0 0 1-.708 0"/>
+                                <path d="m5.354 7.146.896.897-.707.707-.897-.896a.5.5 0 1 1 .708-.708"/>
+                            </svg>
+                        </button>
+                    </td>
+                    
+                    <script>
+                        function activarchecks(button) {
+                            var row = button.closest('tr'); // Busca el ancestro 'tr' más cercano
+                            var checks = row.querySelectorAll('input[type="checkbox"]');
+                            var isChecked = button.classList.contains('checked');
+                    
+                            checks.forEach(function(check) {
+                                check.checked = !isChecked;
+                            });
+                    
+                            button.classList.toggle('checked');
+                        }
+                    </script>
                       <td><input type="text" name="contratopordebajo"  value="{{i[3]}}" style="background-color: transparent;border: none;display: none;"></td>                
                       <input type="hidden" name="contrato" value="{{ contrato }}">
                       <td><input type="text" name="email"  value="{{i[4]}}" style="background-color: transparent;border: none;display: none;"></td>                
