@@ -244,8 +244,8 @@ def downpdf():
         if accion == 'sendmail':
             pdfs = []
             zip_buffer = BytesIO()
-            email_sender = "auxiliarsistemas@gep.com.co"
-            password = 'razn cfhc vcuc lfgk'
+            email_sender = "juan.cortes@gep.com.co"
+            password = 'wwkk gfvd eysm lwfg' #Clave auxiliar sistemas "razn cfhc vcuc lfgk" llave python
             email_reciver = ("junafelipecortes0@gmail.com", "juansebastian23072003@gmail.com", "sebasshido22@gmail.com")
             subject = f"Prueba con el contrato {contratopordebajo}"
 
