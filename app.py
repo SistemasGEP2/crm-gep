@@ -282,8 +282,8 @@ def downpdf():
                     with ZipFile(zip_buffer, 'a') as zip_file:
                         for pdf_checkbox, pdf_path in [
                             (contratopdf, f"Contrato_{b1}.pdf"),
-                            (clausulapdf, "static/pdf/Clausulas.pdf"),
-                            (tarjetapdf, "static/pdf/Tarjeta_Titular.pdf"),
+                            (clausulapdf, "static/pdf/exequial.pdf"),
+                            (tarjetapdf, "static/pdf/jurpsi.pdf"),
                             (brochurepdf, "static/pdf/BrochureGEP.pdf")
                         ]:
                     
@@ -328,8 +328,8 @@ def downpdf():
                 with ZipFile(zip_buffer, 'a') as zip_file:
                     for pdf_checkbox, pdf_path in [
                         (contratopdf, f"Contrato_{contratopordebajo}.pdf"),
-                        (clausulapdf, "static/pdf/Clausulas.pdf"),
-                        (tarjetapdf, "static/pdf/Tarjeta_Titular.pdf"),
+                        (clausulapdf, "static/pdf/exequial.pdf"),
+                        (tarjetapdf, "static/pdf/jurpsi.pdf"),
                         (brochurepdf, "static/pdf/BrochureGEP.pdf")
                     ]:
                         if pdf_checkbox == 'on' and os.path.exists(pdf_path):
