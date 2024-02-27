@@ -232,11 +232,11 @@ def enviar_correo(email_sender, password, email_reciver, em):
     except Exception as e:
         print(str(e))
         
-
-
+nomtitular = ""
 @app.route("/downpdf", methods=['POST', 'GET'])  
 def downpdf():
     try:
+
         contratopdf = request.form.get('contratopdf')  # on y None
         clausulapdf = request.form.get('clausulapdf')
         tarjetapdf = request.form.get('tarjetapdf')
@@ -245,7 +245,6 @@ def downpdf():
         consultarpdf2 = afiliacion_bienvenida(contratopordebajo)
         consultarpdf3 = consulta_caratula(contratopordebajo)
         accion = request.form.get('action')
-        
         
         if accion == 'sendmail':
             pdfs = []
@@ -278,7 +277,8 @@ def downpdf():
                     pdf_writer.encrypt(password_pdf)
                     with open(f"Contrato_{b1}.pdf", "wb") as file:
                         pdf_writer.write(file)
-                    
+                    global nomtitular
+                    nomtitular=b1
                     with ZipFile(zip_buffer, 'a') as zip_file:
                         for pdf_checkbox, pdf_path in [
                             (contratopdf, f"Contrato_{b1}.pdf"),
@@ -290,6 +290,7 @@ def downpdf():
                             if pdf_checkbox == 'on' and os.path.exists(pdf_path):
                                 with open(pdf_path, 'rb') as file:
                                         em.add_attachment(file.read(), maintype='application', subtype='octet-stream', filename=os.path.basename(pdf_path))
+                
 
             # Trabajar en segundo plano el envío del correo
                 with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -307,6 +308,7 @@ def downpdf():
             consultarpdf2 = afiliacion_bienvenida(contratopordebajo)
             consultarpdf3 = consulta_caratula(contratopordebajo)
             if consultarpdf2 is not None:
+                
                 for i in consultarpdf3:
                     b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
                     pdf_name = f"Contrato_{b1}.pdf"
@@ -321,7 +323,7 @@ def downpdf():
                     pdf_writer.encrypt(password_pdf)
                     with open(f"Contrato_{b1}.pdf", "wb") as file:
                         pdf_writer.write(file)
-
+                carta(b1)
 
                 with ZipFile(zip_buffer, 'a') as zip_file:
                     for pdf_checkbox, pdf_path in [
@@ -340,11 +342,21 @@ def downpdf():
                 headers={'Content-Disposition': f'attachment;filename={contratopordebajo}.zip'}
             )
 
+
         return welcomeaf()
 
     except Exception as e:
         return print(str(e))
 
+@app.route("/carta", methods=['POST', 'GET'])
+def carta():
+    try:
+        global nomtitular
+
+        return render_template('Welcome/Plantilla.html', titular=nomtitular)
+
+    except Exception as e:
+        print(f"Error en el nombre del titular {e}")
 
 def delete_pdf():
     try:
@@ -382,6 +394,7 @@ atexit.register(lambda: scheduler.shutdown())
 
 # Ejecutar la función directamente al inicio para probar
 delete_pdf()
+
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0', port=5000)
