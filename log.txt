@@ -22,6 +22,7 @@
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
  >> Archivo eliminado C:\Users\juan.hernandez\Documents\GitHub\crm-gep\Caratula_5A20293.pdf
  >> Archivo eliminado C:\Users\juan.hernandez\Documents\GitHub\crm-gep\Contrato_5A20293.pdf
  >> Archivo eliminado C:\Users\juan.hernandez\Documents\GitHub\crm-gep\Caratula_5A20293.pdf
@@ -74,3 +75,9 @@
  >> Archivo eliminado C:\Users\juan.hernandez\Documents\GitHub\crm-gep\Contrato_CO14040.pdf
  >> Archivo eliminado C:\Users\juan.hernandez\Documents\GitHub\crm-gep\Contrato_COR10074.pdf
  >> Archivo eliminado C:\Users\juan.cortes\Documents\GitHub\crm-gep\Contrato_5A20293.pdf
+=======
+>>>>>>> b3ed81932e83614b7433bd3772e1f8ee9beeb29e
+
+ >> Archivo eliminado C:\Users\juan.cortes\Documents\GitHub\crm-gep\Contrato_CO14040.pdf
+ >> Archivo eliminado C:\Users\juan.cortes\Documents\GitHub\crm-gep\Contrato_CO14040.pdf
+ >> Archivo eliminado C:\Users\juan.cortes\Documents\GitHub\crm-gep\Contrato_CO14040.pdf

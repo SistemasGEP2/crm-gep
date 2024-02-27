@@ -260,7 +260,7 @@ def downpdf():
 
             em = EmailMessage()
             em["From"] = email_sender
-            em["To"] = email_reciver
+            em["To"] = email_reciver    
             em["Subject"] = subject
             em.set_content(template_content, subtype='html')
 
@@ -294,6 +294,10 @@ def downpdf():
             # Trabajar en segundo plano el envío del correo
                 with concurrent.futures.ThreadPoolExecutor() as executor:
                     future = executor.submit(enviar_correo, email_sender, password, email_reciver, em)
+            if enviar_correo:
+                print("Correo Enviado")
+            else:
+                print("Correo no enviado")
                 
                 return welcomeaf()
 
