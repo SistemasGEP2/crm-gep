@@ -300,7 +300,7 @@ def downpdf():
             else:
                 print("Correo no enviado")
                 
-                return welcomeaf()
+            return welcomeaf()
 
         elif accion == 'descargar':
             pdfs = []
@@ -323,7 +323,7 @@ def downpdf():
                     pdf_writer.encrypt(password_pdf)
                     with open(f"Contrato_{b1}.pdf", "wb") as file:
                         pdf_writer.write(file)
-                carta(b1)
+            
 
                 with ZipFile(zip_buffer, 'a') as zip_file:
                     for pdf_checkbox, pdf_path in [
@@ -347,16 +347,6 @@ def downpdf():
 
     except Exception as e:
         return print(str(e))
-
-@app.route("/carta", methods=['POST', 'GET'])
-def carta():
-    try:
-        global nomtitular
-
-        return render_template('Welcome/Plantilla.html', titular=nomtitular)
-
-    except Exception as e:
-        print(f"Error en el nombre del titular {e}")
 
 def delete_pdf():
     try:
