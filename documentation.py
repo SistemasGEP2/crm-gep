@@ -112,7 +112,7 @@ def caratula_afiliado(pdf_file, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b1
     for row in beneficiarios_data:
         # Convertir el código hexadecimal a RGB
         rgb_color = hex_to_rgb("F39200")
-        pdf_canvas.setFont("Helvetica-Bold",6.5)
+        pdf_canvas.setFont("Helvetica-Bold",5.5)
         # Dibujar línea vertical con color RGB
         pdf_canvas.setStrokeColorRGB(*[x/255.0 for x in rgb_color])  # Convertir a rango de 0 a 1
         pdf_canvas.setLineWidth(0.5)
