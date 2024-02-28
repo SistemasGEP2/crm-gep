@@ -262,45 +262,76 @@ def downpdf():
             em["To"] = email_reciver    
             em["Subject"] = subject
             em.set_content(template_content, subtype='html')
+        if consultarpdf2 is not None:
+            for i in consultarpdf3:
+                b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
+                pdf_name = f"Contrato_{b1}.pdf"
+                contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
+                pdfs.append(contrato_pdf)
+                pdf_writer = PdfWriter()
+                pdf_reader = PdfReader(f"Contrato_{b1}.pdf")
+                for page_num in range(len(pdf_reader.pages)):
+                    pdf_writer.add_page(pdf_reader.pages[page_num])
+                password_pdf = b11
+                pdf_writer.encrypt(password_pdf)
+                with open(f"Contrato_{b1}.pdf", "wb") as file:
+                    pdf_writer.write(file)
 
-            if consultarpdf2 is not None:
-                for i in consultarpdf3:
-                    b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
-                    pdf_name = f"Contrato_{b1}.pdf"
-                    contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
-                    pdfs.append(contrato_pdf)
-                    pdf_writer = PdfWriter()
-                    pdf_reader = PdfReader(f"Contrato_{b1}.pdf")
-                    for page_num in range(len(pdf_reader.pages)):
-                        pdf_writer.add_page(pdf_reader.pages[page_num])
-                    password_pdf = "1234"
-                    pdf_writer.encrypt(password_pdf)
-                    with open(f"Contrato_{b1}.pdf", "wb") as file:
-                        pdf_writer.write(file)
-                    global nomtitular
-                    nomtitular=b1
-                    with ZipFile(zip_buffer, 'a') as zip_file:
-                        for pdf_checkbox, pdf_path in [
-                            (contratopdf, f"Contrato_{b1}.pdf"),
-                            (clausulapdf, "static/pdf/exequial.pdf"),
-                            (tarjetapdf, "static/pdf/jurpsi.pdf"),
-                            (brochurepdf, "static/pdf/BrochureGEP.pdf")
-                        ]:
-                    
-                            if pdf_checkbox == 'on' and os.path.exists(pdf_path):
-                                with open(pdf_path, 'rb') as file:
-                                        em.add_attachment(file.read(), maintype='application', subtype='octet-stream', filename=os.path.basename(pdf_path))
-                
+                pdf_writer_brochure = PdfWriter()
+                pdf_reader_brochure = PdfReader(f"static/pdf/Brochure.pdf")
+                pdf_reader_brochure.decrypt("1234")  # Desencriptar el archivo Brochure.pdf
+                for page_num in range(len(pdf_reader_brochure.pages)):
+                    pdf_writer_brochure.add_page(pdf_reader_brochure.pages[page_num])
+                password_pdf_brochure = b11
+                pdf_writer_brochure.encrypt(password_pdf_brochure)
+                with open(f"static/pdf/Brochure.pdf", "wb") as file_brochure:
+                    pdf_writer_brochure.write(file_brochure)
 
-            # Trabajar en segundo plano el envío del correo
-                with concurrent.futures.ThreadPoolExecutor() as executor:
-                    future = executor.submit(enviar_correo, email_sender, password, email_reciver, em)
-            if enviar_correo:
-                print("Correo Enviado")
-            else:
-                print("Correo no enviado")
-                
-            return welcomeaf()
+                pdf_writer_exequial = PdfWriter()
+                pdf_reader_exequial = PdfReader("static/pdf/Exequial.pdf")
+                pdf_reader_exequial.decrypt("1234")
+                for page_num in range(len(pdf_reader_exequial.pages)):
+                    pdf_writer_exequial.add_page(pdf_reader_exequial.pages[page_num])
+                password_pdf_exequial = b11
+                pdf_writer_exequial.encrypt(password_pdf_exequial)
+                with open(f"static/pdf/Exequial.pdf", "wb") as file_exequial:
+                    pdf_writer_exequial.write(file_exequial)
+
+                pdf_writer_juripsico = PdfWriter()
+                pdf_reader_juripsico = PdfReader("static/pdf/Juri_Psico.pdf")
+                pdf_reader_juripsico.decrypt("1234")#Se desencripta si el archivo ya esta encriptado, si no lo esta comentarear esta linea, solo por el momento(malas practicas)
+                for page_num in range(len(pdf_reader_juripsico.pages)):
+                    pdf_writer_juripsico.add_page(pdf_reader_juripsico.pages[page_num])
+                password_pdf_juripsico = b11
+                pdf_writer_juripsico.encrypt(password_pdf_juripsico)
+                with open(f"static/pdf/Juri_Psico.pdf", "wb") as file_juripsico:
+                    pdf_writer_juripsico.write(file_juripsico)
+
+                global nomtitular
+                nomtitular=b1
+                with ZipFile(zip_buffer, 'a') as zip_file:
+                    for pdf_checkbox, pdf_path in [
+                        (brochurepdf, "static/pdf/Brochure.pdf"),
+                        (contratopdf, f"Contrato_{b1}.pdf"),
+                        (clausulapdf, "static/pdf/Exequial.pdf"),
+                        (tarjetapdf, "static/pdf/Juri_Psico.pdf")
+                    ]:
+
+                        if pdf_checkbox == 'on' and os.path.exists(pdf_path):
+                            with open(pdf_path, 'rb') as file:
+                                em.add_attachment(file.read(), maintype='application', subtype='octet-stream', filename=os.path.basename(pdf_path))
+
+
+
+                    # Trabajar en segundo plano el envío del correo
+                    with concurrent.futures.ThreadPoolExecutor() as executor:
+                       future = executor.submit(enviar_correo, email_sender, password, email_reciver, em)
+                    if enviar_correo:
+                        print("Correo Enviado")
+                    else:
+                        print("Correo no enviado")
+
+                    return welcomeaf()
 
         elif accion == 'descargar':
             pdfs = []
@@ -330,7 +361,7 @@ def downpdf():
                         (contratopdf, f"Contrato_{contratopordebajo}.pdf"),
                         (clausulapdf, "static/pdf/exequial.pdf"),
                         (tarjetapdf, "static/pdf/jurpsi.pdf"),
-                        (brochurepdf, "static/pdf/BrochureGEP.pdf")
+                        (brochurepdf, "static/pdf/Brochure.pdf")
                     ]:
                         if pdf_checkbox == 'on' and os.path.exists(pdf_path):
                             zip_file.write(pdf_path, os.path.basename(pdf_path))

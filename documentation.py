@@ -69,7 +69,7 @@ def hex_to_rgb(hex_color):
 def caratula_afiliado(pdf_file, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contrato):
     pdf_buffer = BytesIO()
     pdf_canvas = canvas.Canvas(pdf_buffer, pagesize=letter)
-    locale.setlocale(locale.LC_TIME, 'es_ES.utf8')
+    locale.setlocale(locale.LC_TIME, 'es_ES.utf-8')
     consulta_bene = beneficiarios_consulta(contrato)
     img = ImageReader('static/img/Caratula_1.jpg')
     pdf_canvas.drawImage(img, 0, 0, width=letter[0], height=letter[1])
@@ -105,13 +105,13 @@ def caratula_afiliado(pdf_file, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b1
     pdf_canvas.drawString(37,336.5,b2)
     pdf_canvas.drawString(249,336.5,b4) #VALOR LETRAS
     beneficiarios_data = consulta_bene
-    y_coordinate_datos = 222
-    y_coordinate = 235
+    y_coordinate_datos = 232
+    y_coordinate = 245
     url_boton = "https://www.grupoempresarialproteccion.com"
     pdf_canvas.linkURL(url_boton,(580,290,470,320), thickness = 1,  borderColor=colors.blue, textColor=colors.black)
     for row in beneficiarios_data:
         # Convertir el código hexadecimal a RGB
-        rgb_color = hex_to_rgb("F39200")
+        rgb_color = hex_to_rgb("E6C78C")
         pdf_canvas.setFont("Helvetica-Bold",5.5)
         # Dibujar línea vertical con color RGB
         pdf_canvas.setStrokeColorRGB(*[x/255.0 for x in rgb_color])  # Convertir a rango de 0 a 1
@@ -119,10 +119,10 @@ def caratula_afiliado(pdf_file, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b1
         pdf_canvas.line(27, y_coordinate - 17, 584, y_coordinate - 17)  # Línea horizontal superior
         pdf_canvas.line(27, y_coordinate, 27, y_coordinate - 17)         # Línea vertical izquierda
         pdf_canvas.line(585, y_coordinate, 585, y_coordinate - 17)     # Línea vertical derecha
-        pdf_canvas.drawString(52, y_coordinate_datos, row[0]) 
-        pdf_canvas.drawString(208, y_coordinate_datos, row[1])
-        pdf_canvas.drawString(390, y_coordinate_datos, str(row[2]))
-        pdf_canvas.drawString(523, y_coordinate_datos, str(row[3]))
+        pdf_canvas.drawString(50, y_coordinate_datos, row[0])
+        pdf_canvas.drawString(177, y_coordinate_datos, row[1])
+        pdf_canvas.drawString(372, y_coordinate_datos, str(row[2]))
+        pdf_canvas.drawString(515, y_coordinate_datos, str(row[3]))
         y_coordinate_datos -= 17
         y_coordinate -= 17 
     # Guardar el PDF con todas las páginas
