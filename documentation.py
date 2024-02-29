@@ -124,7 +124,11 @@ def caratula_afiliado(pdf_file, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b1
         pdf_canvas.drawString(372, y_coordinate_datos, str(row[2]))
         pdf_canvas.drawString(515, y_coordinate_datos, str(row[3]))
         y_coordinate_datos -= 17
-        y_coordinate -= 17 
+        y_coordinate -= 17
+
+    pdf_canvas.showPage()
+    firma = ImageReader('static/img/Firma_Caratula.jpg')
+    pdf_canvas.drawImage(firma,0,600,250,150)
     # Guardar el PDF con todas las páginas
     pdf_canvas.save()
     pdf_buffer.seek(0)
