@@ -43,7 +43,7 @@ def login():
                 session['logged_in'] = True
                 session['username'] = username
                 
-                return redirect(url_for('index'))  # Redirige a la página de dashboard si las credenciales son correctas
+                return redirect(url_for('inicio'))  # Redirige a la página de dashboard si las credenciales son correctas
             else:
                 print('Credenciales incorrectas. Por favor, inténtalo nuevamente')
                 error = 'Credenciales incorrectas. Por favor, inténtalo nuevamente.'
@@ -54,6 +54,14 @@ def login():
             return render_template('prueba.html', error=error)
 
     return render_template('prueba.html')
+
+@app.route('/inicio')
+def inicio():
+    try:
+        return render_template('Inicio.html')
+
+    except Exception as e:
+        return f"Error{e}"
 
 @app.route('/index')
 def index():
@@ -171,7 +179,7 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))   
 
-    
+  
 
 @app.route('/welcomeaf', methods=['POST', 'GET'])
 def welcomeaf():
