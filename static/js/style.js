@@ -80,6 +80,8 @@ function verhistoryindex(){
 
 var alertElement1 = document.getElementById('alert-good');
 var alertElement2 = document.getElementById('alert-false');
+var alertElement3 = document.getElementById('alertatruecorreo');
+
 
 
 setTimeout(function() {
@@ -90,7 +92,11 @@ setTimeout(function() {
     alertElement2.style.opacity = '0';
     alertElement2.style.display = 'none';
   }, 5000);
-  
+
+setTimeout(function(){
+    alertElement3.style.opacity = '0';
+    alertElement3.style.display = 'none';
+}, 5000)
 
 
 

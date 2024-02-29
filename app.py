@@ -6,7 +6,7 @@ from afiliado import consulta_caratula, afiliacion_bienvenida
 from beneficiario import beneficiarios_consulta
 import os
 from io import BytesIO
-from zipfile import ZipFile
+from zipfile import ZipFile, ZIP_DEFLATED
 from datetime import datetime, time
 from apscheduler.schedulers.background import BackgroundScheduler
 from flask import jsonify, render_template
@@ -20,6 +20,7 @@ import ssl
 from email.message import EmailMessage
 import concurrent.futures
 from PyPDF2 import PdfReader,PdfWriter
+
 
 app = Flask(__name__)
 app.secret_key = 'supersecretkey_322015#$!asdjfl322015'
@@ -41,7 +42,7 @@ def login():
                 session['logged_in'] = True
                 session['username'] = username
                 
-                return redirect(url_for('index'))  # Redirige a la página de dashboard si las credenciales son correctas
+                return redirect(url_for('inicio'))  # Redirige a la página de dashboard si las credenciales son correctas
             else:
                 print('Credenciales incorrectas. Por favor, inténtalo nuevamente')
                 error = 'Credenciales incorrectas. Por favor, inténtalo nuevamente.'
@@ -52,6 +53,14 @@ def login():
             return render_template('prueba.html', error=error)
 
     return render_template('prueba.html')
+
+@app.route('/inicio')
+def inicio():
+    try:
+        return render_template('Inicio.html')
+
+    except Exception as e:
+        return f"Error{e}"
 
 @app.route('/index')
 def index():
@@ -140,6 +149,7 @@ def diccionarios():
 
 @app.route('/updateServicios', methods=['POST'])
 def actualiserv():
+
     try:
         estadoSer = request.form.get('estado')
         profesional = request.form.get('proveedor')
@@ -168,16 +178,19 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))   
 
+  
 
 @app.route('/welcomeaf', methods=['POST', 'GET'])
 def welcomeaf():
     try:
         contrato = None
         consultaraf = ''
-        dato1, dato2, dato3, dato4,dato5 = None, None, None, None,None
-        alerta=''
+        dato1, dato2, dato3, dato4, dato5 = None, None, None, None, None
+        alerta = ''
         btnsend = None
         btndown = ''
+        alertatruecorreo = ''
+        alertafalsecorreo = ''
 
         if request.method == 'POST':
             contrato = request.form.get('contrato')
@@ -185,24 +198,22 @@ def welcomeaf():
             print(f"ESTA ES LA FECHA QUE SE ESTA ESCRIBIENDO:: {fechacont}")
             if contrato is None or not contrato:
                 contrato = 0
-                consultaraf = afiliacion(contrato,fechacont)
+                consultaraf = afiliacion(contrato, fechacont)
                 for row in consultaraf:
-                    dato1, dato2, dato3, dato4,dato5 = row
-                btndown = '<button type="submit" class="btn-descargar" value="descargar" name ="action"><img src="../../static/img/descargar.png" alt="descargar archivo" title="Descargar"class="btn-img" width="20px"></button>'
+                    dato1, dato2, dato3, dato4, dato5 = row
+                btndown = '<button type="submit" class="btn-descargar" value="descargar" name="action"><img src="../../static/img/descargar.png" alt="descargar archivo" title="Descargar"class="btn-img" width="20px"></button>'
+                btnsend = '<button type="submit" class="btn-sendmail" value="sendmail" name ="action"><img src="../../static/img/gmail.png" alt="Enviar por correo gmail" title="Enviar"class="btn-img" width="20px"></button>'
                 alerta = '<p class="alert-false" id="alert-false" >Por favor introduzca un dato valido (╥_╥)</p>'
             elif contrato:
                 if contrato.isspace():
                     alerta = '<p class="alert-false" id="alert-false" >Por favor introduzca un dato sin espacios (╥_╥)</p>'
                 else:
-                    consultaraf = afiliacion(contrato,fechacont)
+                    consultaraf = afiliacion(contrato, fechacont)
                     for row in consultaraf:
-                        dato1, dato2, dato3, dato4,dato5 = row
-
+                        dato1, dato2, dato3, dato4, dato5 = row
                     btndown = '<button type="submit" class="btn-descargar" value="descargar" name ="action"><img src="../../static/img/descargar.png" alt="descargar archivo" title="Descargar"class="btn-img" width="20px"></button>'
+                    btnsend = '<button type="submit" class="btn-sendmail" value="sendmail"  name ="action"><img src="../../static/img/gmail.png" alt="Enviar por correo gmail" title="Enviar"class="btn-img" width="20px"></button>'
                     alerta = '<p class="alert-good" id="alert-good" >Resultados de tu Busquedaヽ(^o^)ノ</p>'
-            
-                btndown = '<button type="submit" class="btn-descargar" value="descargar" name ="action"><img src="../../static/img/descargar.png" alt="descargar archivo" title="Descargar"class="btn-img" width="20px"></button>'
-                btnsend = '<button type="submit" class="btn-sendmail" value="sendmail"  name ="action"><img src="../../static/img/gmail.png" alt="Enviar por correo gmail" title="Enviar"class="btn-img" width="20px"></button>'
             else:
                 print('Error: Vuelva y verifique los datos que está escribiendo')
             if fechacont:
@@ -210,83 +221,126 @@ def welcomeaf():
             
         if 'username' in session:
             nombre = session['username']
-            nombre_usuario = nombre.split('.')[0]    
+            nombre_usuario = nombre.split('.')[0]
 
-            return render_template('Welcome/Welcome.html',btnsend=btnsend,nombre_usuario = nombre_usuario,alerta=alerta,btndown= btndown,contrato=contrato, consultaraf=consultaraf, dato1=dato1, dato2=dato2, dato3=dato3, dato4=dato4,dato5=dato5)
+            return render_template('Welcome/Welcome.html', btnsend=btnsend, nombre_usuario=nombre_usuario, alerta=alerta, btndown=btndown, contrato=contrato, consultaraf=consultaraf, dato1=dato1, dato2=dato2, dato3=dato3, dato4=dato4, dato5=dato5)
         else:
             return redirect(url_for('login'))
     except Exception as e:
         return "<p style='color:red;font-size:35px;font-weight: 600; font-family:arial;'> Error: Vuelva y verifique la información. Si el error persiste, contacte con un desarrollador D:</p>" + str(e)
 
 def enviar_correo(email_sender, password, email_reciver, em):
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as smtp:
-        smtp.login(email_sender, password)
-        smtp.sendmail(email_sender, email_reciver, em.as_bytes())
-
+    try:
+        context = ssl.create_default_context()
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as smtp:
+            smtp.login(email_sender, password)
+            smtp.sendmail(email_sender, email_reciver, em.as_bytes())
+            return True
+    except Exception as e:
+        print(str(e))
         
-
-@app.route("/downpdf", methods=['POST', 'GET'])
+nomtitular = ""
+@app.route("/downpdf", methods=['POST', 'GET'])  
 def downpdf():
     try:
-        contratopdf = request.form.get('contratopdf') # on and None
+
+        contratopdf = request.form.get('contratopdf')  # on y None
         clausulapdf = request.form.get('clausulapdf')
         tarjetapdf = request.form.get('tarjetapdf')
         brochurepdf = request.form.get('brochurepdf')
         contratopordebajo = request.form.get('contratopordebajo')
         consultarpdf2 = afiliacion_bienvenida(contratopordebajo)
-        consultarpdf3 = consulta_caratula(contratopordebajo)    
+        consultarpdf3 = consulta_caratula(contratopordebajo)
         accion = request.form.get('action')
-        contratopordebajo = request.form.get('contratopordebajo')
-        email = request.form.get('email')
         
         if accion == 'sendmail':
             pdfs = []
             zip_buffer = BytesIO()
-            email_sender = "juan.cortes@gep.com.co" # Correo desde donde envía
-            password = 'wwkk gfvd eysm lwfg' # Contraseña de la aplicación del correo
-            email_reciver = "junafelipecortes0@gmail.com","auxiliarsistemas@gep.com.co","sebasshido22@gmail.com" # Correo destinatario
-            print(email)
-            subject = "Pruebaaaa" # Asunto del correo
-            with open('templates/Welcome/plantilla.html','r',encoding='utf-8') as file:
+            email_sender = "juan.cortes@gep.com.co"
+            password = 'wwkk gfvd eysm lwfg' #Clave auxiliar sistemas "razn cfhc vcuc lfgk" llave python
+            email_reciver = ("junafelipecortes0@gmail.com", "juansebastian23072003@gmail.com", "sebasshido22@gmail.com")
+            subject = f"Prueba con el contrato {contratopordebajo}"
+
+            with open('templates/Welcome/plantilla.html', 'r', encoding='utf-8') as file:
                 template_content = file.read()
 
-            em = EmailMessage() # Función de envío de correo 
-            em["From"] = email_sender  # Se define desde qué correo
-            em["To"] = email_reciver # Se define a qué correo se envía
-            em["Subject"] = subject # Se define el asunto
-            
-            em.set_content(template_content, subtype ='html')
-            
-            consultarpdf2 = afiliacion_bienvenida(contratopordebajo)
-            consultarpdf3 = consulta_caratula(contratopordebajo)
-            if consultarpdf2 is not None:
-                for i in consultarpdf3:
-                    b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
-                    pdf_name = f"Contrato_{b1}.pdf"
-                    contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
-                    pdfs.append(contrato_pdf)
-            # Check para escoger archivos a enviar 
-            with ZipFile(zip_buffer, 'a') as zip_file:
-                for pdf_checkbox, pdf_path in [
-                    (contratopdf, f"Contrato_{contratopordebajo}.pdf"),
-                    (clausulapdf, "static/pdf/Clausulas.pdf"),
-                    (tarjetapdf, "static/pdf/Tarjeta_Titular.pdf"),
-                    (brochurepdf, "static/pdf/BrochureGEP.pdf")
-                ]:
-                    if pdf_checkbox == 'on' and os.path.exists(pdf_path):
-                        with open(pdf_path, 'rb') as file:
-                            em.add_attachment(file.read(), maintype='application', subtype='octet-stream', filename=os.path.basename(pdf_path))
-            
-            # Trabajar en segundo plano el envío del correo
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                future = executor.submit(enviar_correo, email_sender, password, email_reciver, em) # Paso parámetros de la función enviar_correo para el envío del correo
+            em = EmailMessage()
+            em["From"] = email_sender
+            em["To"] = email_reciver    
+            em["Subject"] = subject
+            em.set_content(template_content, subtype='html')
+        if consultarpdf2 is not None:
+            for i in consultarpdf3:
+                b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
+                pdf_name = f"Contrato_{b1}.pdf"
+                contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
+                pdfs.append(contrato_pdf)
+                pdf_writer = PdfWriter()
+                pdf_reader = PdfReader(f"Contrato_{b1}.pdf")
+                for page_num in range(len(pdf_reader.pages)):
+                    pdf_writer.add_page(pdf_reader.pages[page_num])
+                password_pdf = b11
+                pdf_writer.encrypt(password_pdf)
+                with open(f"Contrato_{b1}.pdf", "wb") as file:
+                    pdf_writer.write(file)
 
-        else:
-            print('listo :D')
-        if not pdfs:
-            return render_template('Welcome/Welcome.html')
-    
+
+                # Codigo encriptacion brochure, por si se llega a necesitar
+                # pdf_writer_brochure = PdfWriter()
+                # pdf_reader_brochure = PdfReader(f"static/pdf/Brochure.pdf")
+                # pdf_reader_brochure.decrypt(b11)# Desencriptar el archivo Brochure.pdf
+                # for page_num in range(len(pdf_reader_brochure.pages)):
+                #     pdf_writer_brochure.add_page(pdf_reader_brochure.pages[page_num])
+                # password_pdf_brochure = b11
+                # pdf_writer_brochure.encrypt(password_pdf_brochure)
+                # with open(f"static/pdf_encriptados/Brochure{b11}.pdf", "wb") as file_brochure:
+                #     pdf_writer_brochure.write(file_brochure)
+
+                pdf_writer_exequial = PdfWriter()
+                pdf_reader_exequial = PdfReader("static/pdf/Exequial.pdf")
+                # pdf_reader_exequial.decrypt(b11)
+                for page_num in range(len(pdf_reader_exequial.pages)):
+                    pdf_writer_exequial.add_page(pdf_reader_exequial.pages[page_num])
+                password_pdf_exequial = b11
+                pdf_writer_exequial.encrypt(password_pdf_exequial)
+                with open(f"static/pdf_encriptados/Exequial.pdf", "wb") as file_exequial:
+                    pdf_writer_exequial.write(file_exequial)
+
+                pdf_writer_juripsico = PdfWriter()
+                pdf_reader_juripsico = PdfReader("static/pdf/Juri_Psico.pdf")
+                # pdf_reader_juripsico.decrypt(b11)#Se desencripta si el archivo ya esta encriptado, si no lo esta comentarear esta linea, solo por el momento(malas practicas)
+                for page_num in range(len(pdf_reader_juripsico.pages)):
+                    pdf_writer_juripsico.add_page(pdf_reader_juripsico.pages[page_num])
+                password_pdf_juripsico = b11
+                pdf_writer_juripsico.encrypt(password_pdf_juripsico)
+                with open(f"static/pdf_encriptados/Juri_Psico.pdf", "wb") as file_juripsico:
+                    pdf_writer_juripsico.write(file_juripsico)
+
+                global nomtitular
+                nomtitular=b1
+                with ZipFile(zip_buffer, 'a') as zip_file:
+                    for pdf_checkbox, pdf_path in [
+                        (brochurepdf, f"static/pdf/Brochure.pdf"),
+                        (contratopdf, f"Contrato_{b1}.pdf"),
+                        (clausulapdf, f"static/pdf_encriptados/Exequial.pdf"),
+                        (tarjetapdf, f"static/pdf_encriptados/Juri_Psico.pdf")
+                    ]:
+
+                        if pdf_checkbox == 'on' and os.path.exists(pdf_path):
+                            with open(pdf_path, 'rb') as file:
+                                em.add_attachment(file.read(), maintype='application', subtype='octet-stream', filename=os.path.basename(pdf_path))
+
+
+
+                    # Trabajar en segundo plano el envío del correo
+                    with concurrent.futures.ThreadPoolExecutor() as executor:
+                       future = executor.submit(enviar_correo, email_sender, password, email_reciver, em)
+                    if enviar_correo:
+                        print("Correo Enviado")
+                    else:
+                        print("Correo no enviado")
+
+                    return welcomeaf()
 
         elif accion == 'descargar':
             pdfs = []
@@ -294,22 +348,33 @@ def downpdf():
             consultarpdf2 = afiliacion_bienvenida(contratopordebajo)
             consultarpdf3 = consulta_caratula(contratopordebajo)
             if consultarpdf2 is not None:
+                
                 for i in consultarpdf3:
-                     b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
-                     pdf_name = f"Contrato_{b1}.pdf"
-                     # Generar contrato utilizando la función caratula_afiliado() y agregarlo a la lista de pdfs
-                     contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
-                     pdfs.append(contrato_pdf)
-            with ZipFile(zip_buffer, 'a') as zip_file:
-                for pdf_checkbox, pdf_path in [
-                    (contratopdf, f"Contrato_{contratopordebajo}.pdf"),
-                    (clausulapdf, "static/pdf/Clausulas.pdf"),
-                    (tarjetapdf, "static/pdf/Tarjeta_Titular.pdf"),
-                    (brochurepdf, "static/pdf/BrochureGEP.pdf")
-                ]:
-                    if pdf_checkbox == 'on' and os.path.exists(pdf_path):
-                        zip_file.write(pdf_path, os.path.basename(pdf_path))
+                    b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
+                    pdf_name = f"Contrato_{b1}.pdf"
+                    # Generar contrato utilizando la función caratula_afiliado() y agregarlo a la lista de pdfs
+                    contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
+                    pdfs.append(contrato_pdf)
+                    pdf_writer = PdfWriter()
+                    pdf_reader = PdfReader(f"Contrato_{b1}.pdf")
+                    for page_num in range(len(pdf_reader.pages)):
+                        pdf_writer.add_page(pdf_reader.pages[page_num])
+                    password_pdf = b11
+                    pdf_writer.encrypt(password_pdf)
+                    with open(f"Contrato_{b1}.pdf", "wb") as file:
+                        pdf_writer.write(file)
             
+
+                with ZipFile(zip_buffer, 'a') as zip_file:
+                    for pdf_checkbox, pdf_path in [
+                        (contratopdf, f"Contrato_{contratopordebajo}.pdf"),
+                        (clausulapdf, "static/pdf/Exequial.pdf"),
+                        (tarjetapdf, "static/pdf/Juri_Psico.pdf"),
+                        (brochurepdf, "static/pdf/Brochure.pdf")
+                    ]:
+                        if pdf_checkbox == 'on' and os.path.exists(pdf_path):
+                            zip_file.write(pdf_path, os.path.basename(pdf_path))
+
             zip_buffer.seek(0)
             return Response(
                 zip_buffer,
@@ -317,9 +382,8 @@ def downpdf():
                 headers={'Content-Disposition': f'attachment;filename={contratopordebajo}.zip'}
             )
 
-        
-        return render_template('Welcome/Welcome.html')
 
+        return welcomeaf()
 
     except Exception as e:
         return print(str(e))
@@ -360,6 +424,7 @@ atexit.register(lambda: scheduler.shutdown())
 
 # Ejecutar la función directamente al inicio para probar
 delete_pdf()
+
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0', port=5000)
