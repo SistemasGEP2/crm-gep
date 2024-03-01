@@ -244,8 +244,9 @@ nomtitular = ""
 @app.route("/downpdf", methods=['POST', 'GET'])  
 def downpdf():
     try:
+        pdfs = []  # Inicialización de pdfs
 
-        contratopdf = request.form.get('contratopdf')  # on y None
+        contratopdf = request.form.get('contratopdf')
         clausulapdf = request.form.get('clausulapdf')
         tarjetapdf = request.form.get('tarjetapdf')
         brochurepdf = request.form.get('brochurepdf')
@@ -253,12 +254,11 @@ def downpdf():
         consultarpdf2 = afiliacion_bienvenida(contratopordebajo)
         consultarpdf3 = consulta_caratula(contratopordebajo)
         accion = request.form.get('action')
-        
+
         if accion == 'sendmail':
-            pdfs = []
             zip_buffer = BytesIO()
             email_sender = "juan.cortes@gep.com.co"
-            password = 'wwkk gfvd eysm lwfg' #Clave auxiliar sistemas "razn cfhc vcuc lfgk" llave python
+            password = 'wwkk gfvd eysm lwfg'
             email_reciver = ("junafelipecortes0@gmail.com", "juansebastian23072003@gmail.com", "sebasshido22@gmail.com")
             subject = f"Prueba con el contrato {contratopordebajo}"
 
@@ -270,20 +270,20 @@ def downpdf():
             em["To"] = email_reciver    
             em["Subject"] = subject
             em.set_content(template_content, subtype='html')
-        if consultarpdf2 is not None:
-            for i in consultarpdf3:
-                b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
-                pdf_name = f"Contrato_{b1}.pdf"
-                contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
-                pdfs.append(contrato_pdf)
-                pdf_writer = PdfWriter()
-                pdf_reader = PdfReader(f"Contrato_{b1}.pdf")
-                for page_num in range(len(pdf_reader.pages)):
-                    pdf_writer.add_page(pdf_reader.pages[page_num])
-                password_pdf = b11
-                pdf_writer.encrypt(password_pdf)
-                with open(f"Contrato_{b1}.pdf", "wb") as file:
-                    pdf_writer.write(file)
+            if consultarpdf2 is not None:
+                for i in consultarpdf3:
+                    b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
+                    pdf_name = f"Contrato_{b1}.pdf"
+                    contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
+                    pdfs.append(contrato_pdf)
+                    pdf_writer = PdfWriter()
+                    pdf_reader = PdfReader(f"Contrato_{b1}.pdf")
+                    for page_num in range(len(pdf_reader.pages)):
+                        pdf_writer.add_page(pdf_reader.pages[page_num])
+                    password_pdf = b11
+                    pdf_writer.encrypt(password_pdf)
+                    with open(f"Contrato_{b1}.pdf", "wb") as file:
+                        pdf_writer.write(file)
 
 
                 # Codigo encriptacion brochure, por si se llega a necesitar
@@ -342,36 +342,32 @@ def downpdf():
                         print("Correo no enviado")
 
                     return welcomeaf()
-
+        
         elif accion == 'descargar':
-            pdfs = []
             zip_buffer = BytesIO()
-            consultarpdf2 = afiliacion_bienvenida(contratopordebajo)
-            consultarpdf3 = consulta_caratula(contratopordebajo)
+
             if consultarpdf2 is not None:
-                
                 for i in consultarpdf3:
                     b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
                     pdf_name = f"Contrato_{b1}.pdf"
-                    # Generar contrato utilizando la función caratula_afiliado() y agregarlo a la lista de pdfs
                     contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
                     pdfs.append(contrato_pdf)
+
                     pdf_writer = PdfWriter()
                     pdf_reader = PdfReader(f"Contrato_{b1}.pdf")
                     for page_num in range(len(pdf_reader.pages)):
                         pdf_writer.add_page(pdf_reader.pages[page_num])
-                    password_pdf = b11
+                    password_pdf = "1234"
                     pdf_writer.encrypt(password_pdf)
                     with open(f"Contrato_{b1}.pdf", "wb") as file:
                         pdf_writer.write(file)
-            
 
                 with ZipFile(zip_buffer, 'a') as zip_file:
                     for pdf_checkbox, pdf_path in [
                         (contratopdf, f"Contrato_{contratopordebajo}.pdf"),
-                        (clausulapdf, "static/pdf/Exequial.pdf"),
-                        (tarjetapdf, "static/pdf/Juri_Psico.pdf"),
-                        (brochurepdf, "static/pdf/Brochure.pdf")
+                        (clausulapdf, "static/pdf/Brochure.pdf"),
+                        (tarjetapdf, "static/pdf/exequial.pdf"),
+                        (brochurepdf, "static/pdf/Juri_Psico.pdf")
                     ]:
                         if pdf_checkbox == 'on' and os.path.exists(pdf_path):
                             zip_file.write(pdf_path, os.path.basename(pdf_path))
@@ -383,11 +379,11 @@ def downpdf():
                 headers={'Content-Disposition': f'attachment;filename={contratopordebajo}.zip'}
             )
 
-
         return welcomeaf()
 
     except Exception as e:
         return print(str(e))
+
 
 def delete_pdf():
     try:
