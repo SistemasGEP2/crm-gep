@@ -250,16 +250,18 @@ def downpdf():
         tarjetapdf = request.form.get('tarjetapdf')
         brochurepdf = request.form.get('brochurepdf')
         contratopordebajo = request.form.get('contratopordebajo')
+        nombreaf = request.form.get('nombreaf')
+        emailaf = request.form.get('emailaf')
         consultarpdf2 = afiliacion_bienvenida(contratopordebajo)
         consultarpdf3 = consulta_caratula(contratopordebajo)
         accion = request.form.get('action')
 
         if accion == 'sendmail':
             zip_buffer = BytesIO()
-            email_sender = "juan.cortes@gep.com.co"
-            password = 'wwkk gfvd eysm lwfg'
-            email_reciver = ("junafelipecortes0@gmail.com", "juansebastian23072003@gmail.com", "sebasshido22@gmail.com")
-            subject = f"Prueba con el contrato {contratopordebajo}"
+            email_sender = "correspondencia@gep.com.co"
+            password = 'xcwq lbnl mrvv tvqk'
+            email_reciver = emailaf
+            subject = f"Bienvenid@ {nombreaf} a Grupo Empresarial Protección S.A.S"
 
             with open('templates/Welcome/plantilla.html', 'r', encoding='utf-8') as file:
                 template_content = file.read()
