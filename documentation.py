@@ -119,10 +119,10 @@ def caratula_afiliado(pdf_file, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b1
         pdf_canvas.line(27, y_coordinate - 17, 584, y_coordinate - 17)  # Línea horizontal superior
         pdf_canvas.line(27, y_coordinate, 27, y_coordinate - 17)         # Línea vertical izquierda
         pdf_canvas.line(585, y_coordinate, 585, y_coordinate - 17)     # Línea vertical derecha
-        pdf_canvas.drawString(50, y_coordinate_datos, row[0])
-        pdf_canvas.drawString(177, y_coordinate_datos, row[1])
-        pdf_canvas.drawString(372, y_coordinate_datos, str(row[2]))
-        pdf_canvas.drawString(515, y_coordinate_datos, str(row[3]))
+        pdf_canvas.drawString(50, y_coordinate_datos, row[0] if row[0] else "")
+        pdf_canvas.drawString(177, y_coordinate_datos, row[1] if row[1] else "")
+        pdf_canvas.drawString(372, y_coordinate_datos, str(row[2]) if row[2] else "")
+        pdf_canvas.drawString(515, y_coordinate_datos, str(row[3]) if row[3] else "")
         y_coordinate_datos -= 17
         y_coordinate -= 17
 
