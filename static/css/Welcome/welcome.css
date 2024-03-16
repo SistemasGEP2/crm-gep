@@ -238,7 +238,13 @@ body {
   border:none;
   background-color: transparent;
 }
-.btn-img:hover{
+.btn-recordacion{
+  border: none;
+  background-color: transparent;
+  position: relative;
+  left: -55px;
+}
+  .btn-img:hover{
   width: 21px;
 }
 
