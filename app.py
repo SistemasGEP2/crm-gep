@@ -260,13 +260,9 @@ def downpdf():
         accion = request.form.get('action')
         email_sender = "correspondencia@gep.com.co"
         password = 'xcwq lbnl mrvv tvqk'
-        email_reciver = emailaf
+        email_reciver = "juan.cortes@gep.com.co"
         if accion == 'sendmail':
             zip_buffer = BytesIO()
-
-            email_sender = "correspondencia@gep.com.co"
-            password = 'xcwq lbnl mrvv tvqk'
-            email_reciver = f"{emailaf},gerencia@grupoempresarialproteccion.com"
             subject = f"Bienvenid@ {nombreaf} a Grupo Empresarial Protección S.A.S"
 
             with open('templates/Welcome/plantilla.html', 'r', encoding='utf-8') as file:
@@ -305,25 +301,25 @@ def downpdf():
                 # with open(f"static/pdf_encriptados/Brochure{b11}.pdf", "wb") as file_brochure:
                 #     pdf_writer_brochure.write(file_brochure)
 
-                # pdf_writer_exequial = PdfWriter()
-                # pdf_reader_exequial = PdfReader("static/pdf/Exequial.pdf")
+                pdf_writer_exequial = PdfWriter()
+                pdf_reader_exequial = PdfReader("static/pdf/Exequial.pdf")
                 # # pdf_reader_exequial.decrypt(b11)
-                # for page_num in range(len(pdf_reader_exequial.pages)):
-                #     pdf_writer_exequial.add_page(pdf_reader_exequial.pages[page_num])
-                # password_pdf_exequial = b11
-                # pdf_writer_exequial.encrypt(password_pdf_exequial)
-                # with open(f"static/pdf_encriptados/Exequial.pdf", "wb") as file_exequial:
-                #     pdf_writer_exequial.write(file_exequial)
+                for page_num in range(len(pdf_reader_exequial.pages)):
+                    pdf_writer_exequial.add_page(pdf_reader_exequial.pages[page_num])
+                password_pdf_exequial = b11
+                pdf_writer_exequial.encrypt(password_pdf_exequial)
+                with open(f"static/pdf_encriptados/Exequial.pdf", "wb") as file_exequial:
+                    pdf_writer_exequial.write(file_exequial)
 
-                # pdf_writer_juripsico = PdfWriter()
-                # pdf_reader_juripsico = PdfReader("static/pdf/Juri_Psico.pdf")
-                # # pdf_reader_juripsico.decrypt(b11)#Se desencripta si el archivo ya esta encriptado, si no lo esta comentarear esta linea, solo por el momento(malas practicas)
-                # for page_num in range(len(pdf_reader_juripsico.pages)):
-                #     pdf_writer_juripsico.add_page(pdf_reader_juripsico.pages[page_num])
-                # password_pdf_juripsico = b11
-                # pdf_writer_juripsico.encrypt(password_pdf_juripsico)
-                # with open(f"static/pdf_encriptados/Juri_Psico.pdf", "wb") as file_juripsico:
-                #     pdf_writer_juripsico.write(file_juripsico)
+                pdf_writer_juripsico = PdfWriter()
+                pdf_reader_juripsico = PdfReader("static/pdf/Juri_Psico.pdf")
+                # pdf_reader_juripsico.decrypt(b11)#Se desencripta si el archivo ya esta encriptado, si no lo esta comentarear esta linea, solo por el momento(malas practicas)
+                for page_num in range(len(pdf_reader_juripsico.pages)):
+                    pdf_writer_juripsico.add_page(pdf_reader_juripsico.pages[page_num])
+                password_pdf_juripsico = b11
+                pdf_writer_juripsico.encrypt(password_pdf_juripsico)
+                with open(f"static/pdf_encriptados/Juri_Psico.pdf", "wb") as file_juripsico:
+                    pdf_writer_juripsico.write(file_juripsico)
 
                 global nomtitular
                 nomtitular=b1
