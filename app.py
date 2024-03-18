@@ -266,7 +266,7 @@ def downpdf():
 
             email_sender = "correspondencia@gep.com.co"
             password = 'xcwq lbnl mrvv tvqk'
-            email_reciver = f"{emailaf},gerencia@grupoempresarialproteccion.com"
+            email_reciver = f"auxiliarsistemas@gep.com.co"
             subject = f"Bienvenid@ {nombreaf} a Grupo Empresarial Protección S.A.S"
 
             with open('templates/Welcome/plantilla.html', 'r', encoding='utf-8') as file:
