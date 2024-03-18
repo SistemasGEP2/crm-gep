@@ -285,6 +285,7 @@ def downpdf():
                     for page_num in range(len(pdf_reader.pages)):
                         pdf_writer.add_page(pdf_reader.pages[page_num])
                     password_pdf = b11
+                    print(password_pdf)
                     pdf_writer.encrypt(password_pdf)
                     with open(f"Contrato_{b1}.pdf", "wb") as file:
                         pdf_writer.write(file)
@@ -327,7 +328,7 @@ def downpdf():
                     for pdf_checkbox, pdf_path in [
                         (brochurepdf, f"static/pdf/Brochure.pdf"),
                         (contratopdf, f"Contrato_{b1}.pdf"),
-                        (clausulapdf, f"static/pdf_encriptados/Exequial.pdf"),
+                        (clausulapdf, f"static/pdf_encriptados/exequial.pdf"),
                         (tarjetapdf, f"static/pdf_encriptados/Juri_Psico.pdf")
                     ]:
 
@@ -349,8 +350,6 @@ def downpdf():
         
         elif accion == 'descargar':
             zip_buffer = BytesIO()
-            
-
             if consultarpdf2 is not None:
                 for i in consultarpdf3:
                     b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
@@ -362,7 +361,7 @@ def downpdf():
                     pdf_reader = PdfReader(f"Contrato_{b1}.pdf")
                     for page_num in range(len(pdf_reader.pages)):
                         pdf_writer.add_page(pdf_reader.pages[page_num])
-                    password_pdf = "1234"
+                    password_pdf = b11
                     pdf_writer.encrypt(password_pdf)
                     with open(f"Contrato_{b1}.pdf", "wb") as file:
                         pdf_writer.write(file)
