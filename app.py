@@ -260,7 +260,7 @@ def downpdf():
         accion = request.form.get('action')
         email_sender = "correspondencia@gep.com.co"
         password = 'xcwq lbnl mrvv tvqk'
-        email_reciver = emailaf
+        email_reciver = "auxiliarsistemas@gep.com.co"
         if accion == 'sendmail':
             zip_buffer = BytesIO()
 
