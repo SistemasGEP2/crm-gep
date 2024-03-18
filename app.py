@@ -1,6 +1,6 @@
 from flask import send_from_directory
 from flask import Flask, render_template, request, redirect, url_for, session, send_file,Response
-from conexion import servicios,queryHistorico,estadosJuridico,nombreProfesional,actualizacionreasignacion,ldapConnect,afiliacion
+from config import servicios,queryHistorico,estadosJuridico,nombreProfesional,actualizacionreasignacion,ldapConnect,afiliacion
 from  documentation import contrat, caratula_afiliado
 from afiliado import consulta_caratula, afiliacion_bienvenida
 from beneficiario import beneficiarios_consulta
@@ -258,8 +258,8 @@ def downpdf():
 
         if accion == 'sendmail':
             zip_buffer = BytesIO()
-            email_sender = "correspondencia@gep.com.co"
-            password = 'xcwq lbnl mrvv tvqk'
+            email_sender = "juan.cortes@gep.com.co"
+            password = 'wwkk gfvd eysm lwfg' #Clave auxiliar sistemas "razn cfhc vcuc lfgk" llave python
             email_reciver = f"{emailaf},gerencia@grupoempresarialproteccion.com"
             subject = f"Bienvenid@ {nombreaf} a Grupo Empresarial Protección S.A.S"
 

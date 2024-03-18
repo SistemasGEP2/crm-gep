@@ -15,6 +15,7 @@ def beneficiarios_consulta(contrato):
 								where Afiliaciones.Contrato = ? or Clientes.Identificacion = ? or Clientes.PrimerNombre like '%' + ? + '%';
                                 """,contrato,contrato,contrato)
                 results = cursor.fetchall()
+
                 return results
     except pyodbc.Error as e:
         print(f'Error en la consulta a la base de datos: {str(e)}')
