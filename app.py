@@ -263,7 +263,6 @@ def downpdf():
         email_reciver = "auxiliarsistemas@gep.com.co"
         if accion == 'sendmail':
             zip_buffer = BytesIO()
-
             subject = f"Bienvenid@ {nombreaf} a Grupo Empresarial Protección S.A.S"
 
             with open('templates/Welcome/plantilla.html', 'r', encoding='utf-8') as file:
@@ -304,7 +303,7 @@ def downpdf():
 
                 pdf_writer_exequial = PdfWriter()
                 pdf_reader_exequial = PdfReader("static/pdf/Exequial.pdf")
-                # pdf_reader_exequial.decrypt(b11)
+
                 for page_num in range(len(pdf_reader_exequial.pages)):
                     pdf_writer_exequial.add_page(pdf_reader_exequial.pages[page_num])
                 password_pdf_exequial = b11
@@ -330,6 +329,7 @@ def downpdf():
                         (contratopdf, f"Contrato_{b1}.pdf"),
                         (clausulapdf, f"static/pdf_encriptados/exequial.pdf"),
                         (tarjetapdf, f"static/pdf_encriptados/Juri_Psico.pdf")
+
                     ]:
 
                         if pdf_checkbox == 'on' and os.path.exists(pdf_path):
@@ -383,7 +383,7 @@ def downpdf():
                 headers={'Content-Disposition': f'attachment;filename={contratopordebajo}.zip'}
             )
 
-            return welcomeaf()
+       
     
         elif accion == "recordacion":
             zip_buffer = BytesIO()
