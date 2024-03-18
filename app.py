@@ -270,7 +270,7 @@ def downpdf():
 
             with open('templates/Welcome/plantilla.html', 'r', encoding='utf-8') as file:
                 template_content = file.read()
-
+        
             em = EmailMessage()
             em["From"] = email_sender
             em["To"] = email_reciver
