@@ -1,4 +1,4 @@
-from conexion import connect
+from src.conection.conexion import connect
 import pyodbc
 
 def afiliacion_bienvenida(contrato):

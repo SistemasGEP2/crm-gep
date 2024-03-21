@@ -1,9 +1,10 @@
 from flask import send_from_directory
 from flask import Flask, render_template, request, redirect, url_for, session, send_file,Response
-from config import servicios,queryHistorico,estadosJuridico,nombreProfesional,actualizacionreasignacion,ldapConnect,afiliacion
-from  documentation import contrat, caratula_afiliado
-from afiliado import consulta_caratula, afiliacion_bienvenida
-from beneficiario import beneficiarios_consulta
+from src.config import servicios,queryHistorico,estadosJuridico,nombreProfesional,actualizacionreasignacion,afiliacion
+from src.conection.ldap import ldapConnect
+from  src.documentation import contrat, caratula_afiliado
+from src.afiliado import consulta_caratula, afiliacion_bienvenida
+from src.beneficiario import beneficiarios_consulta
 import os
 from io import BytesIO
 from zipfile import ZipFile, ZIP_DEFLATED
@@ -14,7 +15,7 @@ import threading
 import atexit
 import glob
 import zipfile
-from beneficiario import beneficiarios_consulta
+from src.beneficiario import beneficiarios_consulta
 import smtplib
 import ssl
 from email.message import EmailMessage

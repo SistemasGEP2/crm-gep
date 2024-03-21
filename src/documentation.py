@@ -7,9 +7,9 @@ import datetime
 import locale
 from reportlab.platypus import Table, TableStyle
 from reportlab.lib import colors
-from afiliado import afiliacion_bienvenida, consulta_caratula
+from src.afiliado import afiliacion_bienvenida, consulta_caratula
 from io import BytesIO
-from beneficiario import beneficiarios_consulta
+from src.beneficiario import beneficiarios_consulta
 from reportlab.pdfbase.pdfdoc import PDFString
 
 def contrat(nombre_documento, nombre_afiliado, numero_contrato, departamento, ciudad):

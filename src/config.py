@@ -1,8 +1,5 @@
-import pyodbc
-from ldap3 import Server, Connection, ALL
-from flask import Flask, jsonify,redirect, url_for,render_template
 import datetime
-from conexion import connect
+from src.conection.conexion import connect
 
 def servicios(numero_afiliacion):
     try:
@@ -24,7 +21,7 @@ def queryHistorico():
                 return results
     except Exception as e:
         print(f'Error en la consulta a la base de datos: {str(e)}')
-        return NoneE
+        return None
     
 
 def estadosJuridico():
@@ -72,28 +69,7 @@ def actualizacionreasignacion(estadoSer,profesional,servicio,nombre,profesionalA
         return None
 
 
-def ldapConnect(username, password):
-    try:
-        print(username,password)
-        # Configuración para la conexión a Active Directory
-        ldap_server = '192.168.1.50' 
-        ldap_user = f'gepdc\\{username}'  
-        ldap_password = password  
 
-        # Establecer la conexión con Active Directory
-        server = Server(ldap_server, get_info=ALL)
-        conn = Connection(server, user=ldap_user, password=ldap_password, auto_bind=True)
-
-        # Verificar si la conexión fue exitosa
-        if conn.bound:
-            print('Conexión exitosa a Active Directory')
-            return 'Conexión exitosa a Active Directory'
-        else:
-            print('Falló la conexión a Active Directory')
-            return 'Falló la conexión a Active Directory'
-
-    except Exception as e:
-        return f'Error en la conexión Active Directory: {str(e)}'
     
 def afiliacion(dato1,fechacont):
     try:

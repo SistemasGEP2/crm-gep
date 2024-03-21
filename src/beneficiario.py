@@ -1,5 +1,5 @@
 import pyodbc
-from conexion import connect
+from src.conection.conexion import connect
 
 def beneficiarios_consulta(contrato):
     try:
