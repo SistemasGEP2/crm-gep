@@ -263,9 +263,9 @@ def downpdf():
 
         if accion == 'sendmail':
             zip_buffer = BytesIO()
-            email_sender = "juan.cortes@gep.com.co"
-            password = 'wwkk gfvd eysm lwfg' #xcwq lbnl mrvv tvqk
-            email_reciver = f"auxiliarsistemas@gep.com.co"
+            email_sender = "correspondencia@gep.com.co"
+            password = 'xcwq lbnl mrvv tvqk' # wwkk gfvd eysm lwfg
+            email_reciver = f"{emailaf}"
             subject = f"Bienvenid@ {nombreaf} a Grupo Empresarial Protección S.A.S"
 
             with open('templates/Welcome/plantilla.html', 'r', encoding='utf-8') as file:
