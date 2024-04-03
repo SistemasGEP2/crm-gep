@@ -49,7 +49,7 @@ def consulta_caratula(contrato):
     except pyodbc.Error as e:
         print(f'Error en la consulta a la base de datos: {str(e)}')
         return None
-
+ 
 class afiliado:
     def __init__(self,pri_nom,seg_nom,pri_ape,seg_ape,contrato,fechacont):
             self.pri_nom = pri_nom
