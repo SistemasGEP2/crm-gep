@@ -59,7 +59,7 @@ class afiliado:
             self.contrato = contrato
             self.fechacont = fechacont
     
-
+ 
     #metodo para listar el afiliado
     def listarafiliado(self,contrato,fechacont):
         #conexion a la base de datos
