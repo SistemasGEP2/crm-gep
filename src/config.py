@@ -12,16 +12,7 @@ def servicios(numero_afiliacion):
         print(f'Error en la consulta a la base de datos: {str(e)}')
         return None
     
-def queryHistorico():
-    try:
-        with connect() as connection:
-            with connection.cursor() as cursor:
-                cursor.execute('SELECT  History_Reasig.IdCaso,History_Reasig.usuario,History_Reasig.query,History_Reasig.feha,ProveedoresAnt.Nombre AS ProfesionalAnt,ProveedoresFin.Nombre AS ProfesionalFin FROM History_Reasig INNER JOIN Proveedores AS ProveedoresAnt ON ProveedoresAnt.IdProveedor = History_Reasig.IdProveedorAnt INNER JOIN Proveedores AS ProveedoresFin ON ProveedoresFin.IdProveedor = History_Reasig.IdProveedor WHERE idtipo=1;')
-                results = cursor.fetchall()
-                return results
-    except Exception as e:
-        print(f'Error en la consulta a la base de datos: {str(e)}')
-        return None
+
     
 
 def estadosJuridico():
@@ -59,7 +50,7 @@ def actualizacionreasignacion(estadoSer,profesional,servicio,nombre,profesionalA
                 cursor.execute("Insert Into Evoluciones (IdCaso,Evolucion,IdEstado,fecha,IdUsuario) values (?,?,?,?,?);",
                                 (servicio,f"SERVICIO REASIGNADO",estadoSer,fecha_hora_formateada,"246"))      
                 # Consulta para insertar en la tabla History_Reasig
-                cursor.execute("INSERT INTO History_Reasig (query,usuario, feha, IdCaso, IdProveedorAnt, IdProveedor,idtipo) VALUES (?,?, ?,?,?,?,);",
+                cursor.execute("INSERT INTO History_Reasig (query,usuario, feha, IdCaso, IdProveedorAnt, IdProveedor,idtipo) VALUES (?,?, ?,?,?,?,?);",
                             ("REASIGNADO",nombre,fecha_hora_formateada,servicio,profesionalAnt,profesional,1))
 
                 connection.commit()

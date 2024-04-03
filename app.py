@@ -1,6 +1,7 @@
 from flask import send_from_directory
 from flask import Flask, render_template, request, redirect, url_for, session, send_file,Response
-from src.config import servicios,queryHistorico,estadosJuridico,nombreProfesional,actualizacionreasignacion,afiliacion
+from src.config import servicios,estadosJuridico,nombreProfesional,actualizacionreasignacion,afiliacion
+from src.historial import historial
 from src.conection.ldap import ldapConnect
 from  src.documentation import contrat, caratula_afiliado
 from src.afiliado import consulta_caratula, afiliacion_bienvenida
@@ -70,8 +71,8 @@ def index():
     try:
 
         profesional = nombreProfesional()
-            
-        data = queryHistorico()
+        historial_instancia = historial("juan")
+        data = historial_instancia.insertarHistoricoReasignacion()
         boton = '<a href="/logout" type="button" id="btn-seccion" class="#"><strong>Cerrar Sesión</strong></a>' 
         botondos = '<a href="/psicologia" type="button" id="btn-seccion-false" class="#"><strong>psicologia</strong></a>'
         botontres = '<a href="/" type="button" id="btn-seccion-false" class="#"><strong>Asesor</strong></a>'    
@@ -87,8 +88,9 @@ def index():
         
     
     except Exception as e:
-            print(f'Error: {str(e)}')
-            return "Hubo un error  verifique la informción o consulte con un profesional"
+        print(f'Error en la función index(): {str(e)}')
+        return "Hubo un error, verifique la información o consulte con un profesional "
+
     
 
 
@@ -103,7 +105,8 @@ def procesar_busqueda():
             numero_afiliacion = request.form['numeroDato']
             print(f'Número de afiliación obtenido: {numero_afiliacion}')
             datosServicios = servicios(numero_afiliacion)
-            data = queryHistorico()
+            historial_instancia = historial("juan")
+            data = historial_instancia.insertarHistoricoReasignacion()
             global dato0 
             global dato1 
             global dato2
