@@ -45,16 +45,38 @@ def consulta_caratula(contrato):
                                 where Afiliaciones.Contrato = ? 
                                 """,contrato)
                 results = cursor.fetchall()  
-
-
-                         
-
-                     
-
         return results
     except pyodbc.Error as e:
         print(f'Error en la consulta a la base de datos: {str(e)}')
         return None
+
+class afiliado:
+    def __init__(self,pri_nom,seg_nom,pri_ape,seg_ape,contrato,fechacont):
+            self.pri_nom = pri_nom
+            self.seg_nom = seg_nom
+            self.pri_ape = pri_ape
+            self.seg_ape = seg_ape
+            self.contrato = contrato
+            self.fechacont = fechacont
+    
+
+    #metodo para listar el afiliado
+    def listarafiliado(self,contrato,fechacont):
+        #conexion a la base de datos
+        try:
+            with connect() as connection:
+                with connection.cursor() as cursor:
+                    if fechacont == None or not fechacont:
+                        complemento = ""
+                    else:
+                        complemento = f"or Afiliaciones.FechaAfiliacion = '{fechacont}'"
+                    cursor.execute(f"Select Clientes.PrimerNombre,Clientes.PrimerApellido,Clientes.Identificacion,Afiliaciones.Contrato,Clientes.Email from Clientes inner join Afiliaciones On Clientes.IdCliente = Afiliaciones.IdCliente where Clientes.Identificacion ='{contrato}' or Afiliaciones.Contrato ='{contrato}' or Clientes.PrimerNombre like '%{contrato}%'  or Clientes.PrimerApellido = '{contrato}' {complemento}  ")
+                    results = cursor.fetchall()
+                    return results
+
+        except Exception as e:
+            print(f'Error en la consulta a la base de datos: {str(e)}')
+            return None
 
 
     

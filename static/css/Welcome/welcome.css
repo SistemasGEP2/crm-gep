@@ -161,7 +161,7 @@ body {
   }
 
   .fecha-input-hidden{
-    display: none;
+    display: block;
     border-top: #ffb4b4;
     border-left: none;
     border-right: none;
@@ -171,7 +171,7 @@ body {
 
 
   .btn-fecha{
-    position: relative;
+    position: absolute;
     font-weight: 700;
     cursor: pointer;
     top: 4.5vh;

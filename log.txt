@@ -658,3 +658,7 @@
  >> Archivo eliminado C:\Users\Administrador\Documents\GitHub\crm-gep\Contrato_5A22556.pdf
  >> Archivo eliminado C:\Users\Administrador\Documents\GitHub\crm-gep\Contrato_5A22681.pdf
  >> Archivo eliminado C:\Users\Administrador\Documents\GitHub\crm-gep\Contrato_56143.pdf
+ >> Archivo eliminado C:\Users\juan.hernandez\Documents\GitHub\crm-gep\Contrato_26067.pdf
+ >> Archivo eliminado C:\Users\juan.hernandez\Documents\GitHub\crm-gep\Contrato_27600.pdf
+ >> Archivo eliminado C:\Users\juan.hernandez\Documents\GitHub\crm-gep\Contrato_5A20293.pdf
+ >> Archivo eliminado C:\Users\juan.hernandez\Documents\GitHub\crm-gep\Contrato_CO10412.pdf

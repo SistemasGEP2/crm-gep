@@ -128,11 +128,12 @@ body{
     }
 
 .custom-table {
-    
+    color: #000;
     max-width: 60%; 
 }
 
 .custom-table-two{
+    color: #000;
     max-width: 100%;
 }
 
@@ -156,6 +157,7 @@ body{
 }
 .thead-reasigna{
     top:0px;
+    color: #000;
 }
 
 
@@ -368,7 +370,7 @@ body{
     
   }
   
-  span {
+  span.let1.let2.let3.let4.let5.let6.let7.let8 {
     position: relative;
     top: 0.63em;  
     display: inline-block;
