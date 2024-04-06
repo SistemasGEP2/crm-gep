@@ -97,8 +97,33 @@ setTimeout(function(){
     alertElement3.style.opacity = '0';
     alertElement3.style.display = 'none';
 }, 5000)
+function mostrarbtnsmenu(){
+    var boton_contratos = document.getElementById('btnmenu-contratos');
+    var boton_reasignacines = document.getElementById('btnmenu-reasignaciones')
+    
 
+    
+}   
+// function mostrarmenu(){
+//         document.getElementById("mostrar-menu").addEventListener("click", function () {
+//         var menu = document.getElementById("menu");
+//         var button = document.getElementById("mostrar-menu");
+//         button.classList.toggle("btn-move");
 
+//         if (button.classList.contains("btn-move")) {
+//             button.style.animation = "rotate 0.7s linear forwards";
+//         } else {
+//             button.style.animation = "rotate-back 0.9s linear forwards";
+//         }
 
+//         menu.classList.toggle("active");
+
+//         if (menu.classList.contains("active")) {
+//             button.classList.add("btn-move");
+//         } else {
+//             button.classList.remove("btn-move");
+//         }
+//     })
+// };
 
 

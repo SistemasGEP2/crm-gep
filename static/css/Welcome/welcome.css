@@ -244,11 +244,16 @@ body {
   position: relative;
   left: -55px;
 }
-  .btn-img:hover{
+.btn-img:hover{
   width: 21px;
 }
-
-
+.select-clausulas{
+  color:black;
+  background-color: #feb26b;
+  border: none;
+  border-radius: 5px;
+  height: 20px;
+}
 @media (max-width: 1400px){
   .cont-form{
     margin-left:15%;

@@ -1,0 +1,279 @@
+body{
+    background-color: white;
+}
+.side-bar {
+    color: rgb(255, 255, 255);
+    height: 100%;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    background-color: rgb(0, 0, 0);
+    text-align: center;
+    border: 1.5px solid rgb(0, 0, 0);
+    width: 200px;
+    height:970px;
+    overflow:none;
+}
+#menu-title {
+    text-align: center;
+    color: rgb(255, 255, 255);
+    font-size: 30px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.menu{ 
+    position: absolute;
+    top: -21.5px;
+    left: -21px;
+    padding: 20px;
+    transform: translateX(-100%);
+    transition: transform 0.8s ease-in-out;
+    overflow: hidden;
+}
+.menu.active{
+    transform: translateX(0);
+    overflow: hidden;
+}
+@keyframes rotate {
+    0% {
+        transform: translateX(0px);
+    }
+    100% {
+        transform:  translateX(250px) rotate(90deg);
+    }
+}
+
+@keyframes rotate-back {
+    0% {
+        transform: translateX(260px) rotate(90deg);
+    }
+    100% {
+        transform: translateX(0px);
+    }
+}
+#mostrar-menu {
+    position: absolute;
+    left: 0;
+    top: -2px;
+    transition: transform 0.10s ease-in-out;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+#mostrar-menu.btn-move {
+    animation: rotate-back is linear forwards;
+}
+.title-front{
+    font-family:Arial, Helvetica, sans-serif;
+    font-size: 32px;
+    position: absolute;
+    left: 420px;
+    top: 320px;
+}
+
+.link-reasignaciones {
+    position: relative;
+    left: 998px;
+    top: 450px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+}
+.link-reasignaciones:hover {
+    text-decoration: underline;
+}
+.link-contratos {
+    cursor: pointer;
+    position: relative;
+    left: 995px;
+    top: 250px;
+    color: black;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+}
+.cuadrado-contratos {
+    position: absolute; 
+    top: -10px;
+    left: -10px;
+    background-color: none; 
+    width: 600px;
+    height: 140px;
+}
+.cuadrado-reasignaciones {
+    position: absolute; 
+    top: -10px;
+    left: -10px;
+    background-color: none; 
+    width: 600px;
+    height: 140px;
+    cursor: pointer;
+}
+
+.cuadrado-reasignaciones:hover{
+    border: 2px solid black;
+    box-shadow: 6px 6px 4px 4px rgb(0, 0, 0);
+}
+.cuadrado-contratos:hover{
+    border: 2px solid black;
+    box-shadow: 8px 8px 2px 2px black;
+}
+.link-contratos:hover {
+    text-decoration: underline;
+}
+
+#icono-flecha {
+    position: relative;
+    top: 5px;
+}
+
+#icono-flecha {
+    position: relative;
+    top: 5px;
+}
+.sidebar-header{
+    background-color: #f1f9fff5;
+    height: 100px;
+    width: 1920px;
+    left: 0px;
+    position: absolute;
+    top: 0px;
+    text-align: center;
+}
+#name-usuario{
+    color: rgb(0, 0, 0);
+    position: inherit;
+    left: 1650px;
+    top: 18px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+#icon-user{
+    position: relative;
+    left: 650px;
+    top: 30px;
+    left: 660px;
+}
+.cuadrado-btns.active-apps {
+    display: block;
+}
+.cuadrado-btns{
+    --background-colorcuadrado: white;
+    --altocuadrado: 40px;
+    --tposicioncuadrado: relative;
+    --displaycuadrado: none;
+    
+    background-color: var(--background-colorcuadrado);
+    height: var(--altocuadrado);
+    position: var(--tposicioncuadrado);
+    display: var(--displaycuadrado);
+}
+#cuadrado-btnapps{
+    top: -30px;
+    width: 10px;
+}
+#cuadrado-btnconfiguracion{
+    top: 210px;
+    width: 10px;
+}
+#cuadrado-btnhelp{
+    top: -15px;
+    width: 10px;
+}
+#cuadrado-btnclosesession{
+    top: 340px;
+    width: 10px;
+}
+.active-apps{
+    display: flex;
+}
+.btns-menu {
+    --colorfondo: none;
+    --colortxt: white;
+    --bordes: none;
+    --tposicion: relative;
+    --fondo: none;
+    --ancho: 226px;
+    --alto: 40px;
+    --tcursor: pointer;
+    
+    background-color: var(--colorfondo);
+    color: var(--colortxt);
+    border: var(--bordes); 
+    background: var(--fondo);
+    width: var(--ancho); 
+    height: var(--alto); 
+    cursor: var(--tcursor);
+}
+#apps-desplegable{ 
+    position: relative;
+    left: -30px;
+    top: 10px;
+    font-size: 18px;
+}
+#apps-desplegable:hover{
+    background-color: rgb(96, 96, 96);
+    position: relative;
+    width: 211px;
+    transform: translateX(20px);
+}
+#help{
+    position: fixed;
+    top: 250px;
+    left: -30px;
+    font-size: 18px;
+}
+#help:hover{
+    background-color: rgb(96, 96, 96);
+    position: relative;
+    top: 25px;
+    left: -20px;
+    width: 211px;
+    transform: translateX(10px);
+}
+#configuracion-btn {
+    position: relative;
+    top: 250px;
+    left: -25px;
+    font-size: 18px;
+}
+#configuracion-btn:hover{
+    background-color: rgb(96, 96, 96);
+    position: relative;
+    left: -10px;
+    width: 201.5px;
+    transform: translateX(10px);
+}
+#close-session{
+    position: relative;
+    left: -23px;
+    top: 380px;
+    font-size: 18px;
+}
+#close-session:hover{
+    background-color: rgb(96, 96, 96);
+    position: relative;
+    width: 204px;
+    transform: translateX(20px);
+}
+.btns-submenu{
+    position: relative;
+    top: 30px;
+    padding: 20px;
+    font-size: 16px;
+    background-color: var(--colorfondo);
+    color: var(--colortxt);
+    border: var(--bordes); 
+    background: var(--fondo);
+    width: var(--ancho); 
+    cursor: var(--tcursor);
+    display: none;
+}
+#btnmenu-contratos{
+    left: -20px;
+}
+#btnmenu-contratos:hover{
+    background-color: rgb(96, 96, 96);
+    position: relative;
+    width: 220px;
+}
+#btnmenu-reasignaciones:hover{
+    background-color: rgb(96, 96, 96);
+    position: relative;
+    width: 201px;
+}

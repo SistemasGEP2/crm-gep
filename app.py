@@ -249,7 +249,7 @@ def downpdf():
         pdfs = []  # Inicialización de pdfs
 
         contratopdf = request.form.get('contratopdf')
-        clausulapdf = request.form.get('clausulapdf')
+        clausulas = request.form.get('clausulas')
         tarjetapdf = request.form.get('tarjetapdf')
         brochurepdf = request.form.get('brochurepdf')
         contratopordebajo = request.form.get('contratopordebajo')
@@ -258,16 +258,14 @@ def downpdf():
         consultarpdf2 = afiliacion_bienvenida(contratopordebajo)
         consultarpdf3 = consulta_caratula(contratopordebajo)
         accion = request.form.get('action')
-        email_sender = "correspondencia@gep.com.co"
-        password = 'xcwq lbnl mrvv tvqk'
-        email_reciver = "juan.cortes@gep.com.co"
+        email_sender = "juan.cortes@gep.com.co"
+        password = 'hiks ckrk orbd rcbj'
+        email_reciver = "junafelipecortes0@gmail.com"
         if accion == 'sendmail':
             zip_buffer = BytesIO()
             subject = f"Bienvenid@ {nombreaf} a Grupo Empresarial Protección S.A.S"
-
             with open('templates/Welcome/plantilla.html', 'r', encoding='utf-8') as file:
                 template_content = file.read()
-        
             em = EmailMessage()
             em["From"] = email_sender
             em["To"] = email_reciver
@@ -284,97 +282,86 @@ def downpdf():
                     for page_num in range(len(pdf_reader.pages)):
                         pdf_writer.add_page(pdf_reader.pages[page_num])
                     password_pdf = b11
-                    print(password_pdf)
                     pdf_writer.encrypt(password_pdf)
                     with open(f"Contrato_{b1}.pdf", "wb") as file:
                         pdf_writer.write(file)
-
-
-                # Codigo encriptacion brochure, por si se llega a necesitar
-                # pdf_writer_brochure = PdfWriter()
-                # pdf_reader_brochure = PdfReader(f"static/pdf/Brochure.pdf")
-                # pdf_reader_brochure.decrypt(b11)# Desencriptar el archivo Brochure.pdf
-                # for page_num in range(len(pdf_reader_brochure.pages)):
-                #     pdf_writer_brochure.add_page(pdf_reader_brochure.pages[page_num])
-                # password_pdf_brochure = b11
-                # pdf_writer_brochure.encrypt(password_pdf_brochure)
-                # with open(f"static/pdf_encriptados/Brochure{b11}.pdf", "wb") as file_brochure:
-                #     pdf_writer_brochure.write(file_brochure)
-
-                pdf_writer_exequial = PdfWriter()
-                pdf_reader_exequial = PdfReader("static/pdf/Exequial.pdf")
+                    pdf_writer_exequial = PdfWriter()
+                    
+                # pdf_reader_exequial = PdfReader("static/pdf/Exequial.pdf")
                 # # pdf_reader_exequial.decrypt(b11)
-                for page_num in range(len(pdf_reader_exequial.pages)):
-                    pdf_writer_exequial.add_page(pdf_reader_exequial.pages[page_num])
-                password_pdf_exequial = b11
-                pdf_writer_exequial.encrypt(password_pdf_exequial)
-                with open(f"static/pdf_encriptados/Exequial.pdf", "wb") as file_exequial:
-                    pdf_writer_exequial.write(file_exequial)
+                # for page_num in range(len(pdf_reader_exequial.pages)):
+                #     pdf_writer_exequial.add_page(pdf_reader_exequial.pages[page_num])
+                # password_pdf_exequial = b11
+                # pdf_writer_exequial.encrypt(password_pdf_exequial)
+                # with open(f"static/pdf_encriptados/Exequial.pdf", "wb") as file_exequial:
+                #     pdf_writer_exequial.write(file_exequial)
 
-                pdf_writer_juripsico = PdfWriter()
-                pdf_reader_juripsico = PdfReader("static/pdf/Juri_Psico.pdf")
-                # pdf_reader_juripsico.decrypt(b11)#Se desencripta si el archivo ya esta encriptado, si no lo esta comentarear esta linea, solo por el momento(malas practicas)
-                for page_num in range(len(pdf_reader_juripsico.pages)):
-                    pdf_writer_juripsico.add_page(pdf_reader_juripsico.pages[page_num])
-                password_pdf_juripsico = b11
-                pdf_writer_juripsico.encrypt(password_pdf_juripsico)
-                with open(f"static/pdf_encriptados/Juri_Psico.pdf", "wb") as file_juripsico:
-                    pdf_writer_juripsico.write(file_juripsico)
-
-                global nomtitular
-                nomtitular=b1
+                # pdf_writer_juripsico = PdfWriter()
+                # pdf_reader_juripsico = PdfReader("static/pdf/Juri_Psico.pdf")
+                # # pdf_reader_juripsico.decrypt(b11)#Se desencripta si el archivo ya esta encriptado, si no lo esta comentarear esta linea, solo por el momento(malas practicas)
+                # for page_num in range(len(pdf_reader_juripsico.pages)):
+                #     pdf_writer_juripsico.add_page(pdf_reader_juripsico.pages[page_num])
+                # password_pdf_juripsico = b11
+                # pdf_writer_juripsico.encrypt(password_pdf_juripsico)
+                # with open(f"static/pdf_encriptados/Juri_Psico.pdf", "wb") as file_juripsico:
+                #     pdf_writer_juripsico.write(file_juripsico)
+                print(clausulas)
                 with ZipFile(zip_buffer, 'a') as zip_file:
                     for pdf_checkbox, pdf_path in [
                         (brochurepdf, f"static/pdf/Brochure.pdf"),
                         (contratopdf, f"Contrato_{b1}.pdf"),
-                        (clausulapdf, f"static/pdf_encriptados/exequial.pdf"),
-                        (tarjetapdf, f"static/pdf_encriptados/Juri_Psico.pdf")
-
+                        (tarjetapdf, f"static/pdf/Exequial.pdf"),
+                        (clausulas, f"static/pdf/{clausulas}.pdf")
                     ]:
-
-                        if pdf_checkbox == 'on' and os.path.exists(pdf_path):
+                        print(f"pdf_checkbox: {pdf_checkbox}, pdf_path: {pdf_path}")
+                        if pdf_checkbox == 'on' or clausulas is not None and os.path.exists(pdf_path):
                             with open(pdf_path, 'rb') as file:
+                                print(f"Attaching file: {pdf_path}")
                                 em.add_attachment(file.read(), maintype='application', subtype='octet-stream', filename=os.path.basename(pdf_path))
 
 
-
-                    # Trabajar en segundo plano el envío del correo
+                # Trabajar en segundo plano el envío del correo
                 with concurrent.futures.ThreadPoolExecutor() as executor:
                    future = executor.submit(enviar_correo, email_sender, password, email_reciver, em)
                 if enviar_correo:
                     print("Correo Enviado")
                 else:
-                    print("Correo no enviado")
+                        print("Correo no enviado")
 
                 return welcomeaf()
-        
+
         elif accion == 'descargar':
             zip_buffer = BytesIO()
-            if consultarpdf2 is not None:
-                for i in consultarpdf3:
-                    b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
-                    pdf_name = f"Contrato_{b1}.pdf"
-                    contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
-                    pdfs.append(contrato_pdf)
+            with ZipFile(zip_buffer, 'a') as zip_file:
+                if consultarpdf2 is not None:
+                    for i in consultarpdf3:
+                        b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23 = i
+                        pdf_name = f"Contrato_{b1}.pdf"
+                        contrato_pdf = caratula_afiliado(pdf_name, b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13, b14, b15, b16, b17, b18, b19, b20, b21, b22, b23, contratopordebajo)
+                        pdfs.append(contrato_pdf)
 
-                    pdf_writer = PdfWriter()
-                    pdf_reader = PdfReader(f"Contrato_{b1}.pdf")
-                    for page_num in range(len(pdf_reader.pages)):
-                        pdf_writer.add_page(pdf_reader.pages[page_num])
-                    password_pdf = b11
-                    pdf_writer.encrypt(password_pdf)
-                    with open(f"Contrato_{b1}.pdf", "wb") as file:
-                        pdf_writer.write(file)
+                        pdf_writer = PdfWriter()
+                        pdf_reader = PdfReader(f"Contrato_{b1}.pdf")
+                        for page_num in range(len(pdf_reader.pages)):
+                            pdf_writer.add_page(pdf_reader.pages[page_num])
+                        password_pdf = b11
+                        pdf_writer.encrypt(password_pdf)
+                        with open(f"Contrato_{b1}.pdf", "wb") as file:
+                            pdf_writer.write(file)
+                
+                        selected_pdf = f"static/pdf/{clausulas}"
+                        if clausulas and os.path.exists(selected_pdf):
+                            zip_file.write(selected_pdf, os.path.basename(selected_pdf))
 
-                with ZipFile(zip_buffer, 'a') as zip_file:
-                    for pdf_checkbox, pdf_path in [
-                        (contratopdf, f"Contrato_{contratopordebajo}.pdf"),
-                        (clausulapdf, "static/pdf/Brochure.pdf"),
-                        (tarjetapdf, "static/pdf/exequial.pdf"),
-                        (brochurepdf, "static/pdf/Juri_Psico.pdf")
-                    ]:
-                        if pdf_checkbox == 'on' and os.path.exists(pdf_path):
-                            zip_file.write(pdf_path, os.path.basename(pdf_path))
+                # Agrega otros archivos al ZIP según sea necesario
+                for pdf_checkbox, pdf_path in [
+                    (contratopdf, f"Contrato_{b1}.pdf"),
+                    (brochurepdf, "static/pdf/Brochure.pdf"),
+                    (clausulas,f"static/pdf/{clausulas}.pdf"),
+                    (tarjetapdf, "static/pdf/exequial.pdf")
+                ]:
+                    if pdf_checkbox == 'on' or clausulas is not None and os.path.exists(pdf_path):
+                        zip_file.write(pdf_path, os.path.basename(pdf_path))
 
             zip_buffer.seek(0)
             return Response(
@@ -383,8 +370,6 @@ def downpdf():
                 headers={'Content-Disposition': f'attachment;filename={contratopordebajo}.zip'}
             )
 
-            return welcomeaf()
-    
         elif accion == "recordacion":
             zip_buffer = BytesIO()
             subject = f"Te recordamos Nuestros Servicios {nombreaf}"
@@ -410,35 +395,34 @@ def downpdf():
                     pdf_writer.encrypt(password_pdf)
                     with open(f"Contrato_{b1}.pdf", "wb") as file:
                         pdf_writer.write(file)
-                    pdf_writer_exequial = PdfWriter()
-                pdf_reader_exequial = PdfReader("static/pdf/Exequial.pdf")
-                # pdf_reader_exequial.decrypt(b11)
-                for page_num in range(len(pdf_reader_exequial.pages)):
-                    pdf_writer_exequial.add_page(pdf_reader_exequial.pages[page_num])
-                password_pdf_exequial = b11
-                pdf_writer_exequial.encrypt(password_pdf_exequial)
-                with open(f"static/pdf_encriptados/Exequial.pdf", "wb") as file_exequial:
-                    pdf_writer_exequial.write(file_exequial)
+                #     pdf_writer_exequial = PdfWriter()
+                # pdf_reader_exequial = PdfReader("static/pdf/Exequial.pdf")
+                # # pdf_reader_exequial.decrypt(b11)
+                # for page_num in range(len(pdf_reader_exequial.pages)):
+                #     pdf_writer_exequial.add_page(pdf_reader_exequial.pages[page_num])
+                # password_pdf_exequial = b11
+                # pdf_writer_exequial.encrypt(password_pdf_exequial)
+                # with open(f"static/pdf_encriptados/Exequial.pdf", "wb") as file_exequial:
+                #     pdf_writer_exequial.write(file_exequial)
 
-                pdf_writer_juripsico = PdfWriter()
-                pdf_reader_juripsico = PdfReader("static/pdf/Juri_Psico.pdf")
-                # pdf_reader_juripsico.decrypt(b11)#Se desencripta si el archivo ya esta encriptado, si no lo esta comentarear esta linea, solo por el momento(malas practicas)
-                for page_num in range(len(pdf_reader_juripsico.pages)):
-                    pdf_writer_juripsico.add_page(pdf_reader_juripsico.pages[page_num])
-                password_pdf_juripsico = b11
-                pdf_writer_juripsico.encrypt(password_pdf_juripsico)
-                with open(f"static/pdf_encriptados/Juri_Psico.pdf", "wb") as file_juripsico:
-                    pdf_writer_juripsico.write(file_juripsico)
+                # pdf_writer_juripsico = PdfWriter()
+                # pdf_reader_juripsico = PdfReader("static/pdf/Juri_Psico.pdf")
+                # # pdf_reader_juripsico.decrypt(b11)#Se desencripta si el archivo ya esta encriptado, si no lo esta comentarear esta linea, solo por el momento(malas practicas)
+                # for page_num in range(len(pdf_reader_juripsico.pages)):
+                #     pdf_writer_juripsico.add_page(pdf_reader_juripsico.pages[page_num])
+                # password_pdf_juripsico = b11
+                # pdf_writer_juripsico.encrypt(password_pdf_juripsico)
+                # with open(f"static/pdf_encriptados/Juri_Psico.pdf", "wb") as file_juripsico:
+                #     pdf_writer_juripsico.write(file_juripsico)
 
                 with ZipFile(zip_buffer, 'a') as zip_file:
                     for pdf_checkbox, pdf_path in [
                         (brochurepdf, f"static/pdf/Brochure.pdf"),
                         (contratopdf, f"Contrato_{b1}.pdf"),
-                        (clausulapdf, f"static/pdf_encriptados/Exequial.pdf"),
-                        (tarjetapdf, f"static/pdf_encriptados/Juri_Psico.pdf")
+                        (tarjetapdf, f"static/pdf_encriptados/Exequial.pdf"),
+                        (clausulas,f"static/pdf/{clausulas}.pdf")
                     ]:
-
-                        if pdf_checkbox == 'on' and os.path.exists(pdf_path):
+                        if pdf_checkbox == 'on' or clausulas is not None and os.path.exists(pdf_path):
                             with open(pdf_path, 'rb') as file:
                                 em.add_attachment(file.read(), maintype='application', subtype='octet-stream', filename=os.path.basename(pdf_path))
 

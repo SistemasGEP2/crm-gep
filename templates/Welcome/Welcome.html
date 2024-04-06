@@ -84,8 +84,18 @@
                     <td>{{i[4]}}</td>
                     <form action="/downpdf" method="post">
                       <td><input type="checkbox" name="contratopdf"></td>
-                      <td><input type="checkbox" name="clausulapdf"></td>
-                      <td><input type="checkbox" name="tarjetapdf"></td>
+                      <td>
+                        <div class="select-clausulas">
+                        <select class="select-clausulas" name="clausulas">
+                        <div class="opciones-select">
+                            <option value="Juri_Psico">50%</option>
+                            <option value="Juri_Psico80">80%</option>
+                            <option value="Juri_Psico100">100%</option>
+                          </div>
+                          </select>
+                        </div>
+                      </td>
+                      <td><input type="checkbox" name="tarjetapdf"></td><!--Clausual Exequial-->
                       <td><input type="checkbox" name="brochurepdf"></td>
                       <td>
                         <button type="button" onclick="activarchecksfila(this)" style="background-color: transparent; border: none;">
