@@ -16,7 +16,6 @@ import threading
 import atexit
 import glob
 import zipfile
-from src.beneficiario import beneficiarios_consulta
 import smtplib
 import ssl
 from email.message import EmailMessage
@@ -254,6 +253,7 @@ def downpdf():
 
         contratopdf = request.form.get('contratopdf')
         clausulapdf = request.form.get('clausulapdf')
+        clausulas = request.form.get('clausulas')
         tarjetapdf = request.form.get('tarjetapdf')
         brochurepdf = request.form.get('brochurepdf')
         contratopordebajo = request.form.get('contratopordebajo')
@@ -263,8 +263,8 @@ def downpdf():
         consultarpdf3 = consulta_caratula(contratopordebajo)
         accion = request.form.get('action')
         email_sender = "juan.cortes@gep.com.co"
-        password = 'wwkk gfvd eysm lwfg' #xcwq lbnl mrvv tvqk
-        email_reciver = f"auxiliarsistemas@gep.com.co"
+        password = 'wwkk gfvd eysm lwfg' # xcwq lbnl mrvv tvqk 
+        email_reciver = f"juan.cortes@gep.com"
      
 
         if accion == 'sendmail':
@@ -321,10 +321,10 @@ def downpdf():
                     for pdf_checkbox, pdf_path in [
                         (brochurepdf, f"static/pdf/Brochure.pdf"),
                         (contratopdf, f"Contrato_{b1}.pdf"),
-                        (clausulapdf, f"static/pdf/Exequial.pdf"),
-                        (tarjetapdf, f"static/pdf/Juri_Psico.pdf")
+                        (clausulapdf, f"static/pdf/exequial.pdf"),
+                        (clausulas, f"static/pdf/{clausulas}.pdf")
                     ]:
-                        if pdf_checkbox == 'on' and os.path.exists(pdf_path):
+                        if pdf_checkbox == 'on' or clausulas and os.path.exists(pdf_path):
                             with open(pdf_path, 'rb') as file:
                                 em.add_attachment(file.read(), maintype='application', subtype='octet-stream', filename=os.path.basename(pdf_path))
 
@@ -337,6 +337,7 @@ def downpdf():
 
                 return welcomeaf()
         
+
         elif accion == 'descargar':
             zip_buffer = BytesIO()
             if consultarpdf2 is not None:
@@ -357,12 +358,12 @@ def downpdf():
 
                 with ZipFile(zip_buffer, 'a') as zip_file:
                     for pdf_checkbox, pdf_path in [
-                        (contratopdf, f"Contrato_{contratopordebajo}.pdf"),
-                        (clausulapdf, "static/pdf/Brochure.pdf"),
-                        (tarjetapdf, "static/pdf/exequial.pdf"),
-                        (brochurepdf, "static/pdf/Juri_Psico.pdf")
+                        (brochurepdf, f"static/pdf/Brochure.pdf"),
+                        (contratopdf, f"Contrato_{b1}.pdf"),
+                        (clausulapdf, f"static/pdf/exequial.pdf"),
+                        (clausulas, f"static/pdf/{clausulas}.pdf")
                     ]:
-                        if pdf_checkbox == 'on' and os.path.exists(pdf_path):
+                        if pdf_checkbox == 'on' or clausulas and os.path.exists(pdf_path):
                             zip_file.write(pdf_path, os.path.basename(pdf_path))
 
             zip_buffer.seek(0)
@@ -423,11 +424,11 @@ def downpdf():
                     for pdf_checkbox, pdf_path in [
                         (brochurepdf, f"static/pdf/Brochure.pdf"),
                         (contratopdf, f"Contrato_{b1}.pdf"),
-                        (clausulapdf, f"static/pdf/Exequial.pdf"),
-                        (tarjetapdf, f"static/pdf/Juri_Psico.pdf")
+                        (clausulapdf, f"static/pdf/exequial.pdf"),
+                        (clausulas, f"static/pdf/{clausulas}.pdf")
                     ]:
 
-                        if pdf_checkbox == 'on' and os.path.exists(pdf_path):
+                        if pdf_checkbox == 'on' or clausulas and os.path.exists(pdf_path):
                             with open(pdf_path, 'rb') as file:
                                 em.add_attachment(file.read(), maintype='application', subtype='octet-stream', filename=os.path.basename(pdf_path))
 
@@ -444,6 +445,8 @@ def downpdf():
                 return welcomeaf()
     except Exception as e:
         return print(str(e))
+
+
 
 
 def delete_pdf():

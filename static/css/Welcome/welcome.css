@@ -120,7 +120,7 @@ body {
   .txt-cont{
     position: relative;
     font-weight: 600;
-    margin-left: 38%;
+
     display: flex;
     align-items: center;
     color: #FAB700;
@@ -218,18 +218,18 @@ body {
     font-size: 12px; 
 }
 
-.table-smaller th,
+/* .table-smaller th,
 .table-smaller td {
     padding: 0rem; 
-}
+} */
 
-.table-smaller th {
+/* .table-smaller th {
     text-align: center;
-} 
+}  */
 
-.table-smaller td {
+/* .table-smaller td {
     text-align: left; 
-}
+} */
 .btn-sendmail {
   border:none;
   background-color: transparent;
@@ -244,14 +244,21 @@ body {
   position: relative;
   left: -55px;
 }
-  .btn-img:hover{
+.btn-img:hover{
   width: 21px;
 }
-
-
-@media (max-width: 1400px){
+.select-clausulas{
+  color:black;
+  background-color: #d5d5d534;
+  border: none;
+  border-radius: 5px;
+  height: 20px;
+}
+@media (max-width: 1540px){
   .cont-form{
-    margin-left:15%;
+    display: grid;
+    place-items: center;
+
   }
   .grafica{
     display: none;

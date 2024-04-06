@@ -4,18 +4,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/inicio.css">
     <title>Menu</title>
 </head>
 
 <body>
-    <nav>
-        <ul>
-            <li><a href="/welcomeaf">Contratos</a></li>
-            <li><a href="/index">Reasignaciones</a></li>
-            
-        </ul>
-    </nav>
-    <h1>Estamos Trabajando Para Ti...</h1>
+    <div class="sidebar-header">
+        <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" id="icon-user" fill="black"
+            class="bi bi-person-circle" viewBox="0 0 16 16">
+            <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+            <path fill-rule="evenodd"
+                d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+        </svg>
+        <h3 id="name-usuario">Nombre Usuario</h3>
+    </div>
+    <div class="title-front">
+        <h1>Apps</h1>
+        <h3>Escoge tu experiencia</h3>
+    </div>
+    <div class="link-contratos" style="width: 400px; height: 20px;">
+        <div class="cuadrado-contratos" onclick="window.location.href='welcome/welcome.html'; event.stopPropagation();">
+        </div>
+        <h3 onclick="window.location.href='welcome/welcome.html';">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" id="icono-flecha" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="h-4 w-4" data-id="12">
+                <path d="m9 18 6-6-6-6"></path>
+            </svg>Contratos
+        </h3>
+        <h5>Generacion y Envio de contratos para los afiliados de la empresa</h5>
+    </div>
+    <div class="link-reasignaciones" style="width: 400px; height: 50px;">
+        <div class="cuadrado-reasignaciones" onclick="window.location.href='index.html'; event.stopPropagation();">
+            <div class="relleno"></div>
+        </div>
+        <h3 onclick="window.location.href='index.html'; event.stopPropagation();">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" id="icono-flecha" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="h-4 w-4" data-id="12">
+                <path d="m9 18 6-6-6-6"></path>
+            </svg>Reasignaciones
+        </h3>
+        <h5>App para la reasignaciones de servicios para los abogados</h5>
+    </div>
+    <button id="mostrar-menu" onclick="mostrarmenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="50" fill="currentColor" class="bi bi-list"
+            viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                d="M2.5 12a.5.5 0 1 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5" />
+        </svg>
+    </button>
+    <div class="menu" id="menu">
+        <div class="side-bar">
+            <h2 id="menu-title">Menu</h2>
+            <button class="btns-menu" id="apps-desplegable" onclick="mostrarbtnsmenu()">Aplicaciones</button>
+            <div class="cuadrado-btns" id="cuadrado-btnapps"></div>
+            <button class="btns-submenu" id="btnmenu-contratos">Contratos</button>
+            <button class="btns-submenu" id="btnmenu-reasignaciones">Reasignaciones</button>
+            <button class="btns-menu" id="configuracion-btn">Configuración</button>
+            <div class="cuadrado-btns" id="cuadrado-btnconfiguracion"></div>
+            <button class="btns-menu" id="close-session">Cerrar Sesion</button>
+            <div class="cuadrado-btns" id="cuadrado-btnclosesession"></div>
+            <button class="btns-menu" id="help">Ayuda</button>
+            <div class="cuadrado-btns" id="cuadrado-btnhelp"></div>
+        </div>
+    </div>
+    <script>
+        function mostrarmenu() {
+            var menu = document.getElementById("menu");
+            var button = document.getElementById("mostrar-menu");
+            button.classList.toggle("btn-move");
+
+            if (button.classList.contains("btn-move")) {
+                button.style.animation = "rotate 0.7s linear forwards";
+            } else {
+                button.style.animation = "rotate-back 0.9s linear forwards";
+            }
+
+            menu.classList.toggle("active");
+
+            if (menu.classList.contains("active")) {
+                button.classList.add("btn-move");
+            } else {
+                button.classList.remove("btn-move");
+            }
+        }
+
+        
+        var btns_apps = document.querySelectorAll(".btns-menu");
+        var cuadrados_apps = document.querySelectorAll(".cuadrado-btns");
+
+        // Recorrer la clase para aplicar estilos en todos los botones
+        btns_apps.forEach(function(btn_apps, index) {
+        
+            btn_apps.addEventListener('mouseover', function () {
+                cuadrados_apps[index].classList.add('active-apps');// Index para saber cual es el indice por el cual recorre
+            });
+
+            btn_apps.addEventListener('mouseout', function () {
+                cuadrados_apps[index].classList.remove('active-apps');
+            });
+        });
+    </script>
 </body>
 
 </html>

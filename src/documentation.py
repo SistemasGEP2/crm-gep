@@ -59,7 +59,7 @@ def contrat(nombre_documento, nombre_afiliado, numero_contrato, departamento, ci
     c.setFont("Helvetica-Bold", 12)
     c.drawString(95, 80, "AREA CORRESPONDENCIA")
     c.drawImage(imagen2, 92, 98, width=120, height=65)
-
+   
     c.save()
 def hex_to_rgb(hex_color):
     # Convertir el código hexadecimal a componentes RGB
